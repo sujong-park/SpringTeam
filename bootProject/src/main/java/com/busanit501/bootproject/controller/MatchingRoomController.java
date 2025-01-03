@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -44,18 +45,31 @@ public class MatchingRoomController {
         // 리다이렉트(작동안댐)
         return "redirect:/matchingRoom/roomList";
     }
+    @PostMapping("/matchingRoom/roomUAD")
+    public void roomUAD(@RequestBody RoomRegisterDTO roomRegisterDTO){
+        matchingRoomService.exitMatchingRoom(roomRegisterDTO.getMatchingRoomDTO());
+        matchingRoomService.deleteRoomParticipants(roomRegisterDTO.getMatchingRoomDTO().getRoomId(),
+                roomRegisterDTO.getRoomParticipantsDTO().getSenderId());
+    }
 
-    @PutMapping("/roomUpdate")
-    public String updateRoom(@RequestBody MatchingRoomDTO roomDTO, RedirectAttributes redirectAttributes) {
+    @ResponseBody
+    @PutMapping("/{roomId}")
+    public Map<String, Integer> updateRoom(@RequestBody MatchingRoomDTO roomDTO,
+                                           @PathVariable("roomId") int roomId) {
         matchingRoomService.updateMatchingRoom(roomDTO);
-        return "redirect:/matchingRoom/roomList";
+        Map<String, Integer> map = Map.of("roomId",roomId);
+        return map;
     }
 
     // 채팅방 삭제
-    @DeleteMapping("/roomDelete/{roomId}")
-    public String deleteRoom(@PathVariable int roomId) {
+    @ResponseBody
+    @DeleteMapping(value = "/{roomId}")
+    public  Map<String, Integer> deleteRoom(@PathVariable("roomId") int roomId) {
         matchingRoomService.deleteMatchingRoom(roomId);
-        return "redirect:/matchingRoom/roomList";
+        Map<String, Integer> map = Map.of("roomId",roomId);
+        log.info("map : " + map);
+        return map;
+//        return "redirect:/matchingRoom/roomList";
     }
 
 

@@ -53,7 +53,7 @@ public class MatchingRoomRepositoryTest {
     public void updateMatchingRoomTest() {
         Optional<MatchingRoom> matchingRoom = matchingRoomRepository.findById(4);
         MatchingRoom UpdateMatchingRoom = matchingRoom.orElseThrow();
-        UpdateMatchingRoom.MatchingRoomUpdate("방이름 수정","방설명 수정",3,3,RoomStatus.Open);
+        UpdateMatchingRoom.MatchingRoomUpdate("방이름 수정","방설명 수정",3,RoomStatus.Open);
         matchingRoomRepository.save(UpdateMatchingRoom);
     }
 

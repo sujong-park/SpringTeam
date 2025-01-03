@@ -43,13 +43,15 @@ public class MatchingRoom extends BaseEntity {
     public void MatchingRoomUpdate(String title,
                                    String description,
                                    int maxParticipants,
-                                   int currentParticipants,
                                    RoomStatus status) {
         this.title = title;
         this.description = description;
         this.maxParticipants = maxParticipants;
-        this.currentParticipants = currentParticipants;
         this.status = status;
+    }
+
+    public void exitRoom(int currentParticipants){
+        this.currentParticipants = currentParticipants-1;
     }
 }
 

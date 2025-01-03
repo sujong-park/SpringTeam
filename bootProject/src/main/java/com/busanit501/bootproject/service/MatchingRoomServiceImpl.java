@@ -65,14 +65,25 @@ public class MatchingRoomServiceImpl implements MatchingRoomService {
         matchingRoom.MatchingRoomUpdate(matchingRoomDTO.getTitle(),
                 matchingRoomDTO.getDescription(),
                 matchingRoomDTO.getMaxParticipants(),
-                matchingRoomDTO.getCurrentParticipants(),
                 matchingRoomDTO.getStatus());
+        matchingRoomRepository.save(matchingRoom);
+    }
+    @Override
+    public void exitMatchingRoom(MatchingRoomDTO matchingRoomDTO){
+        Optional<MatchingRoom> result = matchingRoomRepository.findById(matchingRoomDTO.getRoomId());
+        MatchingRoom matchingRoom = result.orElseThrow();
+        matchingRoom.exitRoom(matchingRoomDTO.getCurrentParticipants());
         matchingRoomRepository.save(matchingRoom);
     }
 
     @Override
     public void deleteMatchingRoom(int roomId) {
         matchingRoomRepository.deleteById(roomId);
+    }
+
+    @Override
+    public void deleteRoomParticipants(int roomId, int userId) {
+        roomParticipantsRepository.deleteByRoomIdAndUserId(roomId, userId);
     }
 
     @Override

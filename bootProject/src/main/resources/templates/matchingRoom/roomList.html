@@ -209,6 +209,9 @@
                     <h4 th:text="${room.title}">채팅방 제목</h4>
                     <span th:text="${room.currentParticipants + ' / ' + room.maxParticipants}">0 / 0</span>
                     <p th:text="${room.description}">채팅방 설명</p>
+                    <h4 th:text="${room.status}" hidden="hidden">상태</h4>
+                    <h4 th:text="${room.currentParticipants}" hidden="hidden">현제인원</h4>
+                    <h4 th:text="${room.maxParticipants}" hidden="hidden">최대인원</h4>
                 </div>
             </div>
         </div>
@@ -291,6 +294,43 @@
 
     </div>
 
+    <!-- 수정 모달 -->
+    <div class="modal fade editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">채팅방 수정</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">방 이름</span>
+                        <input type="text" class="form-control edit-title">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">설명</span>
+                        <input type="text" class="form-control edit-description">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">최대인원</span>
+                        <input type="number" class="form-control edit-maxParticipants">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">상태</span>
+                        <select class="form-select edit-status">
+                            <option value="Open">Open</option>
+                            <option value="Closed">Closed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary editCloseBtn">닫기</button>
+                    <button type="button" class="btn btn-primary editBtn">수정 완료</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -369,6 +409,9 @@
             const roomId = this.querySelector("h4:nth-of-type(1)").innerText;
             const hostId = this.querySelector("h4:nth-of-type(2)").innerText;
             const roomTitle = this.querySelector("h4:nth-of-type(3)").innerText;
+            const status = this.querySelector("h4:nth-of-type(4)").innerText;
+            const currentParticipants = this.querySelector("h4:nth-of-type(5)").innerText;
+            const maxParticipants = this.querySelector("h4:nth-of-type(6)").innerText;
             const roomParticipants = this.querySelector(".chat-preview span").innerText;
             const roomDescription = this.querySelector(".chat-preview p").innerText;
 
@@ -378,7 +421,7 @@
             document.querySelector(".room-description").innerText = roomDescription;
 
             // 유저가 방의 호스트인지 확인
-            if (1 == hostId) {
+            if (hostId == 2) {
                 // 호스트일 때 수정, 삭제, 닫기 버튼을 표시
                 document.querySelector(".room-delete-btn").style.display = "inline-block";
                 document.querySelector(".room-edit-btn").style.display = "inline-block";
@@ -392,21 +435,102 @@
 
             // 모달 표시
             roomInfoModal.show();
-        });
-    });
 
-    // 채팅방 삭제
-    document.querySelector(".room-delete-btn").addEventListener("click", function () {
-        const roomId = document.querySelector(".room-title").innerText; // 방 ID 가져오기
-        deleteRoom(roomId) // deleteRoom 함수 호출
-            .then(() => {
-                alert("채팅방이 삭제되었습니다.");
-                roomInfoModal.hide(); // 모달 닫기
-                location.reload(); // 페이지 새로 고침 (채팅방 리스트 갱신)
+            // 채팅방 삭제
+            document.querySelector(".room-delete-btn").addEventListener("click",
+                function (e) {
+                    deleteRoom(roomId) // deleteRoom 함수 호출
+                        .then(result => {
+                            // consoloe.log(result)
+                            alert("채팅방이 삭제되었습니다.");
+                            roomInfoModal.hide(); // 모달 닫기
+                        })
+                        .catch((e) => {
+                            alert("채팅방 삭제에 실패했습니다.");
+                        });
+                },false);
+
+            // 채팅방 나가기
+            document.querySelector(".room-leave-btn").addEventListener("click",
+                function (e){
+                    const matchingRoomDTO = {
+                        roomId:roomId,
+                        hostId: 1,
+                        title: roomTitle,
+                        description: roomDescription,
+                        maxParticipants: maxParticipants,
+                        currentParticipants: currentParticipants,
+                        status: status
+                    };
+                    const roomParticipantsDTO = {
+                        senderId: 2,
+                    };
+                    const exitObj = {
+                        matchingRoomDTO: matchingRoomDTO,
+                        roomParticipantsDTO: roomParticipantsDTO
+                    };
+                    updateAndDelete(exitObj)
+                        .then(result => {
+                            alert("방에서 나갔습니다.");
+                            roomInfoModal.hide();
+                        })
+                        .catch(e => {
+                            alert("예외가 발생함");
+                        });
             })
-            .catch((e) => {
-                alert("채팅방 삭제에 실패했습니다.");
+
+            // 수정 모달
+            const editModal = new bootstrap.Modal(document.querySelector(".editModal"));
+            const editBtn = document.querySelector(".editBtn");
+            const editCloseBtn = document.querySelector(".editCloseBtn");
+
+            const editTitle = document.querySelector(".edit-title");
+            const editDescription = document.querySelector(".edit-description");
+            const editMaxParticipants = document.querySelector(".edit-maxParticipants");
+            const editStatus = document.querySelector(".edit-status");
+
+            // 수정 버튼 클릭 이벤트
+            document.querySelector(".room-edit-btn").addEventListener("click", function () {
+                console.log("수정 버튼 클릭");
+
+                // 기존 값 가져오기
+                editTitle.value = document.querySelector(".room-title").innerText;
+                editDescription.value = document.querySelector(".room-description").innerText;
+                editMaxParticipants.value = document.querySelector(".room-participants").innerText.split(" / ")[1];
+                editStatus.value = status;
+
+                // 수정 모달 표시
+                editModal.show();
             });
+
+            // 수정 완료 버튼 클릭 이벤트
+            editBtn.addEventListener("click", function () {
+                const updatedRoom = {
+                    roomId:roomId,
+                    title: editTitle.value,
+                    description: editDescription.value,
+                    maxParticipants: editMaxParticipants.value,
+                    status: editStatus.value
+                };
+
+                // 방 수정 API 호출
+                UpdateRoom(updatedRoom)
+                    .then(result => {
+                        alert("채팅방이 수정되었습니다.");
+                        editModal.hide();
+                    })
+                    .catch(e => {
+                        alert("채팅방 수정에 실패했습니다.");
+                    });
+            },false);
+
+            // 수정 창 닫기 버튼
+            editCloseBtn.addEventListener("click", function () {
+                editModal.hide();
+            });
+
+
+        });
     });
 </script>
 

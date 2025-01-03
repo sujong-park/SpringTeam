@@ -58,7 +58,7 @@ public class MatchingRoomServiceTests {
     // 매칭방 삭제 테스트
     @Test
     public void testDeleteMatchingRoom() {
-        int roomIdToDelete = 16; // 삭제할 매칭방 ID
+        int roomIdToDelete = 56; // 삭제할 매칭방 ID
         matchingRoomService.deleteMatchingRoom(roomIdToDelete);
         log.info("매칭방 삭제 완료: " + roomIdToDelete);
     }
