@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="ko"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="www.thymeleaf.org"
+      layout:decorate="~{layout/base.html}"
+>
+<body>
+<div layout:fragment="content">
+
+    <div class="row mt-3">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Board Read
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">
+                        Board Read
+                    </h5>
+                    <form method="post" action="/board/update">
+                        <div class="mb-3">
+                            <label for="title" class="form-control">제목</label>
+                            <input type="text" class="form-control" id="title" name="title" placeholder="제목을 입력해주세요"
+                                   th:value="${dto.title}" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="content" class="form-control">내용</label>
+                            <textarea type="text" class="form-control col-sm-5" id="content"
+                                      name="content" rows="5" placeholder="내용을 입력해주세요"
+                                      readonly>[[${dto.content}]]</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="writer" class="form-control">작성자</label>
+                            <input type="text" class="form-control" id="writer" name="writer"
+                                   placeholder="지금은 직접 작성자를 입력해주세요, 로그인 후 로그인 유저가 자동으로 탑재됨."
+                                   th:value="${dto.writer}" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="regDate" class="form-control">등록시간</label>
+                            <input type="text" class="form-control" id="regDate" name="regDate"
+                                   th:value="${#temporals.format(dto.regDate,'yyyy-MM-dd HH:mm:ss')}" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="modDate" class="form-control">수정시간</label>
+                            <input type="text" class="form-control" id="modDate" name="modDate"
+                                   th:value="${#temporals.format(dto.modDate,'yyyy-MM-dd HH:mm:ss')}" readonly>
+                        </div>
+                        <div class="mb-3" th:with="link = ${pageRequestDTO.link}">
+                            <!--                            수정폼 가기 방법2-->
+                                                        <a th:href="|@{/board/update}?bno=${dto.bno}&${link}|">
+                            <!--                    게시글 작성자와 로그인한 유저가 같은 경우에만, 수정하기 버튼 활성화하기.-->
+                            <button type="button" th:if="${user != null && user.Username == dto.writer}"
+                                    class="btn btn-primary submitBtn">수정하기
+                            </button>
+                                                        </a>
+                            <a th:href="|@{/board/list}?${link}|">
+                                <button type="button" class="btn btn-danger">목록가기</button>
+                            </a>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--    1)댓글의 목록, 2)댓글 추가 버튼 , 3)페이징 번호 화면 작업-->
+    <div class="row mt-3">
+        <!--        부트 스트랩에서, 전체 가로 영역을 12 등분으로 나눔.-->
+        <!--        col-md-12 : 전체를 차지-->
+        <div class="col-md-12">
+            <!--            2)댓글 추가 버튼 : addReplyBtn -->
+            <div class="my-4">
+                <button class="btn btn-info addReplyBtn">댓글 등록</button>
+            </div>
+            <!--            1)댓글의 목록 : replyList -->
+            <ul class="list-group replyList">
+                <!-- li  태그를 innerHTML 를 이용해서, 요소를 추가할 예정, 자바스크립트 문법으로-->
+            </ul>
+        </div>
+    </div>
+
+    <!--        댓글의 페이지 번호 출력-->
+    <div class="row mt-3">
+        <div class="col">
+            <div class="paging-container">
+                <ul class="pagination replyPaging">
+
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <!--    댓글 등록 모달창1-->
+    <div class="modal fade registerModal" tabindex="-1"
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">댓글 등록</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!--                    댓글 등록 입력폼 추가하기-->
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">내용</span>
+                        <input type="text" class="form-control replyText">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">작성자</span>
+                        <input type="text" th:value="${user.Username}" class="form-control replyer" readonly>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary registerCloseBtn" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-primary registerBtn">댓글 등록</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--    댓글 등록 모달창1-->
+
+    <!--    댓글 수정 모달창2-->
+    <div class="modal fade updateModal" tabindex="-1"
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title replyHeader"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!--                    댓글 등록 입력폼 추가하기-->
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">내용</span>
+                        <input type="text" class="form-control updateReplyText">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">작성자</span>
+                        <input type="text" class="form-control updateReplyer" readonly>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary updateCloseBtn" data-bs-dismiss="modal">취소</button>
+
+                    <button type="button" class="btn btn-primary updateBtn">댓글 수정</button>
+                    <button type="button" class="btn btn-danger deleteBtn">댓글 삭제</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--    댓글 수정 모달창2-->
+
+    <!--    첨부된 이미지들 출력해보기. 원본으로 출력하기-->
+    <div class="col">
+        <div class="card" th:if="${dto.fileNames != null && dto.fileNames.size()>0}">
+            <img class="card-img-top"
+                 th:each="fileName: ${dto.fileNames}"
+                 th:src="|/view/${fileName}|"
+            >
+        </div>
+    </div>
+
+
+    <!--axios 도구 , 비동기 식으로 처리하는 문법을 마치 동기화된 코드 처럼 이용 가능 문법,-->
+    <!--async , await 키워드를 이용해서, 비동기 처리를 조금 더 쉽게 동기화 코드처럼 이용가능-->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/js/reply.js"></script>
+</div>
+<!--끝 나는 부분 layout:fragment="content"-->
+
+
+<!--자바스크립트 추가하는 영역-->
+<script layout:fragment="javascript" th:inline="javascript">
+
+    // 수정폼으로 이동하기.
+    // 이부분 오류 발생해서, 수정하기,
+    // document.querySelector(".submitBtn").addEventListener("click",function (e) {
+    //         // 수정폼으로 가야함. 그러면, 필요한 준비물 tno 번호가 필요함
+    //         self.location = "/board/update?bno=" + [[${dto.bno}]] + "&" + [[${pageRequestDTO.link}]]
+    //             , false
+    //     })
+
+    // 현재 로그인한 유저 표시
+    // 1/2 목요일 여기서부터
+    const currentUser = [[${#authentication.principal.username}]]
+    console.log("currentUser : " + currentUser)
+    // 댓글 작성자와 현재 유저 일치 여부.
+    let hasAuth = false
+
+
+    // 비동기 함수, 테스트 작업.
+    // 순서2, 현재 게시글의  bno 번호를 알아야 함
+    const bno = [[${dto.bno}]]
+    // 함수 실행 해보기.
+    console.log("bno : " + bno)
+    console.log("get 함수 실행1: ")
+    get(bno)
+
+    // 함수 정의,
+    // 주의사항, reply.js , 통신 이용해서, 데이터를 전달하는 업무, 백
+    // read.html,  받아온 데이터를 업데이트를 하는 역할. 화면 그려주는 역할. 프론트  react.jsx
+
+    // 순서3, 화면에 출력하는 역할,
+    function printReplies(page, size, goLast) {
+        // 비동기 함수를 호출하게 되면, 호출된 데이터의 성공 여부에 따라서,
+        // 성공시, then  절 받아서 처리,
+        // 실패시, catch 절 받아서 처리.
+        // 순서4, 서버로 부터 넘어온 데이터를, 댓글 목록 출력하는 함수에 전달하는 역할
+        getList({bno, page, size, goLast}) // 비동기로 함수를 사용함.
+            .then( // 성공하면 동작할 영역
+                // 연습용 콘솔 출력,
+                // data => console.log(data)
+                // 성공하면, data , 매개변수에, 서버로 부터 받은 데이터 할당됨
+                data => {
+                    printList(data.dtoList) // 댓글 목록 출력하기.
+                    printPages(data)// 댓글 페이징 출력하기.
+                }
+            )
+            .catch(e => { // 실패하면 동작할 영역
+                    console.error(e)
+                }
+            )
+    }
+
+    // 함수 실행해보기.
+    // printReplies(1, 10)
+    console.log("printReplies 함수 실행2: ")
+    // 마지막 댓글 페이지로 이동 테스트
+    printReplies(1, 10)
+
+
+    // 비동기 함수 이용해서, 댓글 목록 출력 작업해보기.
+    // 순서5, 화면에 출력할 태그의 요소를 선택
+    const replyList = document.querySelector('.replyList')
+    const replyPaging = document.querySelector('.replyPaging')
+
+    // 순서6, 댓글을 출력하는 기능
+    // 함수 작성, dtoList: 서버로 부터 받아온 댓글의 목록(페이징 처리가 된 목록)
+    function printList(dtoList) {
+        // innerHTML, 동적 태그를 생성해서 추가할 예정.
+        // HTML 태그는 문자열로 작성,
+        // 임시로 담아둘 문자열 변수 생성,
+        let str = ""
+        if (dtoList && dtoList.length > 0) {
+            for (const dto of dtoList) {
+                str += `
+               <li class="list-group-item d-flex replyItem">
+               <span class="col-2">${dto.rno}</span>
+               <span class="col-6" data-rno="${dto.rno}">${dto.replyText}</span>
+               <span class="col-2">${dto.replyer}</span>
+               <span class="col-2">${dto.regDate}</span>
+               `
+            }
+        }
+        replyList.innerHTML = str
+    }
+
+    // 페이징 목록 처리,
+    // 순서7, 댓글의 페이징 번호를 출력하는 기능
+    //  페이징 준비물이, data 객체 안에 다 들어가 있다.
+    // page, size, next, prev, total, start, end 다 있음.
+    function printPages(data) {
+        let pageStr = ''
+        // 이전페이지 여부
+        if (data.prev) {
+            pageStr += `<li class="page-item"><a class="page-link"
+            data-page="${data.start - 1}">이전</a></li>
+             `
+        }
+        // 페이지 번호를 출력, 보통 10개씩 출력중.
+        for (let i = data.start; i <= data.end; i++) {
+            pageStr += `
+            <li class="${data.page == i}?'page-item active':'page-item'">
+                                    <a class="page-link"
+                                       data-page="${i}">${i}</a>
+                                </li>
+            `
+        }
+
+        // 다음 페이지 여부
+        if (data.next) {
+            pageStr += `<li class="page-item"><a class="page-link"
+            data-page="${data.end + 1}">다음</a></li>
+             `
+        }
+        replyPaging.innerHTML = pageStr
+    }
+
+    // 페이징 번호 이벤트 핸들러 추가.
+    // 1) data-page=1 , 번호를 활용하기.
+    // 페이징 번호 화면 구성 <ul> : 고정 -> <li> : 동적 변경
+    // ul 태그 기준으로해서, 하위에 자식 태그에 접근하자.
+    let page = 1
+    let size = 10
+
+    replyPaging.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const target = e.target
+
+        // a 태그가 아니면, 이벤트 처리를 안합니다.
+        if (!target || target.tagName != 'A') {
+            return
+        }
+
+        // a 태그이고, 작업 계속 진행함.
+        const pageNum = target.getAttribute("data-page")
+        page = pageNum
+        printReplies(page, size)
+
+    }, false)
+
+
+    // 댓글 등록 버튼 이벤트 처리 작업, 모달 창 show/hide
+    const registerModal = new bootstrap.Modal(document.querySelector(".registerModal"))
+    // 나머지 , 화면 요소를 미리 , 재사용하기 위해서, 변수에 할당 해놓기.
+    const registerBtn = document.querySelector(".registerBtn")
+    const registerCloseBtn = document.querySelector(".registerCloseBtn")
+    const replyText = document.querySelector(".replyText")
+    const replyer = document.querySelector(".replyer")
+
+    // addReplyBtn 요소 클릭시, 모달창 띄우기
+    document.querySelector(".addReplyBtn").addEventListener("click",
+        function (e) {
+            registerModal.show()
+        })
+    //취소 할 경우, hide
+    registerCloseBtn.addEventListener("click",
+        function (e) {
+            registerModal.hide()
+        })
+
+    //댓글 등록 , 로직 처리, 이벤트 추가.
+    registerBtn.addEventListener("click", function (e) {
+        // 댓글의 내용과, 작성자를 가져와서, 객체에 담기.
+        const replyObj = {
+            bno: bno,
+            replyText: replyText.value,
+            replyer: replyer.value
+        }
+        addReply(replyObj).then(
+            result => {
+                alert("댓글 작성 번호: " + result.rno)
+                registerModal.hide()
+                replyText.value = ''
+                // replyer.value = ''
+                // 댓글 작성후, 마지막 댓글 페이지 이동
+                printReplies(1, 10, true)
+            }
+        )
+            .catch(e => {
+                alert("예외가 발생함")
+            })
+    }, false)
+
+
+    // 댓글 수정 모달창 띄우기, 이벤트 처리, 댓글 내용을 클릭시 띄우기.
+    const updateModal = new bootstrap.Modal(document.querySelector(".updateModal"))
+    // 나머지 , 화면 요소를 미리 , 재사용하기 위해서, 변수에 할당 해놓기.
+    const updateBtn = document.querySelector(".updateBtn")
+    const replyHeader = document.querySelector(".replyHeader")
+    const updateCloseBtn = document.querySelector(".updateCloseBtn")
+    const updateReplyText = document.querySelector(".updateReplyText")
+    const updateReplyer = document.querySelector(".updateReplyer")
+    const deleteBtn = document.querySelector(".deleteBtn")
+
+    // 이벤트 처리, 댓글 클릭시, 수정 모달창 띄우기.
+    replyList.addEventListener("click", function (e) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        const target = e.target
+
+        // span 태그가 아니면, 이벤트 처리를 안합니다.
+        if (!target || target.tagName != 'SPAN') {
+            return
+        }
+
+        // span 태그이고, 작업 계속 진행함.
+        const rno = target.getAttribute("data-rno")
+        console.log("클릭시 rno  가져오기 확인 : " + rno)
+
+        // rno 가 없다면, 이벤트 처리 안합니다.
+        if (!rno) {
+            return;
+        }
+        // rno 있으니, 추가 작업 계속함.
+        getReply(rno).then(reply => {
+            console.log("하나 조회 : replyDTO : " + reply)
+            // 모달 창 화면에 , 조회한 댓글 내용과, 작성자 표기 , 주입.
+            replyHeader.innerHTML = reply.rno
+            updateReplyText.value = reply.replyText
+            updateReplyer.value = reply.replyer
+            updateModal.show()
+            // 댓글 작성자와 현재 유저 일치 여부.
+            hasAuth = currentUser === reply.replyer
+        })
+            .catch(e => alert("댓글 추가 예외 발생함"))
+    }, false)
+
+    //댓글 수정, 로직 처리,
+    updateBtn.addEventListener("click", function (e) {
+
+        // 댓글 작성자와 현재 유저 일치시 처리 가능.
+        if(!hasAuth){
+            alert("댓글 작성자만 수정 가능합니다.")
+            updateModal.hide()
+            return
+        }
+
+        //변경된 댓글 내용과, 작성자를 가져오기,
+        const replyObj = {
+            bno: bno,
+            rno: replyHeader.innerHTML,
+            replyText: updateReplyText.value,
+            replyer: updateReplyer.value
+        }
+        console.log("replyHeader.innerHTML : " + replyHeader.innerHTML)
+
+        // 비동기 통신 이용해서, 성공시, 실패시 나눠서 작업.
+        updateReply(replyObj).then(result => {
+            alert(result.rno + "번 댓글 수정 완료 ")
+            updateReplyText.value = ''
+            updateModal.hide()
+            printReplies(page, size)
+        })
+            .catch(e => {
+                alert("댓글 수정 실패")
+            })
+    }, false)
+
+    // 삭제 로직 처리 추가.
+    deleteBtn.addEventListener("click", function (e) {
+
+        // 댓글 작성자와 현재 유저 일치시 처리 가능.
+        if(!hasAuth){
+            alert("댓글 작성자만 삭제 가능합니다.")
+            updateModal.hide()
+            return
+        }
+
+        const rno = replyHeader.innerHTML
+        console.log("replyHeader.innerHTML : " + replyHeader.innerHTML)
+        console.log("rno 확인 : " + rno)
+
+        // 비동기 통신 이용해서, 성공시, 실패시 나눠서 작업.
+        deleteReply(rno).then(result => {
+            alert(result.rno + "번 댓글 삭제 완료 ")
+            updateModal.hide()
+            printReplies(page, size, true)
+        })
+            .catch(e => {
+                alert("댓글 삭제 실패")
+            })
+    }, false)
+
+</script>
+
+</body>
+</html>

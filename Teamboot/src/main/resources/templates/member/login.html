@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"  xmlns:th="www.thymeleaf.org"
+      layout:decorate="~{layout/base.html}">
+<body>
+<div layout:fragment="content">
+
+    <div class="member-form login-member-form">
+        <h2>로그인</h2>
+        <form id="login-form" action="/member/login" method="post">
+            <div class="input-group">
+                <input type="text" name="username" class="input" placeholder="USER ID" value="test">
+            </div>
+            <div class="input-group">
+                <input type="password" name="password" class="input" placeholder="PASSWORD" value="1234">
+            </div>
+            <div class="checkbox">
+                <input type="checkbox" name="remember-me" id="remember-me">
+                <label for="remember-me"><span></span> 자동로그인</label>
+            </div>
+            <div class="btn-box">
+                <button type="submit" class="btn btn-dark">로그인</button>
+            </div>
+            <button type="button" class="joinBtn">계정이 없으신가요?</button>
+        </form>
+
+        <div class="social-login">
+            <a href="/oauth2/authorization/kakao" class="btn kakao" id="kakaoLogin">
+                <div class="icon"><img th:src="@{/images/social/kakao_icon.png}"></div>
+                <span>카카오로 로그인</span>
+            </a>
+            <button type="button" class="btn naver" id="naverLogin">
+                <div class="icon"><img th:src="@{/images/social/naver_icon.png}"></div>
+                <span>네이버로 로그인</span>
+            </button>
+            <button type="button" class="btn google" id="googleLogin">
+                <div class="icon"><img th:src="@{/images/social/google_icon.png}"></div>
+                <span>구글로 로그인</span>
+            </button>
+        </div>
+
+        <div class="card-body">
+            <!--            로그아웃 여부 확인하는 코드-->
+            <!--            파라미터로 logout 있다면, 로그인 입력폼 안보이게 하기-->
+            <!--
+            <th:block th:if="${param.logout != null}">
+                <h1>Logout........</h1>
+            </th:block>
+            -->
+
+            <!--방법2, 접근 권한이 없을 경우, 로그인 페이지에서 파라미터의 값으로 조건부 렌더링 -->
+            <!--
+            <th:block th:if="${param.error != null}">
+                <h1 th:if="${error == 'ACCESS_DENIED'}">접근 권한이 없습니다. Access Denied</h1>
+            </th:block>
+            -->
+
+            <!--            로그아웃 파라미터 추가 설정-->
+
+        </div>
+    </div>
+
+    <!--    끝나는 부분 fragment-->
+    <script layout:fragment="javascript" th:inline="javascript">
+        document.querySelector(".joinBtn").addEventListener("click", function (e){
+            e.preventDefault()
+            e.stopPropagation()
+            self.location = "/member/join"
+        })
+
+        const result = [[${result}]]
+        if(result && result === "success") {
+            alert("회원가입 축하합니다.")
+        }
+    </script>
+
+</div>
+
+</body>
+</html>

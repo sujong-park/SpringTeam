@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="www.thymeleaf.org"
+      layout:decorate="~{layout/base.html}"
+>
+<script src="../../static/js/upload.js"></script>
+<body>
+<div layout:fragment="content">
+<!--    라이브 데모 모달-->
+    <!-- Button trigger modal -->
+<!--    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">-->
+<!--        Launch demo modal-->
+<!--    </button>-->
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1"
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5"
+                        th:if="${resultType == 'register'}">
+                        글쓰기 성공
+                    </h1>
+                    <h1 class="modal-title fs-5"
+                        th:if="${resultType == 'update'}">
+                        글쓰기 수정
+                    </h1>
+                    <h1 class="modal-title fs-5"
+                        th:if="${resultType == 'delete'}">
+                        글쓰기 삭제
+                    </h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    [[${result}]]
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--    라이브 데모 모달-->
+
+<!--    로그인한 유저를 표시 해보기-->
+    <div class="row mt-3">
+        <div class="col">
+            <h1 th:if="${user} != null">[[${user.Username}]]님환영합니다.</h1>
+        </div>
+    </div>
+
+    <!--    검색화면 추가-->
+
+    <div class="row mt-3">
+        <div class="col">
+            <!--        카드 시작 부분-->
+            <div class="card">
+
+                <div class="card-body">
+                    <h5 class="card-title">검색 및 필터 </h5>
+                    <form action="/board/list" method="get">
+<!--                        <input type="hidden" name="size" value="${responseDTO.size}">-->
+<!--                        수정 부분, 검색시, 제목:t, 작성자:w, 내용:c , 선택하는 화면-->
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <select class="form-select" name="type">
+                                    <option value="">
+                                        -----
+                                    </option>
+                                    <option value="t" th:selected="${pageRequestDTO.type == 't'}">
+                                        제목
+                                    </option>
+                                    <option value="c" th:selected="${pageRequestDTO.type == 'c'}">
+                                        내용
+                                    </option>
+                                    <option value="tc" th:selected="${pageRequestDTO.type == 'tc'}">
+                                        제목+내용
+                                    </option>
+                                    <option value="tcw" th:selected="${pageRequestDTO.type == 'tcw'}">
+                                        제목+내용+작성자
+                                    </option>
+
+                                </select>
+                            </div>
+<!--                            검색 키워드 입력 창-->
+                           <input type="text" class="form-controll" name="keyword"
+                           th:value="${pageRequestDTO.keyword}">
+
+                        </div>
+<!--                        검색 창에서, 검색 키워드 입력 받는 화면 필요-->
+
+                        <div class="input-group mb-3">
+                            <div class="float-end">
+                                <button class="btn btn-primary" type="submit">검색</button>
+                                <button class="btn btn-secondary clearBtn" type="reset">초기화</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!--        카드 끝 부분-->
+
+        </div>
+
+    </div>
+    <!--    검색화면 추가-->
+
+    <div class="row mt-3">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Board List
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">
+                        Board List
+                    </h5>
+
+<!--                    작업중-->
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Bno</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Writer</th>
+                            <th scope="col">RegDate</th>
+                        </tr>
+                        </thead>
+<!--                        ?page=1&type=t&keyword=3-->
+                        <tbody th:with="link = ${pageRequestDTO.link}">
+                        <tr th:each="dto:${responseDTO.dtoList}">
+                            <th scope="row">
+                                [[${dto.bno}]]
+                            </th>
+                            <td>
+                                <a th:href="|@{/board/read(bno=${dto.bno})}&${link}|">
+                                [[${dto.title}]]
+                                </a>
+<!--                                댓글 갯수-->
+                                <span class="badge progress-bar-success"
+                                style="background-color: crimson">
+                                    [[${dto.replyCount}]]
+                                </span>
+<!--                                첨부된 이미지 출력 하기-->
+                                <div th:if="${dto.boardImages != null && dto.boardImages.size()>0}">
+                                    <img style="width: 100px" th:each="boardImage: ${dto.boardImages}"
+                                         th:src="|/view/s_${boardImage.uuid}_${boardImage.fileName}|">
+
+                                </div>
+                            </td>
+                            <td>[[${dto.writer}]]</td>
+                            <td>[[${#temporals.format(dto.regDate,'yyyy-MM-dd HH:mm:ss')}]]</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <!--페이징-->
+                    <div class="float-end">
+                        <ul class="pagination flex-wrap">
+                            <li class="page-item" th:if="${responseDTO.prev}">
+                                <a class="page-link" th:data-num="${responseDTO.start - 1}">Previous</a>
+                            </li>
+
+                            <!--                            페이지 번호 표시, 10개 임의로 표기-->
+<!--                            <th:block th:each="i:${#numbers.sequence(responseDTO.start,responseDTO.end)}">-->
+
+<!--                                <li th:class="${responseDTO.page == i }?'page-item active':'page-item'">-->
+<!--                                    <a class="page-link" data-num="${i}" href="#">[[${i}]]</a></li>-->
+<!--                            </th:block>-->
+
+                            <th:blcok th:each="i:${#numbers.sequence(responseDTO.start,responseDTO.end)}">
+                                <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
+                                    <a class="page-link"
+                                       th:data-num="${i}">[[${i}]]</a>
+                                </li>
+                            </th:blcok>
+
+                            <li class="page-item" th:if="${responseDTO.next}">
+                                <a class="page-link" th:data-num="${responseDTO.end + 1}">Next</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--페이징-->
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+<!--끝 나는 부분 layout:fragment="content"-->
+
+
+<!--자바스크립트 추가하는 영역-->
+<script layout:fragment="javascript" th:inline="javascript">
+
+    // 페이징 이동 이벤트 처리.
+    document.querySelector(".pagination").addEventListener("click",
+        function (e) {
+            e.preventDefault()
+            e.stopPropagation()
+            // a 태그에 접근 할려면, 해당 요소 선택자 필요.
+            const target = e.target
+            //  a 태그 인경우에 이벤트 리스너 동작을하고,
+            // a 태그 가 아니면, 이벤트 처리 안함.
+            if (target.tagName !== "A") {
+                return
+            }
+            const num = target.getAttribute("data-num")
+
+            // 백틱, 숫자 키보드 1번 왼쪽에 보면.
+            //  기존 페이지 이동해서,
+            // 폼의 정보를 이용해서 이동.
+            const formObj = document.querySelector("form")
+            // 자바스크립트에서, 백틱 안에서, 문자열 구현하기가 쉽다.
+            formObj.innerHTML += `<input type="hidden" name="page" value="${num}">`
+            formObj.submit()
+
+
+        }, false)
+
+    //글작성, 수정, 삭제 여부를 목록 화면에서 , 모달창에 결과 화면 출력
+    const result = [[${result}]]
+
+    // alert -> 모달창으로 교체 작업.
+    const modal = new bootstrap.Modal(document.querySelector(".modal"))
+
+    if(result){
+        // alert(result)
+        modal.show()
+    }
+
+</script>
+
+</body>
+</html>
