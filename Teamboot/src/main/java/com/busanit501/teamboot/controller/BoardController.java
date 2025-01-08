@@ -38,7 +38,7 @@ import java.util.Map;
 public class BoardController {
 
     // 물리 저장소 경로를 불러오기.
-    @Value("${com.busanit501.upload.path}")
+    @Value("C:\\upload\\springTest")
     private String uploadPath;
 
     private final BoardService boardService;
