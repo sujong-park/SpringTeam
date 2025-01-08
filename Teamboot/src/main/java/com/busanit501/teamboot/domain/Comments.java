@@ -1,9 +1,6 @@
 package com.busanit501.teamboot.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,19 +9,22 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-//@ToString(exclude ="imageSet")
+@AllArgsConstructor
 public class Comments extends BaseEntity {
 
-    @Id // PK, 기본키,
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long commentId;
+    private Long commentsId;
 
-    private Long postId;
+    @ManyToOne
+//    @JoinColumn(name = "community_id", nullable = false)
+    private Community community;
 
-    private Long userId;
+    @ManyToOne
+//    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
+//    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
-
 }
