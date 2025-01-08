@@ -4,13 +4,317 @@
 <body>
 <!-- content -->
 <div layout:fragment="content">
-asdasd
+    <div id="galleryReadContainer" class="readContainer">
+        <div class="readHead">
+            <a class="back" th:href="|@{/gallery/list}?${link}|">
+                <img th:src="@{/images/left_arrow.svg}">
+            </a>
+            <a class="update" th:href="|@{/gallery/update}?galleryId=${dto.galleryId}&${link}|">수정하기</a>
+        </div>
+
+        <div class="imgContainer" th:if="${dto.fileNames != null && dto.fileNames.size()>0}">
+            <div class="img" th:each="fileName: ${dto.fileNames}">
+                <img th:src="|/view/${fileName}|">
+            </div>
+        </div>
+
+        <div class="txtContainer">
+            [[${dto.content}]]
+        </div>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/js/reply.js"></script>
 </div>
 <!-- content -->
 
 
 <!-- javascript -->
+
 <script layout:fragment="javascript" th:inline="javascript">
+
+    // 수정폼으로 이동하기.
+    // 이부분 오류 발생해서, 수정하기,
+    // document.querySelector(".submitBtn").addEventListener("click",function (e) {
+    //         // 수정폼으로 가야함. 그러면, 필요한 준비물 tno 번호가 필요함
+    //         self.location = "/board/update?galleryId=" + [[${dto.galleryId}]] + "&" + [[${pageRequestDTO.link}]]
+    //             , false
+    //     })
+
+    // 현재 로그인한 유저 표시
+    // 1/2 목요일 여기서부터
+    const currentUser = [[${#authentication.principal.username}]]
+    console.log("currentUser : " + currentUser)
+    // 댓글 작성자와 현재 유저 일치 여부.
+    let hasAuth = false
+
+
+    // 비동기 함수, 테스트 작업.
+    // 순서2, 현재 게시글의  galleryId 번호를 알아야 함
+    const galleryId = [[${dto.galleryId}]]
+    // 함수 실행 해보기.
+    console.log("galleryId : " + galleryId)
+    console.log("get 함수 실행1: ")
+    get(galleryId)
+
+    // 함수 정의,
+    // 주의사항, reply.js , 통신 이용해서, 데이터를 전달하는 업무, 백
+    // read.html,  받아온 데이터를 업데이트를 하는 역할. 화면 그려주는 역할. 프론트  react.jsx
+
+    // 순서3, 화면에 출력하는 역할,
+    function printReplies(page, size, goLast) {
+        // 비동기 함수를 호출하게 되면, 호출된 데이터의 성공 여부에 따라서,
+        // 성공시, then  절 받아서 처리,
+        // 실패시, catch 절 받아서 처리.
+        // 순서4, 서버로 부터 넘어온 데이터를, 댓글 목록 출력하는 함수에 전달하는 역할
+        getList({galleryId, page, size, goLast}) // 비동기로 함수를 사용함.
+            .then( // 성공하면 동작할 영역
+                // 연습용 콘솔 출력,
+                // data => console.log(data)
+                // 성공하면, data , 매개변수에, 서버로 부터 받은 데이터 할당됨
+                data => {
+                    printList(data.dtoList) // 댓글 목록 출력하기.
+                    printPages(data)// 댓글 페이징 출력하기.
+                }
+            )
+            .catch(e => { // 실패하면 동작할 영역
+                    console.error(e)
+                }
+            )
+    }
+
+    // 함수 실행해보기.
+    // printReplies(1, 10)
+    console.log("printReplies 함수 실행2: ")
+    // 마지막 댓글 페이지로 이동 테스트
+    printReplies(1, 10)
+
+
+    // 비동기 함수 이용해서, 댓글 목록 출력 작업해보기.
+    // 순서5, 화면에 출력할 태그의 요소를 선택
+    const replyList = document.querySelector('.replyList')
+    const replyPaging = document.querySelector('.replyPaging')
+
+    // 순서6, 댓글을 출력하는 기능
+    // 함수 작성, dtoList: 서버로 부터 받아온 댓글의 목록(페이징 처리가 된 목록)
+    function printList(dtoList) {
+        // innerHTML, 동적 태그를 생성해서 추가할 예정.
+        // HTML 태그는 문자열로 작성,
+        // 임시로 담아둘 문자열 변수 생성,
+        let str = ""
+        if (dtoList && dtoList.length > 0) {
+            for (const dto of dtoList) {
+                str += `
+               <li class="list-group-item d-flex replyItem">
+               <span class="col-2">${dto.rno}</span>
+               <span class="col-6" data-rno="${dto.rno}">${dto.replyText}</span>
+               <span class="col-2">${dto.replyer}</span>
+               <span class="col-2">${dto.regDate}</span>
+               `
+            }
+        }
+        replyList.innerHTML = str
+    }
+
+    // 페이징 목록 처리,
+    // 순서7, 댓글의 페이징 번호를 출력하는 기능
+    //  페이징 준비물이, data 객체 안에 다 들어가 있다.
+    // page, size, next, prev, total, start, end 다 있음.
+    function printPages(data) {
+        let pageStr = ''
+        // 이전페이지 여부
+        if (data.prev) {
+            pageStr += `<li class="page-item"><a class="page-link"
+            data-page="${data.start - 1}">이전</a></li>
+             `
+        }
+        // 페이지 번호를 출력, 보통 10개씩 출력중.
+        for (let i = data.start; i <= data.end; i++) {
+            pageStr += `
+            <li class="${data.page == i}?'page-item active':'page-item'">
+                                    <a class="page-link"
+                                       data-page="${i}">${i}</a>
+                                </li>
+            `
+        }
+
+        // 다음 페이지 여부
+        if (data.next) {
+            pageStr += `<li class="page-item"><a class="page-link"
+            data-page="${data.end + 1}">다음</a></li>
+             `
+        }
+        replyPaging.innerHTML = pageStr
+    }
+
+    // 페이징 번호 이벤트 핸들러 추가.
+    // 1) data-page=1 , 번호를 활용하기.
+    // 페이징 번호 화면 구성 <ul> : 고정 -> <li> : 동적 변경
+    // ul 태그 기준으로해서, 하위에 자식 태그에 접근하자.
+    let page = 1
+    let size = 10
+
+    replyPaging.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const target = e.target
+
+        // a 태그가 아니면, 이벤트 처리를 안합니다.
+        if (!target || target.tagName != 'A') {
+            return
+        }
+
+        // a 태그이고, 작업 계속 진행함.
+        const pageNum = target.getAttribute("data-page")
+        page = pageNum
+        printReplies(page, size)
+
+    }, false)
+
+
+    // 댓글 등록 버튼 이벤트 처리 작업, 모달 창 show/hide
+    const registerModal = new bootstrap.Modal(document.querySelector(".registerModal"))
+    // 나머지 , 화면 요소를 미리 , 재사용하기 위해서, 변수에 할당 해놓기.
+    const registerBtn = document.querySelector(".registerBtn")
+    const registerCloseBtn = document.querySelector(".registerCloseBtn")
+    const replyText = document.querySelector(".replyText")
+    const replyer = document.querySelector(".replyer")
+
+    // addReplyBtn 요소 클릭시, 모달창 띄우기
+    document.querySelector(".addReplyBtn").addEventListener("click",
+        function (e) {
+            registerModal.show()
+        })
+    //취소 할 경우, hide
+    registerCloseBtn.addEventListener("click",
+        function (e) {
+            registerModal.hide()
+        })
+
+    //댓글 등록 , 로직 처리, 이벤트 추가.
+    registerBtn.addEventListener("click", function (e) {
+        // 댓글의 내용과, 작성자를 가져와서, 객체에 담기.
+        const replyObj = {
+            galleryId: galleryId,
+            replyText: replyText.value,
+            replyer: replyer.value
+        }
+        addReply(replyObj).then(
+            result => {
+                alert("댓글 작성 번호: " + result.rno)
+                registerModal.hide()
+                replyText.value = ''
+                // replyer.value = ''
+                // 댓글 작성후, 마지막 댓글 페이지 이동
+                printReplies(1, 10, true)
+            }
+        )
+            .catch(e => {
+                alert("예외가 발생함")
+            })
+    }, false)
+
+
+    // 댓글 수정 모달창 띄우기, 이벤트 처리, 댓글 내용을 클릭시 띄우기.
+    const updateModal = new bootstrap.Modal(document.querySelector(".updateModal"))
+    // 나머지 , 화면 요소를 미리 , 재사용하기 위해서, 변수에 할당 해놓기.
+    const updateBtn = document.querySelector(".updateBtn")
+    const replyHeader = document.querySelector(".replyHeader")
+    const updateCloseBtn = document.querySelector(".updateCloseBtn")
+    const updateReplyText = document.querySelector(".updateReplyText")
+    const updateReplyer = document.querySelector(".updateReplyer")
+    const deleteBtn = document.querySelector(".deleteBtn")
+
+    // 이벤트 처리, 댓글 클릭시, 수정 모달창 띄우기.
+    replyList.addEventListener("click", function (e) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        const target = e.target
+
+        // span 태그가 아니면, 이벤트 처리를 안합니다.
+        if (!target || target.tagName != 'SPAN') {
+            return
+        }
+
+        // span 태그이고, 작업 계속 진행함.
+        const rno = target.getAttribute("data-rno")
+        console.log("클릭시 rno  가져오기 확인 : " + rno)
+
+        // rno 가 없다면, 이벤트 처리 안합니다.
+        if (!rno) {
+            return;
+        }
+        // rno 있으니, 추가 작업 계속함.
+        getReply(rno).then(reply => {
+            console.log("하나 조회 : replyDTO : " + reply)
+            // 모달 창 화면에 , 조회한 댓글 내용과, 작성자 표기 , 주입.
+            replyHeader.innerHTML = reply.rno
+            updateReplyText.value = reply.replyText
+            updateReplyer.value = reply.replyer
+            updateModal.show()
+            // 댓글 작성자와 현재 유저 일치 여부.
+            hasAuth = currentUser === reply.replyer
+        })
+            .catch(e => alert("댓글 추가 예외 발생함"))
+    }, false)
+
+    //댓글 수정, 로직 처리,
+    updateBtn.addEventListener("click", function (e) {
+
+        // 댓글 작성자와 현재 유저 일치시 처리 가능.
+        if(!hasAuth){
+            alert("댓글 작성자만 수정 가능합니다.")
+            updateModal.hide()
+            return
+        }
+
+        //변경된 댓글 내용과, 작성자를 가져오기,
+        const replyObj = {
+            galleryId: galleryId,
+            rno: replyHeader.innerHTML,
+            replyText: updateReplyText.value,
+            replyer: updateReplyer.value
+        }
+        console.log("replyHeader.innerHTML : " + replyHeader.innerHTML)
+
+        // 비동기 통신 이용해서, 성공시, 실패시 나눠서 작업.
+        updateReply(replyObj).then(result => {
+            alert(result.rno + "번 댓글 수정 완료 ")
+            updateReplyText.value = ''
+            updateModal.hide()
+            printReplies(page, size)
+        })
+            .catch(e => {
+                alert("댓글 수정 실패")
+            })
+    }, false)
+
+    // 삭제 로직 처리 추가.
+    deleteBtn.addEventListener("click", function (e) {
+
+        // 댓글 작성자와 현재 유저 일치시 처리 가능.
+        if(!hasAuth){
+            alert("댓글 작성자만 삭제 가능합니다.")
+            updateModal.hide()
+            return
+        }
+
+        const rno = replyHeader.innerHTML
+        console.log("replyHeader.innerHTML : " + replyHeader.innerHTML)
+        console.log("rno 확인 : " + rno)
+
+        // 비동기 통신 이용해서, 성공시, 실패시 나눠서 작업.
+        deleteReply(rno).then(result => {
+            alert(result.rno + "번 댓글 삭제 완료 ")
+            updateModal.hide()
+            printReplies(page, size, true)
+        })
+            .catch(e => {
+                alert("댓글 삭제 실패")
+            })
+    }, false)
 
 </script>
 <!-- javascript -->

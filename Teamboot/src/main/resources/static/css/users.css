@@ -65,10 +65,25 @@
 .uploadResult li {flex: none; display: flex; align-items: center; justify-content: center; position: relative; width: 450px; height: 300px; border-radius: 8px; border: 0; background: url(/images/img_empty.svg) no-repeat center center #f5f5f5;}
 .uploadResult li .uploadDelete {position: absolute; top: 15px; right: 15px; width: 25px; height: 25px; padding: 0; background: url("/images/closed.svg") no-repeat center center; background-size: 100%;}
 
-.form-group .input-group .input > div > input#uploadFiles {
-    background: #F5F5F5;
-    border: none;
-    font-family: "Noto Sans KR", Arial, Helvetica, sans-serif;
-    font-size: 15px;
+.form-group .input-group .input > div > #uploadFiles {line-height: 50px;}
+
+.form-group .input-group .input > div > #uploadFiles + label::-webkit-scrollbar {display: none}
+
+
+/* #galleryReadContainer */
+#galleryReadContainer {}
+#galleryReadContainer .imgContainer .img {
+    min-height: 350px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 0 0 10px;
 }
+
+
+
+
+
+
+
+
 

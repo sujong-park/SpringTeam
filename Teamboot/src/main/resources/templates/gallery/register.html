@@ -6,15 +6,14 @@
 >
 <body>
 <div layout:fragment="content">
-    <div class="profileContent contentContainer">
+    <div class="registerContainer">
         <form id="registerForm" method="post" action="/gallery/register">
             <div class="form-group">
                 <div class="input-group">
                     <div class="input">
-                        <label>이미지</label>
+                        <div class="title">이미지</div>
                         <div>
-                            <input type="file" name="files" id="uploadFiles" multiple>
-                            <label for="uploadFiles" class="input">a</label>
+                            <input type="file" name="files" id="uploadFiles" class="input" multiple>
                             <button type="button" class="btn btn-primary uploadBtn">업로드하기</button>
                         </div>
                     </div>
@@ -31,9 +30,9 @@
             <div class="form-group">
                 <div class="input-group">
                     <div class="input">
-                        <label>내용</label>
+                        <div class="title">내용</div>
                         <div>
-                            <textarea type="text" class="form-control col-sm-5" id="content" name="content" rows="5"></textarea>
+                            <textarea type="text" id="content" name="content" rows="5"></textarea>
                         </div>
                     </div>
                 </div>
@@ -85,6 +84,7 @@
     // 순서2,  첨부 파일 모달창에서, 파일 추가시 로직.
     document.querySelector(".uploadBtn").addEventListener("click",
         function (e){
+
             const formObj = new FormData();
             // input 태그에서 이름 files의 요소를 선택.
             const fileInput = document.querySelector("input[name='files']")

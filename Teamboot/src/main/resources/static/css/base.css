@@ -59,7 +59,7 @@ textarea {width: 100%; height: 250px; padding: 20px; background: #F5F5F5; font-f
 .form-group {margin: 0 0 30px;}
 .form-group .input-group {display: flex; gap: 10px; margin: 0 0 10px;}
 .form-group .input-group .input {flex: 1;}
-.form-group .input-group .input > label {display: block; font-size: 15px; font-weight: 600; color: #A5A5A5; margin: 0 0 10px;}
+.form-group .input-group .input > .title {display: block; font-size: 15px; font-weight: 600; color: #A5A5A5; margin: 0 0 10px;}
 .form-group .input-group .input > div {display: flex; gap: 10px;}
 .form-group .input-group .input > div > input {width: auto; flex: 1;}
 .form-group .input-group .input > div button {width: 100px; color: #fff; background: #000;}
@@ -159,24 +159,30 @@ textarea {width: 100%; height: 250px; padding: 20px; background: #F5F5F5; font-f
 
 .contentContainer {}
 @media (max-width: 1440px) {
-    #contentContainer {padding: 0 50px;}
+    .contentContainer {padding: 0 50px;}
 }
 
 
 
 /* register-form */
-.register-form {max-width: 680px; padding: 15px;}
+.registerContainer {width: 100%; max-width: 680px; padding: 15px; margin: auto;}
 
 
 
 
 /* read-form */
-.register-form {max-width: 680px; padding: 15px;}
+.readContainer {width: 100%; max-width: 680px; padding: 15px; margin: auto;}
+.readContainer .readHead {display: flex; align-items: center; justify-content: space-between; margin: 0 0 30px;}
+.readContainer .readHead a.back {width: 20px; height: 20px;}
+.readContainer .readHead .update {line-height: 35px;
+    padding: 0 15px;
+    background: #F5F5F5;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 10px 0 0;}
 
-
-
-
-
+.txtContainer {margin: 50px 0; font-size: 14px; line-height: 1.6;}
 
 
 

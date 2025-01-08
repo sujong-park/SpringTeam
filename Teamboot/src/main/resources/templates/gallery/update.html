@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="www.thymeleaf.org"
+      layout:decorate="~{layout/base.html}">
+<body>
+<!-- content -->
+<div layout:fragment="content">
+    <div class="registerContainer">
+        <form id="f1" method="post" th:action="@{/gallery/update}">
+            <input type="hidden" name="keyword2" th:value="${pageRequestDTO.keyword}">
+            <input type="hidden" name="page2" th:value="${pageRequestDTO.page}">
+            <input type="hidden" name="type2" th:value="${pageRequestDTO.type}">
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input">
+                        <div class="title">이미지</div>
+                        <div>
+                            <input type="file" name="files" id="uploadFiles" class="input" multiple>
+                            <button type="button" class="btn btn-primary uploadBtn">업로드하기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <ul class="uploadResult">
+                    <th:block th:each="fileName : ${dto.fileNames}">
+                        <li class="card" th:with="arr = ${fileName.split('_')}">
+                            <div class="uploadDelete" th:onclick="removeFile([[${arr[0]}]],[[${arr[1]}]],this)"></div>
+                            <img th:src="|/view/s_${fileName}|" th:data-src="${fileName}">
+                        </li>
+                    </th:block>
+                </ul>
+            </div>
+            <div class="form-group">
+                <div class="uploadHidden">
+                    <!-- 첨부한 이미지의 요소를 첨부할 예정. 서버 전달용이라서, -->
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input">
+                        <div class="title">내용</div>
+                        <div>
+                            <textarea type="text" id="content" name="content" rows="5">[[${dto.content}]]</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" class="form-control" id="writer" name="writer" th:value="${dto.writer}" readonly>
+            <input type="hidden" class="form-control" id="regDate" name="regDate"
+                   th:value="${#temporals.format(dto.regDate,'yyyy-MM-dd HH:mm:ss')}" disabled>
+            <input type="hidden" class="form-control" id="modDate" name="modDate"
+                   th:value="${#temporals.format(dto.modDate,'yyyy-MM-dd HH:mm:ss')}" disabled>
+
+            <div class="btn-box">
+                <button type="submit" class="btn btn-gray modBtn">수정하기</button>
+                <button type="button" class="btn btn-dark deleteBtn">삭제하기</button>
+            </div>
+        </form>
+    </div>
+
+
+    <!--    서버에 비동기 통신 지원하는 도구, axios 필요. -->
+    <!--    업로드 정의한 함수 필요-->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/js/upload.js"></script>
+</div>
+<!-- content -->
+
+
+<!-- javascript -->
+<script layout:fragment="javascript" th:inline="javascript">
+
+    // 유효성 체크 오류 발생시, alert 경고창 알려주기.
+    // 서버에서 오류가 발생시, 전달한 키 : errors , 받아서, 처리하기.
+    const errors = [[${errors}]]
+    console.log(errors)
+
+    let errorMsg = ''
+    if (errors) {
+        for (let i = 0; i < errors.length; i++) {
+            errorMsg += `${errors[i].field}는 ${errors[i].code} \n`
+        }
+        alert(errorMsg)
+    }
+
+    // 추가, 수정폼 요소 전역 설정.
+    const formObj = document.querySelector("#f1")
+    const link = [[${pageRequestDTO.getLink()}]]
+
+    //삭제시, 폼안에 있는 내용 재사용하기.
+    // 추가 작업.
+    document.querySelector(".deleteBtn").addEventListener("click",
+        function (e) {
+            const formObj = document.querySelector("form")
+
+            e.preventDefault()
+            e.stopPropagation() // 상위 태그로 전파 방지
+
+            // 화면에 보이는 첨부 이미지를 포함해서 전달.
+            // 기존에 만든 함수 재사용
+            appendFileData()
+            // 화면에 안보이는 첨부 이미지를 form 태그에 추가.
+            // 추가.
+            appendNotShowData()
+
+            formObj.action = "/board/delete"
+            formObj.method = "post"
+
+            formObj.submit()
+        }, false)
+
+
+    // 글작성에서 사용했던 이벤트 리스너를 재사용.
+    // 파일 업로드 작업
+    // 순서1, 첨부 파일 업로드 모달창 띄우기.
+
+    // 순서2,  첨부 파일 모달창에서, 파일 추가시 로직.
+    document.querySelector(".uploadBtn").addEventListener("click",
+        function (e) {
+            const formObj = new FormData();
+            // input 태그에서 이름 files의 요소를 선택.
+            const fileInput = document.querySelector("input[name='files']")
+
+            console.log(fileInput.files)
+
+            // 선택된 파일들에서, 파일 객체 뽑아서 전달해주기.
+            for (let i = 0; i < fileInput.files.length; i++) {
+                formObj.append("files", fileInput.files[i])
+            }
+
+            console.log("formObj " + formObj)
+
+            // axios 이용해서, 비동기 통신 하기.
+            uploadToServer(formObj).then(
+                result => {
+                    // console.log(result)
+                    // 섬네일 이미지를 표시하는 부분에 추가.
+                    // 함수를 만들어서, 출력하는 기능 추가.
+                    //, result : 서버에 이미지 파일을 업로드 후,
+                    // uuid_파일명 형식의 리스트
+                    // uploadResult , 하나의 이미지 파일명을 의미.
+                    for (const uploadResult of result) {
+                        console.log("uploadResult : " + uploadResult)
+                        console.log("uploadResult.uuid : " + uploadResult.uuid)
+                        console.log("uploadResult.fileName : " + uploadResult.fileName)
+                        console.log("uploadResult.link : " + uploadResult.link)
+                        // showUploadFile , 임의의 함수
+                        showUploadFile(uploadResult)
+                    }
+                }
+            ).catch(e => {})
+        }, false)
+
+    // 순서3
+    // 섬네일 이미지를 출력하는 기능.showUploadFile
+    // 결과 화면을 출력할 요소를 지정.
+    const uploadResult = document.querySelector(".uploadResult")
+
+    function showUploadFile({uuid, fileName, link}) {
+        const str = `
+        <li class="card">
+            <div class="uploadDelete" onclick="javascript:removeFile('${uuid}','${fileName}',this)"></div>
+            <img src="/view/${link}" data-src="${uuid+"_"+fileName}">
+        </li>
+        `
+        uploadResult.innerHTML += str
+    }
+
+
+    // 수정시, 주의,
+    // 섬네일 이미지를 삭제시, 실제로 삭제 하는게 아니라,
+    // 삭제할 리스트에 추가하기.
+    // 실제로, 글 수정할 때, 첨부 이미지만 생각해보기.
+    // 기존 이미지 (1.jpg,2.jpg,3.jpg)3장,
+    // 수정시, 기존 이미지 (3.jpg)1장 제거, 2장 추가. (4.jpg)(5.jpg)
+    // 새로 업로드 해야할 첨부 이미지 목록 , (1.jpg)(2.jpg)(4.jpg)(5.jpg)
+    // 새로 업로드 시, 기존 이미지를 다 지우고, 새로 업로드 하니까.
+    // 제거 해야할 첨부 이미지 : (3.jpg) -> 1) 물리 저장소 제거,
+
+    //최종으로 삭제할 첨부 파일 목록
+    const removeFileList = []
+
+
+    function removeFile(uuid, fileName, obj) {
+        // yes -> 계속 삭제 진행,
+        // no -> 함수 나가기.
+        if (!confirm("파일을 삭제하시겠습니까?")) {
+            return
+        }
+        console.log("uuid : " + uuid)
+        console.log("fileName : " + fileName)
+        console.log("obj : " + obj)
+        console.log("removeFileList : " + removeFileList)
+
+
+        // 삭제할 명단에 추가하기
+        removeFileList.push({uuid, fileName})
+        // 화면 상에서 카드 요소를 제거하기.
+        const targetDiv = obj.closest(".card")
+        targetDiv.remove()
+
+    }
+
+    //수정 하기 버튼 클릭시, 이벤트 작업.
+    document.querySelector(".modBtn").addEventListener("click", function (e) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        formObj.action = `/gallery/update?${link}`
+
+        // 첨부파일을 히든으로 추가., 정의해야 함.
+        appendFileData()
+
+        // 삭제 대상 파일 삭제하는 함수 정의,
+        callRemoveFiles()
+
+        formObj.method = 'post'
+        formObj.submit()
+    })
+
+    // 추가된 파일 이미지를 히든으로 추가해주는 함수.
+    function appendFileData() {
+        //  히든으로 추가된 첨부 이미지
+        const target = document.querySelector(".uploadHidden")
+        // 추가할 이미지들의 모든 파일
+        const uploadFiles = uploadResult.querySelectorAll("img")
+
+        // 첨부할 문자열, 태그를 저장할 변수 선언.
+        let str = ''
+
+        for (let i = 0; i < uploadFiles.length; i++) {
+            const uploadFile = uploadFiles[i]
+            const imgLink = uploadFile.getAttribute("data-src")
+// 서버에서, BoardDTO에서, 받는 매개변수 , private List<String> fileNames;
+            str += `<input type='hidden' name='fileNames' value="${imgLink}"/>`
+        }
+        target.innerHTML = str;
+    }
+
+    function callRemoveFiles() {
+        removeFileList.forEach(
+            ({uuid, fileName}) => {
+                removeFileToServer({uuid, fileName})
+            })
+    }
+
+    // 화면에 안보이는 첨부 이미지를 추가하는 작업.
+    // 삭제시, 서버에 전달할 때, 삭제할 파일이름이 필요하므로
+    function appendNotShowData() {
+        if (removeFileList.length == 0) {
+            return
+        }
+        const target = document.querySelector(".uploadHidden")
+        let str = ''
+
+        for (let i = 0; i < removeFileList.length; i++) {
+            // removeFileList, 객체를 요소로 가지는 리스트.
+            // 객체 구조 분해 할당.
+            const {uuid, fileName} = removeFileList[i]
+            str += `
+            <input type="hidden" name="fileNames" value="${uuid}_${fileName}" >
+            `
+        }
+        target.innerHTML += str;
+
+
+    }
+
+
+</script>
+
+<!-- javascript -->
+
+
+</body>
+</html>
