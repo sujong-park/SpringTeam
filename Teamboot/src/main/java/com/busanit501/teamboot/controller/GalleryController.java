@@ -87,13 +87,14 @@ public class GalleryController {
     }
 
     @GetMapping("/update")
-    public void update(Long galleryId, PageRequestDTO pageRequestDTO,
+    public void update(@AuthenticationPrincipal UserDetails user, Long galleryId, PageRequestDTO pageRequestDTO,
                        Model model) {
         GalleryDTO galleryDTO = galleryService.readOne(galleryId);
         model.addAttribute("dto", galleryDTO);
+        model.addAttribute("user", user);
     }
     @PostMapping("/update")
-    public String updatePost(@Valid GalleryDTO galleryDTO,
+    public String updatePost(@AuthenticationPrincipal UserDetails user, @Valid GalleryDTO galleryDTO,
                              BindingResult bindingResult,
                              PageRequestDTO pageRequestDTO,
                              String keyword2,String page2, String type2,
