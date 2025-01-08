@@ -21,4 +21,10 @@ public class HomeController {
         model.addAttribute("user", user);
 
     }
+
+    @GetMapping("/login")
+    public String login() {
+        return "redirect:/member/login";
+    }
+
 }
