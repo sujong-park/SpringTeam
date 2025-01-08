@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/base.html}">
+<head>
+    <title>중고장터 게시판</title>
+</head>
+<body>
+<div layout:fragment="content" class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-center flex-grow-1">중고장터</h2>
+        <a th:href="@{/community/register}" class="btn btn-primary small-btn">글쓰기</a>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+        <div class="col" th:each="community : ${communityPage.content}">
+            <div class="card h-100 shadow-sm">
+                <a th:href="@{/community/{id}(id=${community.communityId})}" class="text-decoration-none">
+                    <img th:src="${community.imageUrl != null ? community.imageUrl : '/img/default.png'}"
+                         class="card-img-top" alt="게시글 이미지"
+                         style="height: 180px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${community.title}">게시글 제목</h5>
+                        <p class="card-text" th:text="${community.content}">게시글 내용</p>
+                    </div>
+                </a>
+                <div class="card-footer">
+                    <small class="text-muted" th:text="${community.member != null ? community.member.address : '주소 미등록'}"></small>
+                </div>
+            </div>
+        </div>
+        <div class="col text-center" th:if="${communityPage.empty}">
+            <p>게시글이 없습니다.</p>
+        </div>
+    </div>
+
+    <!-- 페이징 -->
+    <ul class="pagination justify-content-center">
+        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+            <a class="page-link" th:href="@{/community/category/USEDITEMS(page=${currentPage - 1})}">이전</a>
+        </li>
+        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+            th:classappend="${i == currentPage} ? 'active'">
+            <a class="page-link" th:href="@{/community/category/USEDITEMS(page=${i})}" th:text="${i + 1}"></a>
+        </li>
+        <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+            <a class="page-link" th:href="@{/community/category/USEDITEMS(page=${currentPage + 1})}">다음</a>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

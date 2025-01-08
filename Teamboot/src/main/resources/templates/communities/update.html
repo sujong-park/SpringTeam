@@ -1,20 +1,107 @@
 <!doctype html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="www.thymeleaf.org"
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{layout/base.html}">
 <body>
-<!-- content -->
-<div layout:fragment="content">
-    <h1 style="text-align: center;">Communities Update</h1>
+<div layout:fragment="content" class="container mt-5">
+    <h2 class="mb-4">게시글 수정</h2>
+
+    <form id="editForm" th:object="${community}" th:data-id="${community.communityId}"
+          th:action="@{/community/edit/{id}(id=${community.communityId})}" method="post" enctype="multipart/form-data">
+
+        <!-- 숨은 필드로 현재 페이지 정보와 카테고리 전달 -->
+        <input type="hidden" name="page" th:value="${currentPage}">
+        <input type="hidden" name="category" th:value="${community.category}">
+        <input type="hidden" name="page" th:value="${currentPage != null ? currentPage : 0}">
+
+        <div class="mb-3">
+            <label for="title" class="form-label">제목</label>
+            <input type="text" class="form-control" id="title" th:field="*{title}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="content" class="form-label">내용</label>
+            <textarea class="form-control" id="content" th:field="*{content}" rows="5" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="category" class="form-label">카테고리</label>
+            <select class="form-select" id="category" th:field="*{category}">
+                <option value="FreeBoard">자유게시판</option>
+                <option value="EmergencyHospital">동물병원</option>
+                <option value="UsedItems">중고장터</option>
+            </select>
+        </div>
+
+        <img th:if="${community.imageUrl}" th:src="${community.imageUrl}" class="img-fluid mb-4" alt="첨부 이미지">
+
+        <div class="mb-3">
+            <label for="file" class="form-label">이미지 첨부</label>
+            <input type="file" class="form-control" id="file" name="file">
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-primary">수정 완료</button>
+            <button class="btn btn-danger" id="deleteBtn" th:data-id="${community.communityId}">삭제</button>
+        </div>
+    </form>
+
+    <!-- 🟩 JavaScript 코드 삽입 -->
+    <script>
+        // -------------------------수정------------------------------------
+        document.querySelector("#editForm").onsubmit = function(e) {
+            e.preventDefault();
+
+            const communityId = this.dataset.id;
+            const formData = new FormData(this);
+
+            // 카테고리 값 명시적으로 설정
+            const selectedCategory = document.querySelector("#category").value;
+            formData.set("category", selectedCategory);
+
+            fetch(`/community/edit/${communityId}`, {
+                method: "POST",
+                body: formData
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert("게시글이 수정되었습니다.");
+                        window.location.href = `/community/${communityId}`;
+                    } else {
+                        alert("수정 실패: " + response.statusText);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("오류가 발생했습니다.");
+                });
+        };
+
+        // 삭제 기능
+        document.querySelector("#deleteBtn").onclick = function(e) {
+            e.preventDefault();  // 폼 기본 제출 방지
+
+            const communityId = this.dataset.id;
+
+            if (confirm("정말 삭제하시겠습니까?")) {
+                fetch(`/community/delete/${communityId}`, {
+                    method: "DELETE"
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            alert("게시글이 삭제되었습니다.");
+                            window.location.href = "/community";  // 목록 페이지로 이동
+                        } else {
+                            alert("삭제 실패: " + response.statusText);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        alert("오류가 발생했습니다.");
+                    });
+            }
+        };
+    </script>
 </div>
-<!-- content -->
-
-
-<!-- javascript -->
-<script layout:fragment="javascript" th:inline="javascript">
-
-</script>
-<!-- javascript -->
-
-
 </body>
 </html>
