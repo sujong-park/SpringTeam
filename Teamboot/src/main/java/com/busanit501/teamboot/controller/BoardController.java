@@ -38,7 +38,7 @@ import java.util.Map;
 public class BoardController {
 
     // 물리 저장소 경로를 불러오기.
-    @Value("${com.busanit501.upload.path}")
+    @Value("C:\\upload\\springTest")
     private String uploadPath;
 
     private final BoardService boardService;
@@ -122,10 +122,11 @@ public class BoardController {
     // 그러면, 수정폼은 접근을해, 하지만, 로직 처리는 안해줄거야.
 
     @GetMapping("/update")
-    public void update(Long bno, PageRequestDTO pageRequestDTO,
+    public void update(@AuthenticationPrincipal UserDetails user, Long bno, PageRequestDTO pageRequestDTO,
                      Model model) {
         BoardDTO boardDTO = boardService.readOne(bno);
         model.addAttribute("dto", boardDTO);
+        model.addAttribute("user", user);
     }
 
     // principal.username : 로그인한 유저

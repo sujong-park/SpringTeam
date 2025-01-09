@@ -1,16 +1,16 @@
 package com.busanit501.teamboot.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,9 +22,9 @@ public class MatchingRoom extends BaseEntity {
     @Column(name = "room_id")
     private Long roomId;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "host_id", nullable = false)
-//    private User host;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mhost_id", nullable = false)
+    private Member mhost;
 
     @Column(nullable = false)
     private String title;
@@ -46,18 +46,19 @@ public class MatchingRoom extends BaseEntity {
 
     private String imageUrl;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id", nullable = false)
-//    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mid", nullable = false)
+    private Member member;
 //
-//    @OneToMany(mappedBy = "matchingRoom", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<RoomParticipant> participants = new ArrayList<>();
+    @OneToMany(mappedBy = "matchingRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<RoomParticipant> participants = new ArrayList<>();
 //
-//    public Long getCurrentParticipants() {
-//        return participants.stream()
-//                .filter(p -> p.getStatus() == RoomParticipant.ParticipantStatus.Accepted)
-//                .map(RoomParticipant::getUser)
-//                .distinct()
-//                .count();
-//    }
+   public Long getCurrentParticipants() {
+        return participants.stream()
+                .filter(p -> p.getStatus() == RoomParticipant.ParticipantStatus.Accepted)
+                .map(RoomParticipant::getMember)
+                .distinct()
+                .count();
+    }
 }
