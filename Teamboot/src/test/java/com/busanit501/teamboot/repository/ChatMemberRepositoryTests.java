@@ -24,4 +24,13 @@ public class ChatMemberRepositoryTests {
         Member member = result.get();
         log.info(member);
     }
+
+    @Test
+    @Transactional
+    public void searchCreateChatRoomUser() {
+        String keyword = "";
+        String userId = "test5";
+        List<Member> members =  chatMemberRepository.searchCreateUserList(keyword, userId);
+        log.info("조회된 유저 정보 :" + members);
+    }
 }

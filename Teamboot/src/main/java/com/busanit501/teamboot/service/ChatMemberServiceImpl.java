@@ -36,4 +36,21 @@ public class ChatMemberServiceImpl implements ChatMemberService {
         }
         return dtoList;
     }
+
+    @Override
+    public List<MemberDTO> searchCreateUser(String keyword, String userId) {
+        log.info("searchInviteUser keyword: " + keyword);
+        log.info("searchInviteUser roomId: " + userId);
+        List<Member> members = chatMemberRepository.searchCreateUserList(keyword, userId);
+        log.info("searchInviteUser members: " + members);
+        List<MemberDTO> dtoList = new ArrayList<>();
+        for(Member member : members){
+            MemberDTO dto = MemberDTO.builder()
+                    .mid(member.getMid())
+                    .name(member.getName())
+                    .build();
+            dtoList.add(dto);
+        }
+        return dtoList;
+    }
 }

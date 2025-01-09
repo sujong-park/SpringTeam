@@ -278,34 +278,43 @@
             </div>
         </div>
         <!--채팅방 생성모달-->
-        <div class="modal fade registerModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+        <div class="modal fade registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">채팅방 생성</h5>
+                        <h5 class="modal-title" id="registerModalLabel">채팅방 생성</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">방 이름</span>
-                            <input type="text" class="form-control title">
+                        <!-- 제목, 설명, 최대 인원 입력 -->
+                        <div class="mb-3">
+                            <label for="title" class="form-label">방 제목</label>
+                            <input type="text" class="form-control title" id="title" />
                         </div>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">설명</span>
-                            <input type="text" class="form-control description">
+                        <div class="mb-3">
+                            <label for="description" class="form-label">설명</label>
+                            <input type="text" class="form-control description" id="description" />
                         </div>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">최대인원</span>
-                            <input type="number" class="form-control maxParticipants">
+                        <div class="mb-3">
+                            <label for="maxParticipants" class="form-label">최대 인원</label>
+                            <input type="number" class="form-control maxParticipants" id="maxParticipants" />
+                        </div>
+                        <!-- 초대 유저 검색 및 선택 -->
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="createRoomSearchUser" placeholder="초대할 유저 검색" />
+                        </div>
+                        <div class="create-room-user-list overflow-auto" style="max-height: 200px;">
+                            <!-- 유저 목록이 동적으로 추가됩니다 -->
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary registerCloseBtn">취소</button>
-                        <button type="button" class="btn btn-primary registerBtn">생성</button>
+                        <button type="button" class="btn btn-primary registerBtn">방 생성</button>
+                        <button type="button" class="btn btn-secondary registerCloseBtn" data-bs-dismiss="modal">닫기</button>
                     </div>
                 </div>
             </div>
         </div>
+
 
         <!--채팅방 정보 모달-->
         <div class="modal fade roomInfoModal" tabindex="-1" aria-labelledby="roomInfoModalLabel" aria-hidden="true">
@@ -401,8 +410,9 @@
     <script src="/js/chatingRoom.js"></script>
 </div>
 <script layout:fragment="javascript" th:inline="javascript">
-    const currentUser = [[${#authentication.principal.username}]]
-    // 채팅방 생성
+    const currentUser = [[${#authentication.principal.username}]];  // 현재 유저 ID (변경하지 않음)
+
+    // 채팅방 생성 모달
     const registerModal = new bootstrap.Modal(document.querySelector(".registerModal"));
     const registerBtn = document.querySelector(".registerBtn");
     const registerCloseBtn = document.querySelector(".registerCloseBtn");
@@ -411,46 +421,133 @@
     const description = document.querySelector(".description");
     const maxParticipants = document.querySelector(".maxParticipants");
 
-    document.querySelector('#addButton').addEventListener('click',
-        function (e) {
-            console.log("방 추가 클릭")
-            registerModal.show()
-        })
+    // 유저 검색 및 렌더링
+    const userSearchInput = document.querySelector("#createRoomSearchUser");
+    const userListContainer = document.querySelector(".create-room-user-list");
+    let selectedUsers = [];
 
-    registerCloseBtn.addEventListener("click",
-        function (e) {
-            registerModal.hide()
-        })
+    // 유저 검색 이벤트
+    userSearchInput.addEventListener("input", async function () {
+        const keyword = userSearchInput.value.trim();
+        try {
+            const userList = await getUserListCreate(currentUser, keyword);
+            renderCreateRoomUserList(userList);
+        } catch (error) {
+            console.error("유저 검색 실패:", error);
+        }
+    });
 
-    registerBtn.addEventListener("click",
-        function (e) {
-            const chatingRoomDTO = {
-                hostId: currentUser,
-                title: title.value,
-                description: description.value,
-                maxParticipants: maxParticipants.value,
-                currentParticipants: 1,
-                status: "Open"
-            };
-            console.log("chatingRoomDTO : "+ chatingRoomDTO.roomId)
-            const chatRoomParticipantsDTO = {
-                senderId: currentUser,
-            };
+    // 유저 목록 렌더링
+    function renderCreateRoomUserList(userList) {
+        userListContainer.innerHTML = "";
 
-            const roomRegisterObj = {
-                chatingRoomDTO: chatingRoomDTO,
-                chatRoomParticipantsDTO: chatRoomParticipantsDTO
-            };
-            addRoom(roomRegisterObj)
-                .then(result => {
-                    alert("채팅방을 생성했습니다.");
-                    registerModal.hide();
-                    location.reload();
-                })
-                .catch(e => {
-                    alert("예외가 발생함");
-                });
+        if (userList.length === 0) {
+            userListContainer.innerHTML = '<p class="text-muted">검색 결과가 없습니다.</p>';
+            return;
+        }
+
+        userList.forEach(user => {
+            const userItem = document.createElement("div");
+            userItem.classList.add("user-item");
+            userItem.innerHTML = `
+            <input type="checkbox" id="user-${user.mid}" value="${user.mid}">
+            <label for="user-${user.mid}">${user.name}</label>
+        `;
+            userListContainer.appendChild(userItem);
         });
+
+        // 체크박스 선택 이벤트
+        userListContainer.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
+            checkbox.addEventListener("change", function () {
+                const userId = this.value;
+                if (this.checked) {
+                    console.log("선택한 유저 정보 :" + userId)
+                    selectedUsers.push(userId);
+                } else {
+                    console.log("선택해제한 유저 정보 :" + userId)
+                    selectedUsers = selectedUsers.filter(id => id !== userId);
+                }
+            });
+        });
+    }
+
+    document.querySelector('#addButton').addEventListener('click', function (e) {
+        console.log("방 추가 클릭");
+        registerModal.show();
+
+        // + 버튼 클릭 시, 빈 키워드로 유저 목록 조회
+        const keyword = '';  // 빈 문자열로 설정
+        getUserListCreate(currentUser, keyword)
+            .then(userList => {
+                renderCreateRoomUserList(userList);  // 유저 목록 렌더링
+            })
+            .catch(error => {
+                console.error("유저 검색 실패:", error);
+            });
+    });
+
+    // 모달 닫기
+    registerCloseBtn.addEventListener("click", function (e) {
+        registerModal.hide();
+    });
+
+    // 방 생성 버튼 클릭 시
+    registerBtn.addEventListener("click", function (e) {
+        console.log("selectedUsers:", selectedUsers); // 선택된 사용자 리스트 확인
+
+        const maxParticipantsValue = parseInt(maxParticipants.value, 10); // 숫자로 변환
+        if (isNaN(maxParticipantsValue)) {
+            alert("최대 참여 인원 수를 올바르게 입력해주세요.");
+            return;
+        }
+
+        if (maxParticipantsValue < selectedUsers.length + 1) {
+            alert(maxParticipantsValue + "명 이상 선택했습니다.(선택한 인원 " + selectedUsers.length + "명)");
+            return;
+        }
+
+        const chatingRoomDTO = {
+            hostId: currentUser,
+            title: title.value,
+            description: description.value,
+            maxParticipants: maxParticipantsValue, // 숫자로 저장
+            currentParticipants: selectedUsers.length + 1,
+            status: "Open"
+        };
+
+        const chatRoomParticipantsDTO = [
+            ...selectedUsers.map(userId => ({
+                senderId: userId,
+            })),
+            { senderId: currentUser }
+        ];
+
+        const roomRegisterObj = {
+            chatingRoomDTO,
+            chatRoomParticipantsDTO
+        };
+
+        console.log("roomRegisterObj:", roomRegisterObj);
+
+        addRoom(roomRegisterObj)
+            .then(result => {
+                console.log("채팅방 생성 성공:", result);
+                alert("채팅방을 생성했습니다.");
+                registerModal.hide();
+                location.reload();
+            })
+            .catch(e => {
+                console.error("채팅방 생성 실패:", e);
+                alert("채팅방 생성 실패. 서버에 문제가 있습니다.");
+            });
+    });
+
+
+
+
+
+
+
 
     // 방 정보 모달
     const roomInfoModal = new bootstrap.Modal(document.querySelector(".roomInfoModal"));
@@ -507,7 +604,6 @@
                 function (e){
                     const chatingRoomDTO = {
                         roomId:roomId,
-                        hostId: currentUser,
                         title: roomTitle,
                         description: roomDescription,
                         maxParticipants: maxParticipants,
@@ -759,9 +855,6 @@
     });
 
 
-
-
-
     // 유저 검색
     searchInput.addEventListener("input", function () {
         const keyword = searchInput.value.trim();
@@ -776,7 +869,7 @@
             return alert("채팅방을 먼저 선택해주세요.");
         }
         try {
-            const userList = await getUserList(currentRoomId, keyword);
+            const userList = await getUserListInvite(currentRoomId, keyword);
             console.log("받아온 유저 목록:", userList); // 디버깅
             renderUserList(userList);
         } catch (error) {

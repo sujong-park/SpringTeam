@@ -32,31 +32,73 @@ public class ChatingRoomServiceImpl implements ChatingRoomService {
     private ChatRoomParticipantsRepository chatRoomParticipantsRepository;
     private final ModelMapper modelMapper;
 
-    @Override
-    public long addChatingRoom(ChatingRoomDTO chatingRoomDTO, ChatRoomParticipantsDTO chatRoomParticipantsDTO) {
-        log.info("ChatingRoomServiceImpl chatingRoomDTO "+ chatingRoomDTO);
-        ChatingRoom chatingRoom = modelMapper.map(chatingRoomDTO, ChatingRoom.class);
+//    @Override
+//    public long addChatingRoom(ChatingRoomDTO chatingRoomDTO, ChatRoomParticipantsDTO chatRoomParticipantsDTO) {
+//        log.info("ChatingRoomServiceImpl chatingRoomDTO "+ chatingRoomDTO);
+//        ChatingRoom chatingRoom = modelMapper.map(chatingRoomDTO, ChatingRoom.class);
+//        ChatRoomParticipants roomParticipants = modelMapper.map(chatRoomParticipantsDTO, ChatRoomParticipants.class);
+//
+//        log.info("ChatingRoomServiceImpl chatingRoomDTO.getHostId(): "+ chatingRoomDTO.getHostId());
+//        Member host = chatMemberRepository.findByMid(chatingRoomDTO.getHostId())
+//                .orElseThrow(() -> new IllegalArgumentException("Invalid hostId: " + chatingRoomDTO.getHostId()));
+//
+//        chatingRoom.setHost(host);
+//        log.info("ChatingRoomServiceImpl chatingRoom: "+ chatingRoom);
+//        chatingRoom.setRoomId(null);
+//        // 매칭룸 저장
+//        ChatingRoom savedRoom = chatingRoomRepository.save(chatingRoom);
+//
+//        // RoomParticipants에 host 정보 추가
+//        roomParticipants.setChatRoom(savedRoom);
+//        roomParticipants.setSender(host);
+//
+//        // RoomParticipants 저장
+//        chatRoomParticipantsRepository.save(roomParticipants);
+//
+//        return savedRoom.getRoomId();
+//    }
+
+
+@Override
+@Transactional
+public long addChatingRoom(ChatingRoomDTO chatingRoomDTO, List<ChatRoomParticipantsDTO> chatRoomParticipantsDTOList) {
+    log.info("ChatingRoomServiceImpl chatingRoomDTO " + chatingRoomDTO);
+    ChatingRoom chatingRoom = modelMapper.map(chatingRoomDTO, ChatingRoom.class);
+
+    // Host 정보 처리
+    Member host = chatMemberRepository.findByMid(chatingRoomDTO.getHostId())
+            .orElseThrow(() -> new IllegalArgumentException("Invalid hostId: " + chatingRoomDTO.getHostId()));
+
+    chatingRoom.setHost(host);
+    log.info("ChatingRoomServiceImpl chatingRoom: " + chatingRoom);
+    chatingRoom.setRoomId(null);  // 방 ID를 null로 설정
+
+    // 매칭룸 저장
+    ChatingRoom savedRoom = chatingRoomRepository.save(chatingRoom);
+
+    log.info("ChatingRoomServiceImpl chatRoomParticipantsDTOList :" + chatRoomParticipantsDTOList);
+    // 여러 참여자 정보 처리
+    for (ChatRoomParticipantsDTO chatRoomParticipantsDTO : chatRoomParticipantsDTOList) {
         ChatRoomParticipants roomParticipants = modelMapper.map(chatRoomParticipantsDTO, ChatRoomParticipants.class);
-
-        log.info("ChatingRoomServiceImpl chatingRoomDTO.getHostId(): "+ chatingRoomDTO.getHostId());
-        Member host = chatMemberRepository.findByMid(chatingRoomDTO.getHostId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid hostId: " + chatingRoomDTO.getHostId()));
-
-        chatingRoom.setHost(host);
-        log.info("ChatingRoomServiceImpl chatingRoom: "+ chatingRoom);
-        chatingRoom.setRoomId(null);
-        // 매칭룸 저장
-        ChatingRoom savedRoom = chatingRoomRepository.save(chatingRoom);
-
-        // RoomParticipants에 host 정보 추가
         roomParticipants.setChatRoom(savedRoom);
-        roomParticipants.setSender(host);
+
+        // 참여자마다 sender를 설정 (호스트일 경우 host로 설정, 나머지는 senderId에 맞게 설정)
+        if (chatRoomParticipantsDTO.getSenderId().equals(chatingRoomDTO.getHostId())) {
+            roomParticipants.setSender(host);  // Host 정보 추가
+        } else {
+            Member participant = chatMemberRepository.findByMid(chatRoomParticipantsDTO.getSenderId())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid participantId: " + chatRoomParticipantsDTO.getSenderId()));
+            roomParticipants.setSender(participant);  // 참여자 정보 설정
+        }
 
         // RoomParticipants 저장
         chatRoomParticipantsRepository.save(roomParticipants);
-
-        return savedRoom.getRoomId();
     }
+
+    return savedRoom.getRoomId();
+}
+
+
 
 
 

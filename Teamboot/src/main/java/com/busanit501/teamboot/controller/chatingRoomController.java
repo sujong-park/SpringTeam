@@ -1,9 +1,6 @@
 package com.busanit501.teamboot.controller;
 
-import com.busanit501.teamboot.dto.ChatRoomRegisterDTO;
-import com.busanit501.teamboot.dto.ChatingRoomDTO;
-import com.busanit501.teamboot.dto.MemberDTO;
-import com.busanit501.teamboot.dto.MessageDTO;
+import com.busanit501.teamboot.dto.*;
 import com.busanit501.teamboot.service.ChatMemberService;
 import com.busanit501.teamboot.service.ChatingRoomService;
 import com.busanit501.teamboot.service.MemberService;
@@ -27,7 +24,7 @@ import java.util.Map;
 public class chatingRoomController {
     private final ChatingRoomService chatingRoomService;
     private final MessageService messageService;
-    private final ChatMemberService chatMemberService;
+    private final ChatMemberService chatMemberServiceme;
     // 채팅방 목록 조회
     @GetMapping("/roomList")
     public void roomList(@AuthenticationPrincipal UserDetails user
@@ -40,13 +37,28 @@ public class chatingRoomController {
         model.addAttribute("keyword", keyword);
     }
     //채팅방 추가
+//    @ResponseBody
+//    @PostMapping("/roomRegister")
+//    public void registerRoom(@RequestBody ChatRoomRegisterDTO chatRoomRegisterDTO) {
+//        log.info("chatingRoomController chatRoomRegisterDTO: " + chatRoomRegisterDTO.getChatingRoomDTO());
+//        chatingRoomService.addChatingRoom(chatRoomRegisterDTO.getChatingRoomDTO(),
+//                chatRoomRegisterDTO.getChatRoomParticipantsDTO());
+//    }
     @ResponseBody
     @PostMapping("/roomRegister")
-    public void registerRoom(@RequestBody ChatRoomRegisterDTO chatRoomRegisterDTO) {
-        log.info("chatingRoomController chatRoomRegisterDTO: " + chatRoomRegisterDTO.getChatingRoomDTO());
-        chatingRoomService.addChatingRoom(chatRoomRegisterDTO.getChatingRoomDTO(),
-                chatRoomRegisterDTO.getChatRoomParticipantsDTO());
+    public void registerRoom(@RequestBody ChatRoomAllRegisterDTO chatRoomAllRegisterDTO) {
+        log.info("chatRoomAllRegisterDTO: " + chatRoomAllRegisterDTO); // 전체 DTO 출력
+        log.info("chatingRoomDTO: " + chatRoomAllRegisterDTO.getChatingRoomDTO());
+        log.info("chatRoomParticipantsDTOList: " + chatRoomAllRegisterDTO.getChatRoomParticipantsDTO());
+        chatingRoomService.addChatingRoom(
+                chatRoomAllRegisterDTO.getChatingRoomDTO(),
+                chatRoomAllRegisterDTO.getChatRoomParticipantsDTO()
+        );
     }
+
+
+
+
     //매칭방 나가기
     @ResponseBody
     @PostMapping("/exit")
@@ -107,12 +119,23 @@ public class chatingRoomController {
     }
     //유저 조회
     @ResponseBody
-    @GetMapping("/userList/{roomId}")
+    @GetMapping("/userListCreate/{userId}")
+    public List<MemberDTO> getUserListCreate(@RequestParam(required = false, defaultValue = "") String keyword,
+                                       @PathVariable("userId") String userId){
+        log.info("키워드3 : " + keyword);
+        log.info("roomId : " + userId);
+        List<MemberDTO> list = chatMemberServiceme.searchCreateUser(keyword, userId);
+        log.info("초대가능한 유저 리스트 : " + list);
+        return list;
+    }
+    //유저 조회
+    @ResponseBody
+    @GetMapping("/userListInvite/{roomId}")
     public List<MemberDTO> getUserList(@RequestParam(required = false, defaultValue = "") String keyword,
                                        @PathVariable("roomId") long roomId){
         log.info("키워드3 : " + keyword);
         log.info("roomId : " + roomId);
-        List<MemberDTO> list = chatMemberService.searchInviteUser(keyword, roomId);
+        List<MemberDTO> list = chatMemberServiceme.searchInviteUser(keyword, roomId);
         log.info("초대가능한 유저 리스트 : " + list);
         return list;
     }

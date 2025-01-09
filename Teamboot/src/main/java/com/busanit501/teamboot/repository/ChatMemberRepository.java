@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.List;
 
 public interface ChatMemberRepository extends JpaRepository<Member, String> {
+    //채팅방에서 초대 할때, 조회하는 맴버 쿼리
     @Query(value = "SELECT m.* " +
             "FROM member m " +
             "WHERE m.mid NOT IN (SELECT rp.sender_id " +
@@ -16,6 +17,14 @@ public interface ChatMemberRepository extends JpaRepository<Member, String> {
             "AND m.name like concat('%', :keyword, '%') "
             ,nativeQuery = true)
     List<Member> searchInviteUserList(String keyword, long roomId);
+
+    //채팅방을 생성 할때, 조회하는 맴버 쿼리
+    @Query(value = "SELECT m.* " +
+            "FROM member m " +
+            "WHERE m.mid != :userId " +
+            "AND m.name like concat('%', :keyword, '%') "
+            ,nativeQuery = true)
+    List<Member> searchCreateUserList(String keyword, String userId);
 
     Optional<Member> findByMid(String mid);
 }

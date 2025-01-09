@@ -7,7 +7,8 @@ import java.util.List;
 
 public interface ChatingRoomService {
     //매칭룸생성()
-    long addChatingRoom(ChatingRoomDTO matchingRoomDTO, ChatRoomParticipantsDTO roomParticipantsDTO);
+//    long addChatingRoom(ChatingRoomDTO matchingRoomDTO, ChatRoomParticipantsDTO roomParticipantsDTO);
+    long addChatingRoom(ChatingRoomDTO chatingRoomDTO, List<ChatRoomParticipantsDTO> chatRoomParticipantsDTOList);
     //매칭룸업데이트
     void updateChatingRoom(ChatingRoomDTO matchingRoomDTO);
     void exitChatingRoom(ChatingRoomDTO matchingRoomDTO);
