@@ -6,7 +6,7 @@
 <div layout:fragment="content" class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="text-center flex-grow-1">커뮤니티</h2>
-        <a th:href="@{/community/register}" class="btn btn-primary">글쓰기</a>
+        <a th:href="@{/communities/register}" class="btn btn-primary">글쓰기</a>
     </div>
 
     <div class="list-group">
@@ -19,7 +19,7 @@
                 <div>
                     <div>
                         <!-- 제목에 링크 추가 -->
-                        <a th:href="@{/community/{id}(id=${communityWithComment.communityId}, page=${currentPage})}">
+                        <a th:href="@{/communities/{id}(id=${communityWithComment.communityId})}">
                             <strong th:text="'[' + ${communityWithComment.category} + '] ' + ${communityWithComment.title}"></strong>
                         </a>
                     </div>
@@ -40,14 +40,14 @@
     <nav aria-label="Page navigation" class="mt-4">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                <a class="page-link" th:href="@{/community(page=${currentPage - 1})}">이전</a>
+                <a class="page-link" th:href="@{/communities(page=${currentPage - 1})}">이전</a>
             </li>
             <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                 th:classappend="${i == currentPage} ? 'active'">
-                <a class="page-link" th:href="@{/community(page=${i})}" th:text="${i + 1}"></a>
+                <a class="page-link" th:href="@{/communities(page=${i})}" th:text="${i + 1}"></a>
             </li>
             <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
-                <a class="page-link" th:href="@{/community(page=${currentPage + 1})}">다음</a>
+                <a class="page-link" th:href="@{/communities(page=${currentPage + 1})}">다음</a>
             </li>
         </ul>
     </nav>
