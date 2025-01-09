@@ -40,7 +40,7 @@ public class CommentsServiceImpl implements CommentsService {
     public void deleteComment(Long commentsId, Member member) {
         Comments comments = commentRepository.findById(commentsId)
                 .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
-        if (!comments.getMember().getMemberid().equals(member.getMemberid())) {
+        if (!comments.getMember().getMid().equals(member.getMid())) {
             throw new SecurityException("삭제 권한이 없습니다.");
         }
         commentRepository.delete(comments);

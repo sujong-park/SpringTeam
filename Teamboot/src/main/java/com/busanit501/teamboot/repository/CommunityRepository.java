@@ -12,11 +12,11 @@ import org.springframework.stereotype.Repository;
 public interface CommunityRepository extends JpaRepository<Community, Long> {
 
     // 게시글 목록 조회 (User와 댓글 수 포함)
-    @Query("SELECT c, u, COUNT(ct) " +
+    @Query("SELECT c, m, COUNT(co.commentsId) " +
             "FROM Community c " +
-            "LEFT JOIN FETCH c.member u " +  // Member 정보 즉시 로딩
-            "LEFT JOIN Comments ct ON ct.community.communityId = c.communityId " +
-            "GROUP BY c, u")  // Member도 Group by에 추가
+            "LEFT JOIN c.member m " +
+            "LEFT JOIN c.comments co " +
+            "GROUP BY c, m")
     Page<Object[]> findAllWithMemberAndCommentsCount(Pageable pageable);
 
     Page<Community> findByCategory(Category category, Pageable pageable);

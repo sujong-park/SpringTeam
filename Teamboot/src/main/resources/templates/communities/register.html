@@ -7,7 +7,7 @@
 <div layout:fragment="content" class="container mt-5">
     <h1 class="mb-4">게시글 작성</h1>
 
-    <form id="communityForm" method="post" enctype="multipart/form-data" th:action="@{/community/register}">
+    <form method="POST" enctype="multipart/form-data" th:action="@{/communities/register}">
         <div class="mb-3">
             <label for="title" class="form-label">제목</label>
             <input type="text" class="form-control" id="title" name="title" required>
