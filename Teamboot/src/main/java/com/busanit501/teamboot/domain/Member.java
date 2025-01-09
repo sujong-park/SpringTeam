@@ -18,8 +18,6 @@ import java.util.Set;
 @ToString(exclude = "roleSet") // 회원 각각의 권한, 일반, 관리자
 public class Member extends BaseEntity {
     @Id
-    private Long Memberid;
-
     private String mid;
 
     private String mpw;
