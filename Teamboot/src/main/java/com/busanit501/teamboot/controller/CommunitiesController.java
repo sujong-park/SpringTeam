@@ -13,6 +13,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -59,11 +60,12 @@ public class CommunitiesController {
                                     @RequestParam("file") MultipartFile file,
                                     @AuthenticationPrincipal UserDetails userDetails) {
 
+        log.info("UserDetails: {}", userDetails);
         if (userDetails == null) {
             throw new IllegalStateException("로그인이 필요합니다.");
         }
 
-        Member member = memberRepository.findByEmail(userDetails.getUsername())
+        Member member = memberRepository.findByMid(userDetails.getUsername())
                 .orElseThrow(() -> new NoSuchElementException("로그인된 사용자가 존재하지 않습니다."));
 
         String imageUrl = null;
@@ -99,14 +101,15 @@ public class CommunitiesController {
 
         communityService.createCommunity(community);
 
-        return "redirect:/communities";
+        return "redirect:/communities/list";
     }
 
     // 게시글 목록 조회 (페이징)
-    @GetMapping
-    public String listCommunities(Model model,
-                                  @RequestParam(defaultValue = "0") int page,
-                                  @RequestParam(defaultValue = "10") int size) {
+    @GetMapping("/list")
+    public String listCommunitiesWithList(Model model,
+                                          @RequestParam(defaultValue = "0") int page,
+                                          @RequestParam(defaultValue = "10") int size) {
+        log.info("listCommunitiesWithList called with page: {}, size: {}", page, size);
         Pageable pageable = PageRequest.of(page, size);
         Page<CommunityWithCommentDTO> communityPage = communityService.getAllCommunity(pageable);
 
@@ -115,6 +118,7 @@ public class CommunitiesController {
         model.addAttribute("totalPages", communityPage.getTotalPages());
         return "communities/list";
     }
+
 
     // 게시글 상세 조회 (댓글 포함)
     @GetMapping("/{id}")
@@ -131,11 +135,11 @@ public class CommunitiesController {
         model.addAttribute("comments", comments);
         model.addAttribute("loggedInUserId", loggedInUserId);
 
-        return "communities/detail";
+        return "communities/read";
     }
 
     // 게시글 수정 페이지
-    @GetMapping("/edit/{id}")
+    @GetMapping("/update/{id}")
     public String editCommunityForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         Community community = communityService.getCommunityById(id);
 
@@ -145,18 +149,20 @@ public class CommunitiesController {
         }
 
         model.addAttribute("community", community);
-        return "communities/edit";
+        return "communities/update";
     }
 
     // 게시글 수정 처리
-    @PostMapping("/edit/{id}")
-    public String editCommunity(@PathVariable Long id,
-                                @ModelAttribute CommunityDTO communityDTO,
-                                @RequestParam(value = "file", required = false) MultipartFile file) {
+    @PostMapping("/update/{id}")
+    @ResponseBody
+    public String editCommunity(
+            @PathVariable Long id,
+            @ModelAttribute CommunityDTO communityDTO,
+            @RequestParam(value = "file", required = false) MultipartFile file) {
 
         Community existingCommunity = communityService.getCommunityById(id);
-        String imageUrl = existingCommunity.getImageUrl();
 
+        String imageUrl = existingCommunity.getImageUrl();
         if (file != null && !file.isEmpty()) {
             String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
             Path uploadPath = Paths.get("uploads");
@@ -177,8 +183,9 @@ public class CommunitiesController {
         existingCommunity.updateImageUrl(imageUrl);
         communityService.editCommunity(id, existingCommunity);
 
-        return "redirect:/communities";
+        return "success";
     }
+
 
     // 게시글 삭제 처리
     @DeleteMapping("/delete/{id}")
