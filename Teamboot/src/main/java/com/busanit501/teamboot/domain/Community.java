@@ -66,4 +66,9 @@ public class Community extends BaseEntity {
         this.category = Category.valueOf(communityDTO.getCategory());
     }
 
+    // 사진 수정
+    public void updateImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     }

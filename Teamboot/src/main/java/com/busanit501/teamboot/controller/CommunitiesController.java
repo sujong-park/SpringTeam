@@ -17,9 +17,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -44,14 +44,14 @@ public class CommunitiesController {
         this.commentsService = commentsService;
     }
 
-    // 📌 게시글 등록 GET
+    // 게시글 등록 GET
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
         model.addAttribute("community", new Community());
         return "communities/register";
     }
 
-    // 📌 게시글 등록 POST
+    // 게시글 등록 POST
     @PostMapping("/register")
     public String registerCommunity(@RequestParam("title") String title,
                                     @RequestParam("content") String content,
@@ -59,11 +59,13 @@ public class CommunitiesController {
                                     @RequestParam("file") MultipartFile file,
                                     @AuthenticationPrincipal UserDetails userDetails) {
 
-        // 현재 로그인된 사용자 정보 불러오기
+        if (userDetails == null) {
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
+
         Member member = memberRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new NoSuchElementException("로그인된 사용자가 존재하지 않습니다."));
 
-        // 기본 이미지 URL 설정
         String imageUrl = null;
         String uploadDir = "uploads";
         Path uploadPath = Paths.get(uploadDir);
@@ -76,7 +78,6 @@ public class CommunitiesController {
             }
         }
 
-        // 파일 업로드 처리
         if (!file.isEmpty()) {
             String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
             Path filePath = uploadPath.resolve(fileName);
@@ -97,10 +98,11 @@ public class CommunitiesController {
                 .build();
 
         communityService.createCommunity(community);
+
         return "redirect:/communities";
     }
 
-    // 📌 게시글 목록 조회 (페이징)
+    // 게시글 목록 조회 (페이징)
     @GetMapping
     public String listCommunities(Model model,
                                   @RequestParam(defaultValue = "0") int page,
@@ -114,7 +116,7 @@ public class CommunitiesController {
         return "communities/list";
     }
 
-    // 📌 게시글 상세 조회 (댓글 포함)
+    // 게시글 상세 조회 (댓글 포함)
     @GetMapping("/{id}")
     public String getCommunityDetail(@PathVariable Long id, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Community community = communityService.getCommunityById(id);
@@ -132,7 +134,7 @@ public class CommunitiesController {
         return "communities/detail";
     }
 
-    // 📌 게시글 수정 페이지
+    // 게시글 수정 페이지
     @GetMapping("/edit/{id}")
     public String editCommunityForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         Community community = communityService.getCommunityById(id);
@@ -146,7 +148,7 @@ public class CommunitiesController {
         return "communities/edit";
     }
 
-    // 📌 게시글 수정 처리
+    // 게시글 수정 처리
     @PostMapping("/edit/{id}")
     public String editCommunity(@PathVariable Long id,
                                 @ModelAttribute CommunityDTO communityDTO,
@@ -172,13 +174,13 @@ public class CommunitiesController {
         }
 
         existingCommunity.updateFromDTO(communityDTO);
-        existingCommunity.setImageUrl(imageUrl);
+        existingCommunity.updateImageUrl(imageUrl);
         communityService.editCommunity(id, existingCommunity);
 
         return "redirect:/communities";
     }
 
-    // 📌 게시글 삭제 처리
+    // 게시글 삭제 처리
     @DeleteMapping("/delete/{id}")
     @ResponseBody
     public String deleteCommunity(@PathVariable Long id) {
