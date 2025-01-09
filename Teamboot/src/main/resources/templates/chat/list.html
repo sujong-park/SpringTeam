@@ -4,7 +4,98 @@
 <body>
 <!-- content -->
 <div layout:fragment="content">
-    <h1 style="text-align: center;">Chat List</h1>
+    <style>
+        #side .sideMenu li.sideMenuChat a {background: #F5F5F5;}
+        .mainContent {display: flex; flex-direction: column;}
+        .content {flex: 1;display: flex; flex-direction: column;  padding: 0;}
+
+    </style>
+
+    <div id="chatContainer">
+        <div id="chatListWrap">
+            <div class="contentTitle">
+                <div class="title">채팅방목록</div>
+                <a th:href="@{/chat/register}"><img th:src="@{/images/plus.svg}"></a>
+            </div>
+            <div class="chatList">
+                <ul>
+                    <li>
+                        <div class="thumb"></div>
+                        <div class="info">
+                            <div class="chatTitle">
+                                <div class="title">한강공원 산책<span>3</span></div>
+                                <div class="date">2020.20.20</div>
+                            </div>
+                            <p>오늘 오후 7시까지 한강에서 만나요</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="thumb"></div>
+                        <div class="info">
+                            <div class="chatTitle">
+                                <div class="title">한강공원 산책<span>3</span></div>
+                                <div class="date">2020.20.20</div>
+                            </div>
+                            <p>오늘 오후 7시까지 한강에서 만나요</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="thumb"></div>
+                        <div class="info">
+                            <div class="chatTitle">
+                                <div class="title">한강공원 산책<span>3</span></div>
+                                <div class="date">2020.20.20</div>
+                            </div>
+                            <p>오늘 오후 7시까지 한강에서 만나요</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="thumb"></div>
+                        <div class="info">
+                            <div class="chatTitle">
+                                <div class="title">한강공원 산책<span>3</span></div>
+                                <div class="date">2020.20.20</div>
+                            </div>
+                            <p>오늘 오후 7시까지 한강에서 만나요</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="thumb"></div>
+                        <div class="info">
+                            <div class="chatTitle">
+                                <div class="title">한강공원 산책<span>3</span></div>
+                                <div class="date">2020.20.20</div>
+                            </div>
+                            <p>오늘 오후 7시까지 한강에서 만나요</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="thumb"></div>
+                        <div class="info">
+                            <div class="chatTitle">
+                                <div class="title">한강공원 산책<span>3</span></div>
+                                <div class="date">2020.20.20</div>
+                            </div>
+                            <p>오늘 오후 7시까지 한강에서 만나요</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="chatViewWrap">
+            <div class="contentTitle">
+                <div class="title">한강공원 산책 멤버<span>4</span></div>
+                <a th:href="@{/chat/register}"><img th:src="@{/images/plus.svg}"></a>
+            </div>
+            <div class="chatView">
+
+            </div>
+        </div>
+    </div>
+
+
+
 </div>
 <!-- content -->
 

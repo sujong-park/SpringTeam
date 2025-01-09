@@ -41,13 +41,13 @@
                 </li>
                 <li class="sideMenuChat">
                     <a th:href="@{/chat/list}">
-                        <div class="icon"><img th:src="@{/images/chats.svg}" alt=""><span class="count">99</span></div>
+                        <div class="icon"><img th:src="@{/images/chats.svg}" alt=""></div>
                         <div class="txt">채팅</div>
                     </a>
                 </li>
                 <li class="sideMenuNotifications">
                     <a th:href="@{/notifications/list}">
-                        <div class="icon"><img th:src="@{/images/bell.svg}" alt=""><span class="count">2</span></div>
+                        <div class="icon"><img th:src="@{/images/bell.svg}" alt=""></div>
                         <div class="txt">알림</div>
                     </a>
                 </li>
@@ -90,8 +90,9 @@
                 </th:block>
                 <!-- 로그인 -->
                 <th:block th:if="${user} != null">
-                    <li><a><img th:src="@{/images/message_bold.svg}"><span class="count">6</span></a></li>
-                    <li><a><img th:src="@{/images/bell_bold.svg}"><span class="count">99+</span></a></li>
+<!--                    <li><a><img th:src="@{/images/message_bold.svg}"><span class="count">6</span></a></li>-->
+                    <li><a><img th:src="@{/images/message_bold.svg}"></a></li>
+                    <li><a><img th:src="@{/images/bell_bold.svg}"></a></li>
                     <li class="headProfile">
                         <button class="headProfileBtn" onclick="headProfileClick()">
                             <span>[[${user.Username}]]</span>님
