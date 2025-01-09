@@ -27,37 +27,37 @@
         <div id="side">
             <div class="logo"><a th:href="@{/home}"><img th:src="@{/images/logo.svg}"></a></div>
             <ul class="sideMenu">
-                <li>
+                <li class="sideMenuProfile">
                     <a th:href="@{/gallery/list}">
                         <div class="icon"><div class="profile-img"></div></div>
                         <div class="txt">프로필</div>
                     </a>
                 </li>
-                <li>
+                <li class="sideMenuMatching">
                     <a th:href="@{/matching/list}">
                         <div class="icon"><img th:src="@{/images/matching.svg}" alt=""></div>
                         <div class="txt">메이트매칭</div>
                     </a>
                 </li>
-                <li>
+                <li class="sideMenuChat">
                     <a th:href="@{/chat/list}">
                         <div class="icon"><img th:src="@{/images/chats.svg}" alt=""><span class="count">99</span></div>
                         <div class="txt">채팅</div>
                     </a>
                 </li>
-                <li>
+                <li class="sideMenuNotifications">
                     <a th:href="@{/notifications/list}">
                         <div class="icon"><img th:src="@{/images/bell.svg}" alt=""><span class="count">2</span></div>
                         <div class="txt">알림</div>
                     </a>
                 </li>
-                <li>
+                <li class="sideMenuCalendar">
                     <a th:href="@{/calendar/list}">
                         <div class="icon"><img th:src="@{/images/calendar.svg}" alt="" ></div>
                         <div class="txt" >산책일정 </div>
                     </a>
                 </li>
-                <li>
+                <li class="sideMenuSetting">
                     <a>
                         <div class="icon"><img th:src="@{/images/gear.svg}" alt=""></div>
                         <div class="txt">설정</div>
@@ -157,7 +157,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="/js/upload.js"></script>
 <th:block layout:fragment="javascript">
 
 </th:block>

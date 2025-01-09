@@ -4,6 +4,10 @@
 <body>
 <!-- content -->
 <div layout:fragment="content">
+    <style>
+        #side .sideMenu li.sideMenuProfile a {background: #F5F5F5;}
+    </style>
+
     <div class="profile">
         <div class="profile-image img"></div>
         <div class="profile-info">
@@ -43,25 +47,22 @@
     <div class="profileContent contentContainer">
         <ul class="profileTap">
             <li class="on">
-                <button>게시물<span class="count">43</span>
+                <button id="galleryListBtn">게시물<span class="count">43</span>
                     <a th:href="@{/gallery/register}"><img th:src="@{/images/plus.svg}"></a>
                 </button>
             </li>
             <li>
-                <button>반려동물<span class="count">2</span>
-                    <a><img th:src="@{/images/plus.svg}"></a>
+                <button id="petListBtn">반려동물<span class="count">2</span>
+                    <a th:href="@{/pet/register}"><img th:src="@{/images/plus.svg}"></a>
                 </button>
-            </li>
-            <li>
-                <button>메이트<span class="count">2</span></button>
             </li>
         </ul>
 
         <div id="gallery">
             <ul>
                 <li th:each="dto:${responseDTO.dtoList}">
-                    <a th:href="|@{/gallery/read(galleryId=${dto.galleryId})}&${link}|">
-                        <div class="thumb img" th:if="${dto.galleryImages != null && dto.galleryImages.size()>0}">
+                    <a class="thumb img" th:href="|@{/gallery/read(galleryId=${dto.galleryId})}&${link}|">
+                        <div class="galleryThumbSlide" th:if="${dto.galleryImages != null && dto.galleryImages.size()>0}">
                             <img th:each="galleryImage: ${dto.galleryImages}" th:src="|/view/s_${galleryImage.uuid}_${galleryImage.fileName}|">
                         </div>
                     </a>
@@ -70,8 +71,8 @@
         </div>
 
         <!--페이징-->
-        <div class="float-end">
-            <ul class="pagination flex-wrap">
+        <div class="pagination">
+            <ul>
                 <li class="page-item" th:if="${responseDTO.prev}">
                     <a class="page-link" th:data-num="${responseDTO.start - 1}">Previous</a>
                 </li>
@@ -95,6 +96,12 @@
 
 <!-- javascript -->
 <script layout:fragment="javascript" th:inline="javascript">
+    document.getElementById("galleryListBtn").addEventListener("click", function() {
+        window.location.href = "/pet/list"; // 원하는 페이지로 변경
+    });
+    document.getElementById("petListBtn").addEventListener("click", function() {
+        window.location.href = "/pet/list"; // 원하는 페이지로 변경
+    });
     // 페이징 이동 이벤트 처리.
     document.querySelector(".pagination").addEventListener("click",
         function (e) {

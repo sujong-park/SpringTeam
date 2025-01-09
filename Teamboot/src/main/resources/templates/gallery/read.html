@@ -4,6 +4,10 @@
 <body>
 <!-- content -->
 <div layout:fragment="content">
+    <style>
+        #side .sideMenu li.sideMenuProfile a {background: #F5F5F5;}
+    </style>
+
     <div id="galleryReadContainer" class="readContainer">
         <div class="readHead">
             <a class="back" th:href="|@{/gallery/list}?${link}|">

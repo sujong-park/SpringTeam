@@ -4,7 +4,244 @@
 <body>
 <!-- content -->
 <div layout:fragment="content">
-    <h1 style="text-align: center;">Matching List</h1>
+    <style>
+        #side .sideMenu li.sideMenuMatching a {background: #F5F5F5;}
+    </style>
+
+    <div class="matchingContent contentContainer">
+        <div class="matchingKeyword">
+            <h1>AI추천 키워드</h1>
+
+            <ul class="keywordList">
+                <li>#강아지모임</li>
+                <li>#서울</li>
+                <li>#운동</li>
+                <li>#압구정동</li>
+                <li>#비글</li>
+                <li>#한강공원</li>
+                <li>#부산</li>
+            </ul>
+        </div>
+        <div class="matchingSearch">
+            <input type="text" name="" id="" placeholder="산책메이트">
+            <button id="matchingFilterBtn"><img th:src="@{/images/filter.svg}"><span></span></button>
+            <button id="matchingSearchBtn"><img th:src="@{/images/search_bold.svg}"></button>
+        </div>
+        <div class="matchingListWrap">
+            <div class="matchingListTop">
+                <ul class="filter">
+                    <li class="on">전체</li>
+                    <li>나의메이트</li>
+                </ul>
+                <a th:href="@{/matching/register}" class="btn-normal">매칭등록</a>
+            </div>
+
+            <ul class="matchingList">
+                <li>
+                    <a class="thumb img" th:href="@{/matching/read}">
+                        <div class="matchingThumbSlide">
+                            <img th:src="@{/images/test/gallery1.jpg}">
+                        </div>
+                    </a>
+                    <div class="matchingInfo">
+                        <div class="tag">
+                            <div class="location">
+                                <span>서울</span><span>압구정동</span>
+                            </div>
+                            <div class="participants">2/4명</div>
+                        </div>
+                        <a th:href="@{/matching/read}" class="matchingRoomTitle">평일 오후 한강공원 같이 산책하실 분 3명~4명 모임모임모임모임오미 구해요.</a>
+                        <div class="host">
+                            <div class="thumb"></div>
+                            <div class="name">BusanIT501</div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <a class="thumb img" th:href="@{/matching/read}">
+                        <div class="matchingThumbSlide">
+                            <img th:src="@{/images/test/gallery2.jpg}">
+                        </div>
+                    </a>
+                    <div class="matchingInfo">
+                        <div class="tag">
+                            <div class="location">
+                                <span>서울</span><span>압구정동</span>
+                            </div>
+                            <div class="participants">2/4명</div>
+                        </div>
+                        <a th:href="@{/matching/read}" class="matchingRoomTitle">평일 오후 한강공원 같이 산책하실 분 3명~4명 모임모임모임모임오미 구해요.</a>
+                        <div class="host">
+                            <div class="thumb"></div>
+                            <div class="name">BusanIT501</div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <a class="thumb img" th:href="@{/matching/read}">
+                        <div class="matchingThumbSlide">
+                            <img th:src="@{/images/test/gallery3.jpg}">
+                        </div>
+                    </a>
+                    <div class="matchingInfo">
+                        <div class="tag">
+                            <div class="location">
+                                <span>서울</span><span>압구정동</span>
+                            </div>
+                            <div class="participants">2/4명</div>
+                        </div>
+                        <a th:href="@{/matching/read}" class="matchingRoomTitle">평일 오후 한강공원 같이 산책하실 분 3명~4명 모임모임모임모임오미 구해요.</a>
+                        <div class="host">
+                            <div class="thumb"></div>
+                            <div class="name">BusanIT501</div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <a class="thumb img" th:href="@{/matching/read}">
+                        <div class="matchingThumbSlide">
+                            <img th:src="@{/images/test/gallery4.jpg}">
+                        </div>
+                    </a>
+                    <div class="matchingInfo">
+                        <div class="tag">
+                            <div class="location">
+                                <span>서울</span><span>압구정동</span>
+                            </div>
+                            <div class="participants">2/4명</div>
+                        </div>
+                        <a th:href="@{/matching/read}" class="matchingRoomTitle">평일 오후 한강공원 같이 산책하실 분 3명~4명 모임모임모임모임오미 구해요.</a>
+                        <div class="host">
+                            <div class="thumb"></div>
+                            <div class="name">BusanIT501</div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <a class="thumb img" th:href="@{/matching/read}">
+                        <div class="matchingThumbSlide">
+                            <img th:src="@{/images/test/gallery5.jpg}">
+                        </div>
+                    </a>
+                    <div class="matchingInfo">
+                        <div class="tag">
+                            <div class="location">
+                                <span>서울</span><span>압구정동</span>
+                            </div>
+                            <div class="participants">2/4명</div>
+                        </div>
+                        <a th:href="@{/matching/read}" class="matchingRoomTitle">평일 오후 한강공원 같이 산책하실 분 3명~4명 모임모임모임모임오미 구해요.</a>
+                        <div class="host">
+                            <div class="thumb"></div>
+                            <div class="name">BusanIT501</div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <a class="thumb img" th:href="@{/matching/read}">
+                        <div class="matchingThumbSlide">
+                            <img th:src="@{/images/test/gallery6.jpg}">
+                        </div>
+                    </a>
+                    <div class="matchingInfo">
+                        <div class="tag">
+                            <div class="location">
+                                <span>서울</span><span>압구정동</span>
+                            </div>
+                            <div class="participants">2/4명</div>
+                        </div>
+                        <a th:href="@{/matching/read}" class="matchingRoomTitle">평일 오후 한강공원 같이 산책하실 분 3명~4명 모임모임모임모임오미 구해요.</a>
+                        <div class="host">
+                            <div class="thumb"></div>
+                            <div class="name">BusanIT501</div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <a class="thumb img" th:href="@{/matching/read}">
+                        <div class="matchingThumbSlide">
+                            <img th:src="@{/images/test/gallery7.jpg}">
+                        </div>
+                    </a>
+                    <div class="matchingInfo">
+                        <div class="tag">
+                            <div class="location">
+                                <span>서울</span><span>압구정동</span>
+                            </div>
+                            <div class="participants">2/4명</div>
+                        </div>
+                        <a th:href="@{/matching/read}" class="matchingRoomTitle">평일 오후 한강공원 같이 산책하실 분 3명~4명 모임모임모임모임오미 구해요.</a>
+                        <div class="host">
+                            <div class="thumb"></div>
+                            <div class="name">BusanIT501</div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <a class="thumb img" th:href="@{/matching/read}">
+                        <div class="matchingThumbSlide">
+                            <img th:src="@{/images/test/gallery8.jpg}">
+                        </div>
+                    </a>
+                    <div class="matchingInfo">
+                        <div class="tag">
+                            <div class="location">
+                                <span>서울</span><span>압구정동</span>
+                            </div>
+                            <div class="participants">2/4명</div>
+                        </div>
+                        <a th:href="@{/matching/read}" class="matchingRoomTitle">평일 오후 한강공원 같이 산책하실 분 3명~4명 모임모임모임모임오미 구해요.</a>
+                        <div class="host">
+                            <div class="thumb"></div>
+                            <div class="name">BusanIT501</div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <a class="thumb img" th:href="@{/matching/read}">
+                        <div class="matchingThumbSlide">
+                            <img th:src="@{/images/test/gallery9.jpg}">
+                        </div>
+                    </a>
+                    <div class="matchingInfo">
+                        <div class="tag">
+                            <div class="location">
+                                <span>서울</span><span>압구정동</span>
+                            </div>
+                            <div class="participants">2/4명</div>
+                        </div>
+                        <a th:href="@{/matching/read}" class="matchingRoomTitle">평일 오후 한강공원 같이 산책하실 분 3명~4명 모임모임모임모임오미 구해요.</a>
+                        <div class="host">
+                            <div class="thumb"></div>
+                            <div class="name">BusanIT501</div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <a class="thumb img" th:href="@{/matching/read}">
+                        <div class="matchingThumbSlide">
+                            <img th:src="@{/images/test/gallery10.jpg}">
+                        </div>
+                    </a>
+                    <div class="matchingInfo">
+                        <div class="tag">
+                            <div class="location">
+                                <span>서울</span><span>압구정동</span>
+                            </div>
+                            <div class="participants">2/4명</div>
+                        </div>
+                        <a th:href="@{/matching/read}" class="matchingRoomTitle">평일 오후 한강공원 같이 산책하실 분 3명~4명 모임모임모임모임오미 구해요.</a>
+                        <div class="host">
+                            <div class="thumb"></div>
+                            <div class="name">BusanIT501</div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
 </div>
 <!-- content -->
 

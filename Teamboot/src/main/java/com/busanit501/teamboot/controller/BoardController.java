@@ -38,7 +38,7 @@ import java.util.Map;
 public class BoardController {
 
     // 물리 저장소 경로를 불러오기.
-    @Value("C:\\upload\\springTest")
+    @Value("${com.busanit501.upload.path}")
     private String uploadPath;
 
     private final BoardService boardService;
@@ -79,8 +79,8 @@ public class BoardController {
     // 화면에서, -> 파일 이미지들을 문자열 형태로 , 각각 따로 보내고 있음.
     // 받을 때 타입을 변경.
     public String registerPost(@Valid BoardDTO boardDTO,
-                             BindingResult bindingResult,
-                             RedirectAttributes redirectAttributes) {
+                               BindingResult bindingResult,
+                               RedirectAttributes redirectAttributes) {
         log.info("BoardController register post 로직처리: ");
         log.info("BoardController register post  boardDTO : " + boardDTO);
 
@@ -122,11 +122,10 @@ public class BoardController {
     // 그러면, 수정폼은 접근을해, 하지만, 로직 처리는 안해줄거야.
 
     @GetMapping("/update")
-    public void update(@AuthenticationPrincipal UserDetails user, Long bno, PageRequestDTO pageRequestDTO,
-                     Model model) {
+    public void update(Long bno, PageRequestDTO pageRequestDTO,
+                       Model model) {
         BoardDTO boardDTO = boardService.readOne(bno);
         model.addAttribute("dto", boardDTO);
-        model.addAttribute("user", user);
     }
 
     // principal.username : 로그인한 유저
@@ -134,10 +133,10 @@ public class BoardController {
     @PreAuthorize("principal.username == #boardDTO.writer")
     @PostMapping("/update")
     public String updatePost(@Valid BoardDTO boardDTO,
-                               BindingResult bindingResult,
-                               PageRequestDTO pageRequestDTO,
-                               String keyword2,String page2, String type2,
-                               RedirectAttributes redirectAttributes) {
+                             BindingResult bindingResult,
+                             PageRequestDTO pageRequestDTO,
+                             String keyword2,String page2, String type2,
+                             RedirectAttributes redirectAttributes) {
         log.info("BoardController updatePost post 로직처리: ");
         log.info("BoardController updatePost post  boardDTO : " + boardDTO);
 
@@ -229,7 +228,7 @@ public class BoardController {
             resultMap.put("result", deleteCheck);
 //            return resultMap;
         }
-        }
+    }
 
 
 }

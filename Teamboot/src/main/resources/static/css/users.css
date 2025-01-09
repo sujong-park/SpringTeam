@@ -55,11 +55,15 @@
 .profileTap li.on {border-bottom: 1px solid #000;}
 .profileTap li.on button {font-width: 600;}
 
+/* #gallery */
+/* #gallery */
+/* #gallery */
 #gallery {}
 #gallery ul {display: flex; flex-wrap: wrap; margin: 5px -5px;}
 #gallery ul li {width: calc(100% / 4); padding: 5px;}
-#gallery ul li a .thumb {width: 100%; height: 230px;}
-
+#gallery ul li a.thumb {width: 100%; height: 230px;}
+#gallery ul li a.thumb .galleryThumbSlide {width: 100%; height: 100%; overflow: hidden;}
+#gallery ul li a.thumb .galleryThumbSlide img {width: 100%; height: 100%; object-fit: cover;}
 
 .uploadResult {display: flex; gap: 10px; overflow: auto;}
 .uploadResult li {flex: none; display: flex; align-items: center; justify-content: center; position: relative; width: 450px; height: 300px; border-radius: 8px; border: 0; background: url(/images/img_empty.svg) no-repeat center center #f5f5f5; overflow: hidden;}
@@ -73,15 +77,214 @@
 
 /* #galleryReadContainer */
 #galleryReadContainer {}
-#galleryReadContainer .imgContainer .img {
-    min-height: 350px;
-    border-radius: 10px;
+
+
+
+/* #pet */
+/* #pet */
+/* #pet */
+#pet {}
+#pet ul {display: flex; flex-wrap: wrap; margin: 15px -15px;}
+#pet ul li {width: calc(100% / 4); padding: 15px;}
+#pet ul li a.thumb {width: 100%; height: 300px;}
+#pet ul li a.thumb .petThumbSlide {width: 100%; height: 100%; overflow: hidden;}
+#pet ul li a.thumb .petThumbSlide img {width: 100%; height: 100%; object-fit: cover;}
+
+
+
+
+
+
+
+/* .matchingContent */
+.matchingContent {}
+.matchingContent .matchingKeyword {}
+.matchingContent .matchingKeyword h1 {font-size: 25px; font-weight: 800; text-align: center;}
+.matchingContent .keywordList {display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto 0;}
+.matchingContent .keywordList li {
+    background: #F5F5F5;
+    padding: 7px 15px;
+    border-radius: 50px;
+    font-size: 15px;
+}
+.matchingContent .matchingSearch {width: 100%;
+    max-width: 500px;
+    margin: 50px auto 100px;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    background: #f5f5f5;
+    height: 50px;
     overflow: hidden;
-    margin: 0 0 10px;
+    padding: 0 10px 0 0;
+}
+.matchingContent .matchingSearch input {flex:1; padding: 0 20px;}
+.matchingContent .matchingSearch button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+}
+.matchingContent .matchingSearch button#matchingFilterBtn span {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #F61414;
+}
+
+.matchingListWrap .matchingListTop {display: flex; align-items: center; justify-content: space-between;}
+.matchingListWrap .matchingListTop ul {display: flex;}
+.matchingListWrap .matchingListTop ul li {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #A5A5A5;
+}
+.matchingListWrap .matchingListTop ul li:not(:last-child):after {
+    content:"";
+    display: block;
+    width: 1px;
+    height: 10px;
+    background: #D9D9D9;
+    margin: 0 10px;
+}
+.matchingListWrap .matchingListTop ul li.on {color: #000;}
+
+.matchingList {display: flex; flex-wrap: wrap; margin: 0 -15px;}
+.matchingList li {width: calc(100% / 4); padding: 15px;}
+.matchingList li a.thumb {width: 100%; height: 300px;}
+.matchingList li a.thumb .matchingThumbSlide {width: 100%; height: 100%; overflow: hidden;}
+.matchingList li a.thumb .matchingThumbSlide img {width: 100%; height: 100%; object-fit: cover;}
+
+.matchingInfo {padding: 10px 0;}
+.matchingInfo .tag {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.matchingInfo .tag .location {}
+.matchingInfo .tag .location span {
+    display: inline-flex;
+    align-items: center;
+    font-size: 13px;
+    color: #A5A5A5;}
+.matchingInfo .tag .location span:not(:last-child):after {
+    content:"";
+    display: block;
+    width: 1px;
+    height: 10px;
+    background: #D9D9D9;
+    margin: 0 10px;
+}
+.matchingInfo .tag .participants {
+    font-size: 13px;
+    font-weight: 600;
+    color: #A5A5A5;
+}
+.matchingInfo .matchingRoomTitle {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.05em;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 5px 0 15px;
+}
+.matchingInfo .host {
+    display: flex;
+    align-items: center;
+}
+.matchingInfo .host .thumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 25px;
+    height: 25px;
+    background: #f5f5f5f5;
+    margin: 0 5px 0 0;
+    border-radius: 50%;
+}
+.matchingInfo .host .name {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+#matchingReadContainer .imgContainer .img {max-height: 400px;}
+#matchingReadContainer .matchingRoomTitle {font-size: 18px; margin: 20px 0 5px;}
+#matchingReadContainer .description {
+    font-size: 14px;
 }
 
 
+#matchingReadContainer .infoForm {    margin: 50px 0 0;}
+#matchingReadContainer .infoForm li {
+    display: flex;
+    align-items: flex-start;
+    font-size: 14px;
+    padding: 10px 0;
+}
+#matchingReadContainer .infoForm li .title {flex: none; width: 100px; color: #A5A5A5;}
+#matchingReadContainer .infoForm li > p {font-weight: 600;}
+#matchingReadContainer .infoForm li .map {flex: 1;}
+#matchingReadContainer .infoForm li .map iframe {border: 0; max-width: 100%; height: 300px;}
 
+
+#matchingReadContainer .participants {
+    margin: 50px 0 0;
+}
+#matchingReadContainer .participants .user {
+    margin: 0 0 30px;
+}
+#matchingReadContainer .participants .user .userName {
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -0.05em;
+}
+#matchingReadContainer .participants .user .petList {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 10px 0 0;
+    gap: 10px;
+}
+#matchingReadContainer .participants .user .petList li {}
+#matchingReadContainer .participants .user .petList li .thumb {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+#matchingReadContainer .participants .user .petList li .thumb .verified {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+#matchingReadContainer .participants .user .petList li .thumb img:not(.verified) {
+    width: 100%;
+    height: 100%;object-fit: cover;
+}
+#matchingReadContainer .participants .user .petList li .name {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    margin: 5px 0 0;
+}
 
 
 

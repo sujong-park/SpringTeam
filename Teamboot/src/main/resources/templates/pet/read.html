@@ -4,7 +4,43 @@
 <body>
 <!-- content -->
 <div layout:fragment="content">
-    <h1 style="text-align: center;">Pet Read</h1>
+    <style>
+        #side .sideMenu li.sideMenuProfile a {background: #F5F5F5;}
+    </style>
+
+    <div id="petReadContainer" class="readContainer">
+<!--        <div class="readHead">-->
+<!--            <a class="back" th:href="|@{/pet/list}?${link}|">-->
+<!--                <img th:src="@{/images/left_arrow.svg}">-->
+<!--            </a>-->
+<!--            <a class="update" th:href="|@{/pet/update}?petId=${dto.petId}&${link}|">수정하기</a>-->
+<!--        </div>-->
+
+<!--        <div class="imgContainer" th:if="${dto.fileNames != null && dto.fileNames.size()>0}">-->
+<!--            <div class="img" th:each="fileName: ${dto.fileNames}">-->
+<!--                <img th:src="|/view/${fileName}|">-->
+<!--            </div>-->
+<!--        </div>-->
+
+        <div class="readHead">
+            <a class="back" th:href="@{/pet/list}">
+                <img th:src="@{/images/left_arrow.svg}">
+            </a>
+            <a class="update" th:href="@{/pet/update}">수정하기</a>
+        </div>
+
+        <div class="imgContainer">
+            <div class="img">
+                <img th:src="@{/images/test/gallery1.jpg}">
+            </div>
+        </div>
+
+        <div class="txtContainer">
+            GPT(Generative Pre-trained Transformer)는 OpenAI에서 개발한 인공지능 언어 모델로, 자연어를 이해하고 생성하는 데 특화되어 있습니다. 다양한 언어를 학습해 사람처럼 텍스트를 작성하거나 질문에 답할 수 있습니다. GPT는 개인의 생산성을 높이고, 창의적인 작업을 지원하며, 문제 해결에 도움을 주는 도구로 점점 더 많은 분야에서 사용되고 있습니다. 😊
+        </div>
+
+
+    </div>
 </div>
 <!-- content -->
 

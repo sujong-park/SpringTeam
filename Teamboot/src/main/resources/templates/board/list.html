@@ -4,6 +4,7 @@
       xmlns:th="www.thymeleaf.org"
       layout:decorate="~{layout/base.html}"
 >
+<link rel="stylesheet" href="../../static/css/base.css">
 <script src="../../static/js/upload.js"></script>
 <body>
 <div layout:fragment="content">
@@ -157,19 +158,11 @@
                         </tbody>
                     </table>
                     <!--페이징-->
-                    <div class="float-end">
-                        <ul class="pagination flex-wrap">
+                    <div class="pagination">
+                        <ul>
                             <li class="page-item" th:if="${responseDTO.prev}">
                                 <a class="page-link" th:data-num="${responseDTO.start - 1}">Previous</a>
                             </li>
-
-                            <!--                            페이지 번호 표시, 10개 임의로 표기-->
-<!--                            <th:block th:each="i:${#numbers.sequence(responseDTO.start,responseDTO.end)}">-->
-
-<!--                                <li th:class="${responseDTO.page == i }?'page-item active':'page-item'">-->
-<!--                                    <a class="page-link" data-num="${i}" href="#">[[${i}]]</a></li>-->
-<!--                            </th:block>-->
-
                             <th:blcok th:each="i:${#numbers.sequence(responseDTO.start,responseDTO.end)}">
                                 <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
                                     <a class="page-link"
