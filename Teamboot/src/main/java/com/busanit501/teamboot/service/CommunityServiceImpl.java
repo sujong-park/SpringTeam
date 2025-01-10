@@ -11,6 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CommunityServiceImpl implements CommunityService {
 
@@ -66,6 +68,11 @@ public class CommunityServiceImpl implements CommunityService {
     @Override
     public void deleteCommunity(Long id) {
         communityRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<Community> getCommunitiesByCategory(Category category, Pageable pageable) {
+        return communityRepository.findByCategory(category, pageable);
     }
 
 }

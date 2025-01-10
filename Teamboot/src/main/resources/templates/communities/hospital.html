@@ -1,19 +1,20 @@
 <!doctype html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{layout/base.html}">
 <head>
     <title>동물병원 게시판</title>
 </head>
 <body>
 <div layout:fragment="content" class="container mt-5">
+    <!-- 상단 헤더 -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="text-center flex-grow-1">동물병원</h2>
         <a th:href="@{/communities/register}" class="btn btn-primary small-btn">글쓰기</a>
     </div>
 
+    <!-- 병원 카테고리 게시글 리스트 -->
     <div class="row row-cols-1 row-cols-md-4 g-4">
-        <div class="col" th:each="community : ${communityPage.content}">
+        <div class="col" th:each="community : ${communities}">
             <div class="card h-100 shadow-sm">
                 <!-- 게시글 이미지 -->
                 <a th:href="@{/communities/{id}(id=${community.communityId})}" class="text-decoration-none">
@@ -22,24 +23,24 @@
                          style="height: 180px; object-fit: cover;">
                 </a>
 
+                <!-- 게시글 정보 -->
                 <div class="card-body">
-                    <!-- 게시글 제목 - 클릭시 상세 페이지로 이동 -->
                     <a th:href="@{/communities/{id}(id=${community.communityId})}" class="text-dark text-decoration-none">
                         <h5 class="card-title" th:text="${community.title}">게시글 제목</h5>
                     </a>
                     <p class="card-text" th:text="${community.content}">게시글 내용</p>
-                    <p class="text-muted small" th:text="${#temporals.format(community.created_at, 'yyyy-MM-dd')}">작성일</p>
+                    <p class="text-muted small" th:text="${#temporals.format(community.regDate, 'yyyy-MM-dd')}">작성일</p>
                 </div>
 
+                <!-- 사용자 정보 -->
                 <div class="card-footer">
-                    <!-- 사용자 정보 처리 -->
                     <small class="text-muted" th:text="${community.member != null && community.member.address != null ? community.member.address : '주소 미등록'}"></small>
                 </div>
             </div>
         </div>
 
         <!-- 게시글이 없는 경우 -->
-        <div class="col text-center" th:if="${communityPage.empty}">
+        <div class="col text-center" th:if="${communities.empty}">
             <p>게시글이 없습니다.</p>
         </div>
     </div>
@@ -48,19 +49,20 @@
     <nav aria-label="Page navigation" class="mt-4">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                <a class="page-link" th:href="@{/communities/category/HOSPITAL(page=${currentPage - 1})}">이전</a>
+                <a class="page-link" th:href="@{/communities/hospital(page=${currentPage - 1})}">이전</a>
             </li>
             <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                 th:classappend="${i == currentPage} ? 'active'">
-                <a class="page-link" th:href="@{/communities/category/HOSPITAL(page=${i})}" th:text="${i + 1}"></a>
+                <a class="page-link" th:href="@{/communities/hospital(page=${i})}" th:text="${i + 1}"></a>
             </li>
             <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
-                <a class="page-link" th:href="@{/communities/category/HOSPITAL(page=${currentPage + 1})}">다음</a>
+                <a class="page-link" th:href="@{/communities/hospital(page=${currentPage + 1})}">다음</a>
             </li>
         </ul>
     </nav>
 </div>
 
+<!-- 추가 JavaScript -->
 <th:block layout:fragment="javascript">
     <script>
         document.title = "동물병원 게시판 - Togedog";

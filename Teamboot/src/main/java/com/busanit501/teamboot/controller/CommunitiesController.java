@@ -123,6 +123,8 @@ public class CommunitiesController {
         return "communities/list";
     }
 
+
+
     // 게시글 상세 조회 (댓글 포함)
     @GetMapping("/{communityId}")
     public String getCommunityDetail(
@@ -211,4 +213,6 @@ public class CommunitiesController {
         communityService.deleteCommunity(id);
         return "success";
     }
+
+
 }
