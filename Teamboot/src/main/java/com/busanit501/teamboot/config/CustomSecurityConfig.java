@@ -48,13 +48,13 @@ public class CustomSecurityConfig {
         // http.formLogin();
         http.formLogin(
                 formLogin ->
-                        formLogin.loginPage("/member/login")
+                        formLogin.loginPage("/matching/list")
         );
 
         // 순서4
         //로그인 후, 성공시 리다이렉트 될 페이지 지정, 간단한 버전.
         http.formLogin(formLogin ->
-                formLogin.defaultSuccessUrl("/board/list",true)
+                formLogin.defaultSuccessUrl("/matching/list",true)
         );
 
         // 순서5
@@ -126,7 +126,7 @@ public class CustomSecurityConfig {
         //카카오 로그인 API 설정
         http.oauth2Login(
                 oauthLogin -> {
-                    oauthLogin.loginPage("/member/login");
+                    oauthLogin.loginPage("/matching/list");
                     // 카카오 로그인 후 , 후처리 적용하기.
                     oauthLogin.successHandler(authenticationSuccessHandler());
                 }

@@ -41,10 +41,7 @@ public class MemberController {
 
     //회원 가입용 화면
     @GetMapping("/join")
-    public void join() {
-
-    }
-
+    public void join() {}
     @PostMapping("/join")
     public String joinPost(MemberJoinDTO memberJoinDTO,
                            RedirectAttributes redirectAttributes) {
