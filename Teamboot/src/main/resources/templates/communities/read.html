@@ -11,7 +11,7 @@
 
     <!-- 상단 목록으로 돌아가기 버튼 -->
     <div class="mb-3">
-        <a th:href="@{/communities/list(page=${page != null ? page : 0})}" class="btn btn-outline-primary">목록으로</a>
+        <a th:href="@{/communities/list}" class="btn btn-outline-primary">목록으로</a>
     </div>
 
     <!-- 게시글 내용 -->
@@ -82,24 +82,43 @@
                             삭제
                         </button>
                     </div>
-
-                    <script>
-                        console.log("Comment Member ID: ", "${comment.memberId}");
-                        console.log("Logged In User ID: ", "${loggedInUserId}");
-                    </script>
                 </div>
             </div>
+        </div>
+
+        <!-- 페이징 버튼 -->
+        <div class="d-flex justify-content-center mt-4">
+            <nav aria-label="댓글 페이징">
+                <ul class="pagination">
+                    <!-- 이전 버튼 -->
+                    <li class="page-item" th:classappend="${!prev} ? 'disabled'">
+                        <a class="page-link" th:href="@{|/communities/${community.communityId}?page=${page - 1}|}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+
+                    <!-- 페이지 번호 -->
+                    <li class="page-item" th:each="i : ${#numbers.sequence(start, end)}" th:classappend="${i == page} ? 'active'">
+                        <a class="page-link" th:href="@{'/communities/' + ${community.communityId} + '?page=' + ${i}}" th:text="${i}"></a>
+                    </li>
+
+                    <!-- 다음 버튼 -->
+                    <li class="page-item" th:classappend="${!next} ? 'disabled'">
+                        <a class="page-link" th:href="@{|/communities/${community.communityId}?page=${page + 1}|}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 
     <!-- 하단 목록으로 돌아가기 버튼 -->
     <div class="mt-5 text-center">
-        <a th:href="@{/communities/list(page=${page != null ? page : 0})}" class="btn btn-outline-primary">목록으로</a>
+        <a th:href="@{/communities/list}" class="btn btn-outline-primary">목록으로</a>
     </div>
 </div>
 
-<!--<script src="/js/comments.js" defer></script>-->
 <script src="/js/comments.js" defer></script>
 </body>
 </html>
-
