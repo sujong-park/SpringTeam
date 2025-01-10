@@ -92,7 +92,7 @@
                 <ul class="pagination">
                     <!-- 이전 버튼 -->
                     <li class="page-item" th:classappend="${!prev} ? 'disabled'">
-                        <a class="page-link" th:href="@{'/communities/' + ${community.communityId} + '?page=' + (${page - 1})}" aria-label="Previous">
+                        <a class="page-link" th:href="@{|/communities/${community.communityId}?page=${page - 1}|}" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
@@ -104,7 +104,7 @@
 
                     <!-- 다음 버튼 -->
                     <li class="page-item" th:classappend="${!next} ? 'disabled'">
-                        <a class="page-link" th:href="@{'/communities/' + ${community.communityId} + '?page=' + (${page + 1})}" aria-label="Next">
+                        <a class="page-link" th:href="@{|/communities/${community.communityId}?page=${page + 1}|}" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
