@@ -79,7 +79,14 @@ textarea {width: 100%; height: 250px; padding: 20px; background: #F5F5F5; font-f
 .btn-box .btn {flex: 1;}
 
 
-
+.btn-normal {display: flex;
+    align-items: center;
+    height: 35px;
+    padding: 0 15px;
+    background: #F5F5F5;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;}
 
 
 
@@ -107,7 +114,7 @@ textarea {width: 100%; height: 250px; padding: 20px; background: #F5F5F5; font-f
 #side .logo a {}
 
 #side .sideMenu {margin: 30px 0;}
-#side .sideMenu li {}
+#side .sideMenu li {margin: 5px 0;}
 #side .sideMenu li a {display: flex; align-items: center; height: 60px; padding: 15px; border-radius: 10px; transition: background-color 0.2s;}
 #side .sideMenu li a:hover {background: #F5F5F5;}
 #side .sideMenu li a .icon {position: relative; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; margin: 0 20px 0 0;}
@@ -171,7 +178,7 @@ textarea {width: 100%; height: 250px; padding: 20px; background: #F5F5F5; font-f
 
 
 /* read-form */
-.readContainer {width: 100%; max-width: 680px; padding: 15px; margin: auto;}
+.readContainer {width: 100%; max-width: 680px; padding: 15px; margin: auto; padding: 0 0 100px;}
 .readContainer .readHead {display: flex; align-items: center; justify-content: space-between; margin: 0 0 30px;}
 .readContainer .readHead a.back {width: 20px; height: 20px;}
 .readContainer .readHead .update {line-height: 35px;
@@ -182,7 +189,41 @@ textarea {width: 100%; height: 250px; padding: 20px; background: #F5F5F5; font-f
     font-weight: 600;
     margin: 0 10px 0 0;}
 
+.readContainer .infoForm {margin: 50px 0 0;}
+.readContainer .infoForm li {
+    display: flex;
+    align-items: flex-start;
+    font-size: 14px;
+    padding: 10px 0;
+}
+.readContainer .infoForm li .title {flex: none; width: 100px; color: #A5A5A5;}
+.readContainer .infoForm li > p {font-weight: 600;}
+.readContainer .infoForm li .map {flex: 1;}
+.readContainer .infoForm li .map iframe {border: 0; max-width: 100%; height: 300px;}
+
+
+
+
+
+
+
 .txtContainer {margin: 50px 0; font-size: 14px; line-height: 1.6;}
+.readContainer .imgContainer .img {
+    width: fit-content;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 0 auto 10px;
+}
 
 
 
+/*pagination*/
+.pagination {margin: 50px 0 0;}
+.pagination ul {display: flex; align-items: center; justify-content: center;}
+.pagination ul li {margin: 0 5px;}
+.pagination ul li a {font-size: 14px;
+    color: #ccc;
+    font-weight: 500;
+    padding: 5px; cursor: pointer;}
+
+.pagination ul li.active a {color: #000;}
