@@ -93,51 +93,71 @@
             </div>
 
             <div class="btn-box">
-                <a th:href="@{/users/login}" class="btn btn-gray">취소</a>
+                <a th:href="@{/member/login}" class="btn btn-gray">취소</a>
                 <button type="submit" class="btn btn-dark">가입완료</button>
             </div>
         </form>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </div>
-<!-- javascript -->
-<!--<script layout:fragment="javascript" th:inline="javascript">-->
-<!--    // 비밀번호 확인 로직-->
-<!--    document.getElementById('confirm-password').addEventListener('input', function() {-->
-<!--        const password = document.getElementById('password').value;-->
-<!--        const confirmPassword = this.value;-->
-<!--        const message = document.getElementById('password-message');-->
-<!--        message.innerText = (password !== confirmPassword) ? '비밀번호가 일치하지 않습니다.' : '';-->
-<!--    });-->
+<script layout:fragment="javascript" th:inline="javascript">
+    // 비밀번호 확인 로직
+    document.getElementById('confirm-password').addEventListener('input', function() {
+        const password = document.getElementById('password').value;
+        const confirmPassword = this.value;
+        const message = document.getElementById('password-message');
+        message.innerText = (password !== confirmPassword) ? '비밀번호가 일치하지 않습니다.' : '';
+    });
 
-<!--    // 이메일 중복 확인-->
-<!--    document.getElementById('verify-btn').addEventListener('click', function() {-->
-<!--        const email = document.getElementById('mid').value;-->
+    let emailVerified = false;
+    // 이메일 중복 확인
+    document.querySelector('#verify-btn').addEventListener('click', function() {
+        console.log("click")
+        const email = document.getElementById('mid').value;
+        const message = document.getElementById('email-message');
 
-<!--        $.ajax({-->
-<!--            url: '/member/check-email',-->
-<!--            type: 'POST',-->
-<!--            data: {email: email},-->
-<!--            success: function(response) {-->
-<!--                document.getElementById('email-message').innerText = response.exists ? '중복된 이메일입니다.' : '사용 가능한 이메일입니다.';-->
-<!--            },-->
-<!--            error: function() {-->
-<!--                document.getElementById('email-message').innerText = '서버 오류가 발생했습니다.';-->
-<!--            }-->
-<!--        });-->
-<!--    });-->
+        if(!email) {
+            message.innerText = '이메일을 입력해주세요.';
+            return;
+        }
 
-<!--    // 주소 찾기-->
-<!--    document.getElementById('address-btn').addEventListener('click', function() {-->
-<!--        new daum.Postcode({-->
-<!--            oncomplete: function (data) {-->
-<!--                document.getElementById('zipcode').value = data.zonecode;-->
-<!--                document.getElementById('address').value = data.address;-->
-<!--            }-->
-<!--        }).open();-->
-<!--    });-->
-<!--</script>-->
-<!-- javascript -->
+        $.ajax({
+            url: '/member/check-email',
+            type: 'POST',
+            data: {email: email},
+            success: function(response) {
+                emailVerified = !response.exists;
+                message.innerText = response.exists ? '중복된 이메일입니다.' : '사용 가능한 이메일입니다.';
+                updateSubmitButton();
+            },
+            error: function() {
+                message.innerText = '서버 오류가 발생했습니다.';
+            }
+        });
+    },false);
+
+    function updateSubmitButton() {
+        const submitButton = document.querySelector('button[type="submit"]');
+        submitButton.disabled = !emailVerified; // 이메일 검증 상태에 따라 버튼 활성화/비활성화
+    }
+
+    document.getElementById('signup-form').addEventListener('submit', function(event) {
+        if (!emailVerified) {
+            event.preventDefault(); // 이메일이 중복된 경우 폼 제출 방지
+            alert('이메일 중복 확인을 완료해주세요.');
+        }
+    });
+
+    // 주소 찾기
+    document.getElementById('address-btn').addEventListener('click', function() {
+        new daum.Postcode({
+            oncomplete: function (data) {
+                document.getElementById('zipcode').value = data.zonecode;
+                document.getElementById('address').value = data.address;
+            }
+        }).open();
+    });
+</script>
 
 </body>
 </html>

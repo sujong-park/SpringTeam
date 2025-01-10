@@ -7,4 +7,5 @@ public interface MemberService {
 
     }
     void join(MemberJoinDTO memberJoinDTO) throws MidExistException;
+    boolean checkEmailExists(String email);
 }

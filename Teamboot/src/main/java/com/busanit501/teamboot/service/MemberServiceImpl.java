@@ -33,4 +33,10 @@ public class MemberServiceImpl implements MemberService {
         member.addRole(MemberRole.USER);
          memberRepository.save(member);
     }
+
+    @Override
+    public boolean checkEmailExists(String email) {
+        return memberRepository.existsById(email);
+    }
+
 }
