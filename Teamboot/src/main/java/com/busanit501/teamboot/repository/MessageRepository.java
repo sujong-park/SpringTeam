@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface MessageRepository extends JpaRepository<Message, Integer> {
+    //채팅방 대화 목록 조회
     @Query("SELECT new com.busanit501.teamboot.dto.MessageDTO(a.messageId, " +
             "a.chatRoom.roomId, " +
             "a.sender.mid, " +
@@ -23,6 +24,7 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
             "ORDER BY a.messageId ASC ")
     List<MessageDTO> searchMessageByMatchingRoomId(long roomId);
 
+    //유저 채팅 삭제(로그인한 유저 기준)
     @Transactional
     @Modifying
     @Query(value = "DELETE m " +
