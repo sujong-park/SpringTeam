@@ -1,4 +1,4 @@
-// 채팅방 추가
+//채팅방 생성
 async function addRoom(roomRegisterObj) {
     console.log("저장할 데이터:", roomRegisterObj);
     try {
@@ -9,7 +9,7 @@ async function addRoom(roomRegisterObj) {
         throw error; // 에러를 throw하여 호출하는 곳에서 처리할 수 있도록 합니다.
     }
 }
-//채팅방 업데이트
+//채팅방 수정
 async function UpdateRoom(roomInfoObj){
     const response = await axios.put(`/chatingRoom/${roomInfoObj.roomId}`,roomInfoObj)
     return response.data
@@ -41,7 +41,7 @@ async function deleteMessage(messageId){
     const result = await  axios.delete(`/chatingRoom/messageDelete/${messageId}`);
     return result.data
 }
-// 유저조회(방생성 모달에서 유저 조회할때)
+// 유저조회(방생성 할때)
 async function getUserListCreate(userId, keyword) {
     console.log("키워드2 : " + keyword);
     const result = await axios.get(`/chatingRoom/userListCreate/${userId}`, {
@@ -49,7 +49,7 @@ async function getUserListCreate(userId, keyword) {
     });
     return result.data;
 }
-// 유저 조회(채팅방에서 유저 조회할때)
+// 유저 조회(채팅방에 초대할때)
 async function getUserListInvite(roomId, keyword) {
     console.log("키워드2 : " + keyword);
     const result = await axios.get(`/chatingRoom/userListInvite/${roomId}`, {

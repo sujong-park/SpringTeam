@@ -25,13 +25,17 @@ public class chatingRoomController {
     private final ChatingRoomService chatingRoomService;
     private final MessageService messageService;
     private final ChatMemberService chatMemberServiceme;
+
     // 채팅방 목록 조회
     @GetMapping("/roomList")
     public void roomList(@AuthenticationPrincipal UserDetails user
             ,@RequestParam(required = false, defaultValue = "") String keyword
             , Model model) {
 
-        String userId = user.getUsername(); // 현재 유저 ID (테스트용)
+        // 현재 로그인된 유저의 ID를 가져옴
+        String userId = user.getUsername();
+
+        // 채팅방 목록을 검색하여 모델에 추가
         List<ChatingRoomDTO> roomList = chatingRoomService.searchAllChatingRoom(keyword, userId);
         model.addAttribute("roomList", roomList);
         model.addAttribute("keyword", keyword);
@@ -44,39 +48,46 @@ public class chatingRoomController {
 //        chatingRoomService.addChatingRoom(chatRoomRegisterDTO.getChatingRoomDTO(),
 //                chatRoomRegisterDTO.getChatRoomParticipantsDTO());
 //    }
+
+    //채팅방 추가(여러명 한번에 초대)
     @ResponseBody
     @PostMapping("/roomRegister")
     public void registerRoom(@RequestBody ChatRoomAllRegisterDTO chatRoomAllRegisterDTO) {
         log.info("chatRoomAllRegisterDTO: " + chatRoomAllRegisterDTO); // 전체 DTO 출력
         log.info("chatingRoomDTO: " + chatRoomAllRegisterDTO.getChatingRoomDTO());
         log.info("chatRoomParticipantsDTOList: " + chatRoomAllRegisterDTO.getChatRoomParticipantsDTO());
+
+        // 새로운 채팅방을 추가하고 참여자를 초대
         chatingRoomService.addChatingRoom(
                 chatRoomAllRegisterDTO.getChatingRoomDTO(),
                 chatRoomAllRegisterDTO.getChatRoomParticipantsDTO()
         );
     }
 
-
-
-
     //매칭방 나가기
     @ResponseBody
     @PostMapping("/exit")
     public Map<String,String> roomUAD(@RequestBody ChatRoomRegisterDTO chatRoomRegisterDTO){
         log.info("RoomRegisterDTO: " + chatRoomRegisterDTO);
+
+        // 채팅방에서 나가고 참여자 목록에서 제거
         chatingRoomService.exitChatingRoom(chatRoomRegisterDTO.getChatingRoomDTO());
         chatingRoomService.deleteRoomParticipants(chatRoomRegisterDTO.getChatRoomParticipantsDTO().getChatRoomId(),
                 chatRoomRegisterDTO.getChatRoomParticipantsDTO().getSenderId());
+
+        // 해당 사용자의 메시지를 모두 삭제
         messageService.deleteAllMessagesByUser(chatRoomRegisterDTO.getChatRoomParticipantsDTO().getSenderId(),
                 chatRoomRegisterDTO.getChatRoomParticipantsDTO().getChatRoomId());
         Map<String, String> map = Map.of("UserId",chatRoomRegisterDTO.getChatRoomParticipantsDTO().getSenderId());
         return map;
     }
+
     //채팅방 수정
     @ResponseBody
     @PutMapping("/{roomId}")
     public Map<String, Long> updateRoom(@RequestBody ChatingRoomDTO roomDTO,
                                         @PathVariable("roomId") long roomId) {
+        // 채팅방 정보를 수정
         chatingRoomService.updateChatingRoom(roomDTO);
         Map<String, Long> map = Map.of("roomId",roomId);
         return map;
@@ -85,15 +96,16 @@ public class chatingRoomController {
     @ResponseBody
     @DeleteMapping(value = "/{roomId}")
     public Map<String, Long> deleteRoom(@PathVariable("roomId") long roomId) {
+        // 채팅방을 삭제
         chatingRoomService.deleteChatingRoom(roomId);
         Map<String, Long> map = Map.of("roomId",roomId);
-        //log.info("map : " + map);
         return map;
     }
     //채팅 조회
     @ResponseBody
     @GetMapping("/chatList/{roomId}")
     public List<MessageDTO> getChatList(@PathVariable("roomId") long roomId){
+        // 해당 채팅방의 메시지 목록을 조회
         List<MessageDTO> list = messageService.searchMessage(roomId);
         log.info("list : " + list);
         return list;
@@ -114,7 +126,6 @@ public class chatingRoomController {
     public Map<String, Long> deleteMessage(@PathVariable("messageId") long messageId) {
         messageService.deleteMessage(messageId);
         Map<String, Long> map = Map.of("messageId",messageId);
-        //log.info("map : " + map);
         return map;
     }
     //유저 조회
@@ -196,5 +207,4 @@ public class chatingRoomController {
 //        model.addAttribute("user", user);
 //        return null;
 //    }
-
 }

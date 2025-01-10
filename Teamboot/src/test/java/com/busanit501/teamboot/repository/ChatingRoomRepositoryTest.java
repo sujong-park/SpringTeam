@@ -19,6 +19,7 @@ public class ChatingRoomRepositoryTest {
     @Transactional
     public void searchAllMatchingRoomTest() {
         List<ChatingRoom> matchingRooms = chatingRoomRepository.searchAllChatingRoom("","test");
-        log.info(matchingRooms);
+        // 리스트에서 하나씩 들고와서 출력
+        matchingRooms.forEach(room -> log.info("채팅방: " + room));
     }
 }
