@@ -16,6 +16,8 @@
     <link rel="stylesheet" th:href="@{/css/base.css}">
     <link rel="stylesheet" th:href="@{/css/users.css}">
     <link rel="stylesheet" th:href="@{/css/calendar.css}">
+    <link rel="stylesheet" th:href="@{/css/hospital.css}">
+    <link rel="stylesheet" th:href="@{/css/communities.css}">
 
     <!-- js -->
     <!-- <script th:src="@{이동할 경로}"></script> -->
@@ -45,12 +47,12 @@
                         <div class="txt">채팅</div>
                     </a>
                 </li>
-                <li class="sideMenuNotifications">
-                    <a th:href="@{/notifications/list}">
-                        <div class="icon"><img th:src="@{/images/bell.svg}" alt=""></div>
-                        <div class="txt">알림</div>
-                    </a>
-                </li>
+<!--                <li class="sideMenuNotifications">-->
+<!--                    <a th:href="@{/notifications/list}">-->
+<!--                        <div class="icon"><img th:src="@{/images/bell.svg}" alt=""></div>-->
+<!--                        <div class="txt">알림</div>-->
+<!--                    </a>-->
+<!--                </li>-->
                 <li class="sideMenuCalendar">
                     <a th:href="@{/calendar/list}">
                         <div class="icon"><img th:src="@{/images/calendar.svg}" alt="" ></div>
@@ -110,11 +112,11 @@
             </ul>
         </header>
 
-        <th:block th:if="${user} != null">
-            Username<br>
+<!--        <th:block th:if="${user} != null">-->
+<!--            Username<br>-->
 
-            [[${user}]]
-        </th:block>
+<!--            [[${user}]]-->
+<!--        </th:block>-->
 
         <div class="content" layout:fragment="content">
             <!-- content 영역 -->

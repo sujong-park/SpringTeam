@@ -79,7 +79,7 @@
     padding: 5px;
 }
 
-.calendar-board .days-wrap .days li.sunday a .tag {color: #F61414;}
+.calendar-board .days-wrap .days li.holiday a .tag {color: #F61414;}
 
 
 
@@ -128,12 +128,12 @@
 .calendar-detail {
 margin: 50px 0 0;
 }
-.calendar-detail ul {}
-.calendar-detail ul li {
+.calendar-detail > ul {}
+.calendar-detail > ul > li {
     position: relative;
     padding: 0 0 0 100px;
 }
-.calendar-detail ul li .time {
+.calendar-detail > ul > li .time {
     position: absolute;
     top: 0;
     left: 0;
@@ -142,35 +142,35 @@ margin: 50px 0 0;
     font-weight: 600;
     letter-spacing: -0.05em;
 }
-.calendar-detail ul li .card-wrap {
+.calendar-detail > ul > li .card-wrap {
     margin: 15px 0 0;
     padding: 15px 0 0;
     border-top: 1px solid #f0f0f0;
 }
-.calendar-detail ul li .card-wrap .card {
+.calendar-detail > ul > li .card-wrap .card {
     background: #F5F5F5;
     display: flex;
     align-items: center;
     padding: 20px;
     border-radius: 15px;
 }
-.calendar-detail ul li .card-wrap .card .thumb {
+.calendar-detail > ul > li .card-wrap .card .thumb {
     width: 80px;
     height: 80px;
     border-radius: 10px;
     overflow: hidden;
 }
-.calendar-detail ul li .card-wrap .card .thumb img {
+.calendar-detail > ul > li .card-wrap .card .thumb img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
-.calendar-detail ul li .card-wrap .card .title {
+.calendar-detail > ul > li .card-wrap .card .title {
     font-size: 15px;
     font-weight: 600;
     margin: 0 0 0 15px;
 }
-.calendar-detail ul li .card-wrap .card .vertical {margin: 0 0 0 auto;}
+.calendar-detail > ul > li .card-wrap .card .vertical {margin: 0 0 0 auto;}
 
 
 

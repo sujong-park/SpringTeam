@@ -4,7 +4,160 @@
 <body>
 <!-- content -->
 <div layout:fragment="content">
-    <h1 style="text-align: center;">Share List</h1>
+    <div class="hospitalContent contentContainer">
+        <div class="hospitalListWrap">
+            <div class="hospitalListTop">
+                <ul class="filter">
+<!--                    <li class="on">전체</li>-->
+<!--                    <li>24시간</li>-->
+<!--                    <li>동물보호소</li>-->
+                </ul>
+                <a th:href="@{/share/register}" class="btn-normal">나눔등록</a>
+            </div>
+
+            <ul class="hospitalList">
+                <li>
+                    <a class="thumb img" th:href="@{/share/read}">
+                        <div class="hospitalThumbSlide">
+                            <img th:src="@{/images/test/market1.jpg}">
+                        </div>
+                    </a>
+                    <div class="hospitalInfo">
+                        <div class="tag">
+                            <div class="location">
+                                <span>00:00</span><span>24:00</span>
+                            </div>
+                        </div>
+                        <a th:href="@{/share/read}" class="hospitalRoomTitle">부산아이티병원</a>
+                        <div class="address">부산광역시 부산진구 시민공원로 73</div>
+                    </div>
+                </li>
+                <li>
+                    <a class="thumb img" th:href="@{/share/read}">
+                        <div class="hospitalThumbSlide">
+                            <img th:src="@{/images/test/market2.jpg}">
+                        </div>
+                    </a>
+                    <div class="hospitalInfo">
+                        <div class="tag">
+                            <div class="location">
+                                <span>00:00</span><span>24:00</span>
+                            </div>
+                        </div>
+                        <a th:href="@{/share/read}" class="hospitalRoomTitle">부산아이티병원</a>
+                        <div class="address">부산광역시 부산진구 시민공원로 73</div>
+                    </div>
+                </li>
+                <li>
+                    <a class="thumb img" th:href="@{/share/read}">
+                        <div class="hospitalThumbSlide">
+                            <img th:src="@{/images/test/market3.jpg}">
+                        </div>
+                    </a>
+                    <div class="hospitalInfo">
+                        <div class="tag">
+                            <div class="location">
+                                <span>00:00</span><span>24:00</span>
+                            </div>
+                        </div>
+                        <a th:href="@{/share/read}" class="hospitalRoomTitle">부산아이티병원</a>
+                        <div class="address">부산광역시 부산진구 시민공원로 73</div>
+                    </div>
+                </li>
+                <li>
+                    <a class="thumb img" th:href="@{/share/read}">
+                        <div class="hospitalThumbSlide">
+                            <img th:src="@{/images/test/market4.jpg}">
+                        </div>
+                    </a>
+                    <div class="hospitalInfo">
+                        <div class="tag">
+                            <div class="location">
+                                <span>00:00</span><span>24:00</span>
+                            </div>
+                        </div>
+                        <a th:href="@{/share/read}" class="hospitalRoomTitle">부산아이티병원</a>
+                        <div class="address">부산광역시 부산진구 시민공원로 73</div>
+                    </div>
+                </li>
+                <li>
+                    <a class="thumb img" th:href="@{/share/read}">
+                        <div class="hospitalThumbSlide">
+                            <img th:src="@{/images/test/market5.jpg}">
+                        </div>
+                    </a>
+                    <div class="hospitalInfo">
+                        <div class="tag">
+                            <div class="location">
+                                <span>00:00</span><span>24:00</span>
+                            </div>
+                        </div>
+                        <a th:href="@{/share/read}" class="hospitalRoomTitle">부산아이티병원</a>
+                        <div class="address">부산광역시 부산진구 시민공원로 73</div>
+                    </div>
+                </li>
+                <li>
+                    <a class="thumb img" th:href="@{/share/read}">
+                        <div class="hospitalThumbSlide">
+                            <img th:src="@{/images/test/market6.jpg}">
+                        </div>
+                    </a>
+                    <div class="hospitalInfo">
+                        <div class="tag">
+                            <div class="location">
+                                <span>00:00</span><span>24:00</span>
+                            </div>
+                        </div>
+                        <a th:href="@{/share/read}" class="hospitalRoomTitle">부산아이티병원</a>
+                        <div class="address">부산광역시 부산진구 시민공원로 73</div>
+                    </div>
+                </li>
+                <li>
+                    <a class="thumb img" th:href="@{/share/read}">
+                        <div class="hospitalThumbSlide">
+                            <img th:src="@{/images/test/market7.jpg}">
+                        </div>
+                    </a>
+                    <div class="hospitalInfo">
+                        <div class="tag">
+                            <div class="location">
+                                <span>00:00</span><span>24:00</span>
+                            </div>
+                        </div>
+                        <a th:href="@{/share/read}" class="hospitalRoomTitle">부산아이티병원</a>
+                        <div class="address">부산광역시 부산진구 시민공원로 73</div>
+                    </div>
+                </li>
+                <li>
+                    <a class="thumb img" th:href="@{/share/read}">
+                        <div class="hospitalThumbSlide">
+                            <img th:src="@{/images/test/market8.jpg}">
+                        </div>
+                    </a>
+                    <div class="hospitalInfo">
+                        <div class="tag">
+                            <div class="location">
+                                <span>00:00</span><span>24:00</span>
+                            </div>
+                        </div>
+                        <a th:href="@{/share/read}" class="hospitalRoomTitle">부산아이티병원</a>
+                        <div class="address">부산광역시 부산진구 시민공원로 73</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="pagination">
+            <ul>
+                <li class="page-item active">
+                    <a class="page-link">1</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link">2</a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
 <!-- content -->
 

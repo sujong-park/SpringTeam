@@ -81,62 +81,6 @@
                         </div>
                     </a>
                 </li>
-                <li>
-                    <a class="thumb img" th:href="@{/pet/read}">
-                        <div class="petThumbSlide">
-                            <img th:src="@{/images/test/gallery3.jpg}">
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a class="thumb img" th:href="@{/pet/read}">
-                        <div class="petThumbSlide">
-                            <img th:src="@{/images/test/gallery4.jpg}">
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a class="thumb img" th:href="@{/pet/read}">
-                        <div class="petThumbSlide">
-                            <img th:src="@{/images/test/gallery5.jpg}">
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a class="thumb img" th:href="@{/pet/read}">
-                        <div class="petThumbSlide">
-                            <img th:src="@{/images/test/gallery6.jpg}">
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a class="thumb img" th:href="@{/pet/read}">
-                        <div class="petThumbSlide">
-                            <img th:src="@{/images/test/gallery7.jpg}">
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a class="thumb img" th:href="@{/pet/read}">
-                        <div class="petThumbSlide">
-                            <img th:src="@{/images/test/gallery8.jpg}">
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a class="thumb img" th:href="@{/pet/read}">
-                        <div class="petThumbSlide">
-                            <img th:src="@{/images/test/gallery9.jpg}">
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a class="thumb img" th:href="@{/pet/read}">
-                        <div class="petThumbSlide">
-                            <img th:src="@{/images/test/gallery10.jpg}">
-                        </div>
-                    </a>
-                </li>
             </ul>
         </div>
 
@@ -176,7 +120,7 @@
 <!-- javascript -->
 <script layout:fragment="javascript" th:inline="javascript">
     document.getElementById("galleryListBtn").addEventListener("click", function() {
-        window.location.href = "/pet/list"; // 원하는 페이지로 변경
+        window.location.href = "/gallery/list"; // 원하는 페이지로 변경
     });
     document.getElementById("petListBtn").addEventListener("click", function() {
         window.location.href = "/pet/list"; // 원하는 페이지로 변경
