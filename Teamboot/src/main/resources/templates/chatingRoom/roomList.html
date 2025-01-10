@@ -1,0 +1,905 @@
+<!doctype html>
+<html lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/base.html}">
+<head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+              integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+              crossorigin="anonymous">
+    <style>
+        /* 기존 스타일 유지 */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+            background-color: #f5f5f5;
+        }
+
+        .chat-container {
+            display: flex;
+            width: 100%;
+        }
+
+        .chat-list {
+            width: 30%;
+            background-color: #ffffff;
+            border-right: 1px solid #ddd;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .chat-list-header {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            background-color: #f9f9f9;
+        }
+
+        .icon-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .search-container {
+            display: inline-block;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        .search-container input {
+            width: 100px;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .chat-list-item {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .chat-list-item:hover {
+            background-color: #f9f9f9;
+        }
+
+        .room-info-modal-body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .chat-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #ddd;
+            margin-right: 15px;
+        }
+
+        .chat-preview {
+            flex: 1;
+        }
+
+        .chat-preview h4 {
+            margin: 0 0 5px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .chat-preview p {
+            margin: 0;
+            font-size: 14px;
+            color: #777;
+        }
+
+        .chat-window {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+        }
+
+        .chat-header {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column-reverse; /* 메시지가 아래에서 위로 올라가게 */
+        }
+
+        .message {
+            margin: 10px 0;
+        }
+
+        .message.user {
+            text-align: right;
+        }
+
+        .message-content {
+            display: inline-block;
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .message.user .message-content {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .message.other .message-content {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .chat-input {
+            padding: 10px;
+            display: flex;
+            border-top: 1px solid #ddd;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .chat-input button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            font-size: 14px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .chat-input button:hover {
+            background-color: #0056b3;
+        }
+
+        .friend-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .friend-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 20px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        .friend-item:hover {
+            background-color: #eef;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .friend-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            appearance: none;
+            border: 2px solid #007bff;
+            border-radius: 50%;
+            outline: none;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .friend-item input[type="checkbox"]:checked {
+            background-color: #007bff;
+            border-color: #0056b3;
+        }
+
+        .friend-item label {
+            flex: 1;
+            margin-left: 15px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+        }
+
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="chat-container">
+        <!--채팅방 목록-->
+        <div class="chat-list">
+            <div class="chat-list-header">
+                <div class="search-container" id="searchContainer">
+                    <form action="/chatingRoom/roomList" method="get" id="searchForm">
+                        <input type="text" name="keyword" placeholder="채팅방 제목으로 검색..." th:value="${keyword}">
+                        <!--                        <button type="submit" style="display: none;">검색</button>-->
+                    </form>
+                </div>
+                <!--                <button class="icon-button" id="searchButton">🔍</button>-->
+                <button class="icon-button" id="addButton">➕</button>
+            </div>
+            <div th:each="room : ${roomList}" class="chatInfo">
+                <div class="chat-avatar"></div>
+                <div class="chat-preview">
+                    <h4 th:text="${room.roomId}" hidden="hidden">방번호</h4>
+                    <h4 th:text="${room.hostId}" hidden="hidden">호스트번호</h4>
+                    <h4 th:text="${room.title}">채팅방 제목</h4>
+                    <span th:text="${room.currentParticipants + ' / ' + room.maxParticipants}">0 / 0</span>
+                    <p th:text="${room.description}">채팅방 설명</p>
+                    <h4 th:text="${room.status}" hidden="hidden">상태</h4>
+                    <h4 th:text="${room.currentParticipants}" hidden="hidden">현제인원</h4>
+                    <h4 th:text="${room.maxParticipants}" hidden="hidden">최대인원</h4>
+                </div>
+            </div>
+        </div>
+        <!--채팅창-->
+        <div class="chat-window">
+            <div class="chat-header">
+                채팅방
+                <button class="icon-button" id="inviteButton" title="친구 초대">👥</button></div>
+            <div class="chat-messages" id="chatMessages">
+                <!-- 채팅 메시지들이 여기에 동적으로 추가됨 -->
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chatMessageInput" placeholder="메시지를 입력하세요...">
+                <button id="sendMessageButton">전송</button>
+            </div>
+        </div>
+        <!--채팅방 생성모달-->
+        <div class="modal fade registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="registerModalLabel">채팅방 생성</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- 제목, 설명, 최대 인원 입력 -->
+                        <div class="mb-3">
+                            <label for="title" class="form-label">방 제목</label>
+                            <input type="text" class="form-control title" id="title" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">설명</label>
+                            <input type="text" class="form-control description" id="description" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="maxParticipants" class="form-label">최대 인원</label>
+                            <input type="number" class="form-control maxParticipants" id="maxParticipants" />
+                        </div>
+                        <!-- 초대 유저 검색 및 선택 -->
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="createRoomSearchUser" placeholder="초대할 유저 검색" />
+                        </div>
+                        <div class="create-room-user-list overflow-auto" style="max-height: 200px;">
+                            <!-- 유저 목록이 동적으로 추가됩니다 -->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary registerBtn">방 생성</button>
+                        <button type="button" class="btn btn-secondary registerCloseBtn" data-bs-dismiss="modal">닫기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!--채팅방 정보 모달-->
+        <div class="modal fade roomInfoModal" tabindex="-1" aria-labelledby="roomInfoModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="roomInfoModalLabel">방 정보</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center room-info-modal-body">
+                        <div class="chat-avatar"></div>
+                        <h4 class="room-title"></h4>
+                        <p class="room-participants"></p>
+                        <p class="room-description"></p>
+                    </div>
+                    <!-- 모달 하단 버튼들 -->
+                    <div class="modal-footer">
+                        <!-- 수정, 삭제, 닫기 버튼 (호스트일 때만 표시) -->
+                        <button type="button" class="btn btn-danger room-delete-btn" style="display: none;">삭제</button>
+                        <button type="button" class="btn btn-warning room-edit-btn" style="display: none;">수정</button>
+                        <!-- 나가기, 닫기 버튼 (일반 사용자가 들어갔을 때 표시) -->
+                        <button type="button" class="btn btn-danger room-leave-btn" style="display: none;">방 나가기</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 수정 모달 -->
+        <div class="modal fade editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">채팅방 수정</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">방 이름</span>
+                            <input type="text" class="form-control edit-title">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">설명</span>
+                            <input type="text" class="form-control edit-description">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">최대인원</span>
+                            <input type="number" class="form-control edit-maxParticipants">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">상태</span>
+                            <select class="form-select edit-status">
+                                <option value="Open">Open</option>
+                                <option value="Closed">Closed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary editCloseBtn">닫기</button>
+                        <button type="button" class="btn btn-primary editBtn">수정 완료</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 친구 목록 모달 -->
+        <div class="modal fade inviteModal" tabindex="-1" aria-labelledby="inviteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- 헤더: 검색 기능 -->
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="inviteModalLabel">친구 초대</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- 검색 입력 -->
+                        <div class="search-bar mb-3">
+                            <input type="text" class="form-control" id="searchUser" placeholder="검색어를 입력하세요">
+                        </div>
+                        <!-- 유저 목록 -->
+                        <div class="friend-list overflow-auto" style="max-height: 400px;">
+                            <!-- 유저 목록이 동적으로 추가됩니다 -->
+                        </div>
+                    </div>
+                    <!-- 푸터: 초대 및 닫기 버튼 -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary inviteBtn">초대</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/js/chatingRoom.js"></script>
+</div>
+<script layout:fragment="javascript" th:inline="javascript">
+    const currentUser = [[${#authentication.principal.username}]];  // 현재 유저 ID (변경하지 않음)
+
+    // 채팅방 생성 모달
+    const registerModal = new bootstrap.Modal(document.querySelector(".registerModal"));
+    const registerBtn = document.querySelector(".registerBtn");
+    const registerCloseBtn = document.querySelector(".registerCloseBtn");
+
+    const title = document.querySelector(".title");
+    const description = document.querySelector(".description");
+    const maxParticipants = document.querySelector(".maxParticipants");
+
+    // 유저 검색 및 렌더링
+    const userSearchInput = document.querySelector("#createRoomSearchUser");
+    const userListContainer = document.querySelector(".create-room-user-list");
+    let selectedUsers = [];
+
+    // 유저 검색 이벤트
+    userSearchInput.addEventListener("input", async function () {
+        const keyword = userSearchInput.value.trim();
+        try {
+            const userList = await getUserListCreate(currentUser, keyword);
+            renderCreateRoomUserList(userList);
+        } catch (error) {
+            console.error("유저 검색 실패:", error);
+        }
+    });
+
+    // 유저 목록 렌더링
+    function renderCreateRoomUserList(userList) {
+        userListContainer.innerHTML = "";
+
+        if (userList.length === 0) {
+            userListContainer.innerHTML = '<p class="text-muted">검색 결과가 없습니다.</p>';
+            return;
+        }
+
+        userList.forEach(user => {
+            const userItem = document.createElement("div");
+            userItem.classList.add("user-item");
+            userItem.innerHTML = `
+            <input type="checkbox" id="user-${user.mid}" value="${user.mid}">
+            <label for="user-${user.mid}">${user.name}</label>
+        `;
+            userListContainer.appendChild(userItem);
+        });
+
+        // 체크박스 선택 이벤트
+        userListContainer.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
+            checkbox.addEventListener("change", function () {
+                const userId = this.value;
+                if (this.checked) {
+                    console.log("선택한 유저 정보 :" + userId)
+                    selectedUsers.push(userId);
+                } else {
+                    console.log("선택해제한 유저 정보 :" + userId)
+                    selectedUsers = selectedUsers.filter(id => id !== userId);
+                }
+            });
+        });
+    }
+
+    document.querySelector('#addButton').addEventListener('click', function (e) {
+        console.log("방 추가 클릭");
+        registerModal.show();
+
+        // + 버튼 클릭 시, 빈 키워드로 유저 목록 조회
+        const keyword = '';  // 빈 문자열로 설정
+        getUserListCreate(currentUser, keyword)
+            .then(userList => {
+                renderCreateRoomUserList(userList);  // 유저 목록 렌더링
+            })
+            .catch(error => {
+                console.error("유저 검색 실패:", error);
+            });
+    });
+
+    // 모달 닫기
+    registerCloseBtn.addEventListener("click", function (e) {
+        registerModal.hide();
+    });
+
+    // 방 생성 버튼 클릭 시
+    registerBtn.addEventListener("click", function (e) {
+        console.log("selectedUsers:", selectedUsers); // 선택된 사용자 리스트 확인
+
+        const maxParticipantsValue = parseInt(maxParticipants.value, 10); // 숫자로 변환
+        if (isNaN(maxParticipantsValue)) {
+            alert("최대 참여 인원 수를 올바르게 입력해주세요.");
+            return;
+        }
+
+        if (maxParticipantsValue < selectedUsers.length + 1) {
+            alert(maxParticipantsValue + "명 이상 선택했습니다.(선택한 인원 " + selectedUsers.length + "명)");
+            return;
+        }
+
+        const chatingRoomDTO = {
+            hostId: currentUser,
+            title: title.value,
+            description: description.value,
+            maxParticipants: maxParticipantsValue, // 숫자로 저장
+            currentParticipants: selectedUsers.length + 1,
+            status: "Open"
+        };
+
+        const chatRoomParticipantsDTO = [
+            ...selectedUsers.map(userId => ({
+                senderId: userId,
+            })),
+            { senderId: currentUser }
+        ];
+
+        const roomRegisterObj = {
+            chatingRoomDTO,
+            chatRoomParticipantsDTO
+        };
+
+        console.log("roomRegisterObj:", roomRegisterObj);
+
+        addRoom(roomRegisterObj)
+            .then(result => {
+                console.log("채팅방 생성 성공:", result);
+                alert("채팅방을 생성했습니다.");
+                registerModal.hide();
+                location.reload();
+            })
+            .catch(e => {
+                console.error("채팅방 생성 실패:", e);
+                alert("채팅방 생성 실패. 서버에 문제가 있습니다.");
+            });
+    });
+
+
+
+
+
+
+
+
+    // 방 정보 모달
+    const roomInfoModal = new bootstrap.Modal(document.querySelector(".roomInfoModal"));
+    const chatItems = document.querySelectorAll(".chat-avatar");
+
+    chatItems.forEach(chatItem => {
+        chatItem.addEventListener("click", function () {
+            console.log("방 정보 클릭")
+            // 방 정보 가져오기
+            const roomId = this.closest(".chatInfo").querySelector("h4:nth-of-type(1)").innerText;
+            const hostId = this.closest(".chatInfo").querySelector("h4:nth-of-type(2)").innerText;
+            const roomTitle = this.closest(".chatInfo").querySelector("h4:nth-of-type(3)").innerText;
+            const status = this.closest(".chatInfo").querySelector("h4:nth-of-type(4)").innerText;
+            const currentParticipants = this.closest(".chatInfo").querySelector("h4:nth-of-type(5)").innerText;
+            const maxParticipants = this.closest(".chatInfo").querySelector("h4:nth-of-type(6)").innerText;
+            const roomParticipants = this.closest(".chatInfo").querySelector(".chat-preview span").innerText;
+            const roomDescription = this.closest(".chatInfo").querySelector(".chat-preview p").innerText;
+
+            document.querySelector(".room-title").innerText = roomTitle;
+            document.querySelector(".room-participants").innerText = roomParticipants;
+            document.querySelector(".room-description").innerText = roomDescription;
+
+            // 유저가 방의 호스트인지 확인
+            if (hostId == currentUser) {
+                // 호스트일 때 수정, 삭제, 닫기 버튼을 표시
+                document.querySelector(".room-delete-btn").style.display = "inline-block";
+                document.querySelector(".room-edit-btn").style.display = "inline-block";
+                document.querySelector(".room-leave-btn").style.display = "none";
+            } else {
+                // 일반 사용자일 때 나가기, 닫기 버튼을 표시
+                document.querySelector(".room-delete-btn").style.display = "none";
+                document.querySelector(".room-edit-btn").style.display = "none";
+                document.querySelector(".room-leave-btn").style.display = "inline-block";
+            }
+
+            roomInfoModal.show();
+
+            // 채팅방 삭제
+            document.querySelector(".room-delete-btn").addEventListener("click",
+                function (e) {
+                    deleteRoom(roomId)
+                        .then(result => {
+                            alert("채팅방이 삭제되었습니다.");
+                            roomInfoModal.hide();
+                            location.reload();
+                        })
+                        .catch((e) => {
+                            alert("채팅방 삭제에 실패했습니다.");
+                        });
+                },false);
+
+            // 채팅방 나가기
+            document.querySelector(".room-leave-btn").addEventListener("click",
+                function (e){
+                    const chatingRoomDTO = {
+                        roomId:roomId,
+                        title: roomTitle,
+                        description: roomDescription,
+                        maxParticipants: maxParticipants,
+                        currentParticipants: currentParticipants,
+                        status: status
+                    };
+                    const chatRoomParticipantsDTO = {
+                        chatRoomId:roomId,
+                        senderId: currentUser
+                    };
+                    const exitObj = {
+                        chatingRoomDTO: chatingRoomDTO,
+                        chatRoomParticipantsDTO: chatRoomParticipantsDTO
+                    };
+                    exitUser(exitObj)
+                        .then(result => {
+                            alert(result+"님이 방에서 나갔습니다.");
+                            roomInfoModal.hide();
+                            location.reload();
+                        })
+                        .catch(e => {
+                            console.log("방을 나가는 과정에서 예외가 발생함")
+                            alert("방을 나가는 과정에서 예외가 발생함");
+                        });
+            })
+
+            // 수정 모달
+            const editModal = new bootstrap.Modal(document.querySelector(".editModal"));
+            const editBtn = document.querySelector(".editBtn");
+            const editCloseBtn = document.querySelector(".editCloseBtn");
+
+            const editTitle = document.querySelector(".edit-title");
+            const editDescription = document.querySelector(".edit-description");
+            const editMaxParticipants = document.querySelector(".edit-maxParticipants");
+            const editStatus = document.querySelector(".edit-status");
+
+            // 수정 버튼 클릭 이벤트
+            document.querySelector(".room-edit-btn").addEventListener("click", function () {
+                console.log("수정 버튼 클릭");
+
+                // 기존 값 가져오기
+                editTitle.value = document.querySelector(".room-title").innerText;
+                editDescription.value = document.querySelector(".room-description").innerText;
+                editMaxParticipants.value = document.querySelector(".room-participants").innerText.split(" / ")[1];
+                editStatus.value = status;
+
+                editModal.show();
+            });
+
+            editBtn.addEventListener("click", function () {
+                const updatedRoom = {
+                    roomId:roomId,
+                    title: editTitle.value,
+                    description: editDescription.value,
+                    maxParticipants: editMaxParticipants.value,
+                    status: editStatus.value
+                };
+
+                // 방 수정 API 호출
+                UpdateRoom(updatedRoom)
+                    .then(result => {
+                        alert("채팅방이 수정되었습니다.");
+                        editModal.hide();
+                        location.reload();
+                    })
+                    .catch(e => {
+                        alert("채팅방 수정에 실패했습니다.");
+                    });
+            },false);
+
+            editCloseBtn.addEventListener("click", function () {
+                editModal.hide();
+            });
+        });
+    });
+
+    // 채팅방 클릭 시 roomId 저장 및 중복 새로고침 방지
+    let currentRoomId = null;
+    let refreshInterval = null; // Interval ID 저장 변수
+
+    let currentRoomInfo = null;
+
+    document.querySelectorAll(".chat-preview").forEach(chatPreview => {
+        chatPreview.addEventListener("click", function () {
+            const newRoomId = this.closest(".chatInfo").querySelector("h4:nth-of-type(1)").innerText.trim();
+
+            // 현재 방과 다른 방을 클릭했을 때만 처리
+            if (currentRoomId !== newRoomId) {
+                currentRoomId = newRoomId;
+                console.log(`방 번호: ${currentRoomId}`);
+
+                // 방 정보 초기화 및 새로운 정보로 설정
+                currentRoomInfo = {
+                    roomId: newRoomId,
+                    roomTitle: this.closest(".chatInfo").querySelector("h4:nth-of-type(3)").innerText,
+                    hostId: this.closest(".chatInfo").querySelector("h4:nth-of-type(2)").innerText,
+                    currentParticipants: this.closest(".chatInfo").querySelector("h4:nth-of-type(5)").innerText,
+                    maxParticipants: this.closest(".chatInfo").querySelector("h4:nth-of-type(6)").innerText,
+                };
+
+                console.log("현재 방 정보:", currentRoomInfo);
+                // 이전 Interval 제거
+                if (refreshInterval !== null) {
+                    clearInterval(refreshInterval);
+                    refreshInterval = null;
+                }
+
+                // 채팅 메시지 로드
+                loadChatMessages(currentRoomId);
+
+                // 새로운 Interval 설정
+                refreshInterval = setInterval(function () {
+                    loadChatMessages(currentRoomId);
+                }, 5000);
+            }
+        });
+    });
+
+    // 채팅 내역 가져오기 함수
+    function loadChatMessages(roomId) {
+        console.log(`채팅방 ${roomId}의 메시지를 새로고침합니다.`);
+        getChatList(roomId)
+            .then(result => {
+                const chatMessages = document.getElementById("chatMessages");
+                chatMessages.innerHTML = "";
+                result.reverse().forEach(chatMessage => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.classList.add('message', chatMessage.senderId === currentUser ? 'user' : 'other');
+                    messageDiv.innerHTML = `
+                    ${chatMessage.senderId !== currentUser ? `<div class="sender-name"><strong>${chatMessage.senderName}</strong></div>` : ''}
+                    <div class="message-content">${chatMessage.content}</div>`;
+
+                    // 본인 메시지에만 클릭 이벤트 추가
+                    if (chatMessage.senderId === currentUser) {
+                        messageDiv.addEventListener('click', () => {
+                            console.log("삭제할 messageId"+chatMessage.messageId);
+                            const confirmDelete = confirm("이 메시지를 삭제하시겠습니까?");
+                            if (confirmDelete) {
+                                deleteMessage(chatMessage.messageId)
+                                    .then(response => {
+                                        if (response.messageId === chatMessage.messageId) {
+                                            console.log("메시지 삭제 성공");
+                                            loadChatMessages(roomId); // 메시지 새로고침
+                                        }
+                                    })
+                                    .catch(err => {
+                                        console.error("메시지 삭제 중 오류 발생:", err);
+                                        alert("메시지 삭제에 실패했습니다.");
+                                    });
+                            }
+                        });
+                    }
+                    chatMessages.appendChild(messageDiv);
+                });
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            })
+            .catch(e => alert("채팅 내역 조회 중 오류 발생"));
+    }
+
+    // 메시지 전송 및 채팅 새로고침
+    document.querySelector("#sendMessageButton").addEventListener("click", sendMessage);
+    document.querySelector("#chatMessageInput").addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {  // 엔터 키가 눌렸을 때
+            event.preventDefault();  // 기본 동작인 줄 바꿈을 방지
+            sendMessage();
+        }
+    });
+
+    async function sendMessage() {
+        if (!currentRoomId) {
+            return alert("채팅방을 먼저 선택해주세요.");
+        }
+
+        const messageInput = document.querySelector("#chatMessageInput");
+        const messageContent = messageInput.value.trim();
+        if (messageContent === "") return alert("메시지를 입력해주세요.");
+
+        const messageObj = {
+            senderId: currentUser,
+            content: messageContent,
+            chatRoomId: currentRoomId
+        };
+
+        addMessage(messageObj)
+            .then(() => {
+                messageInput.value = "";  // 메시지 입력창 초기화
+                loadChatMessages(currentRoomId);  // 채팅 새로고침
+            })
+            .catch(e => alert("메시지 작성 중 오류 발생"));
+    }
+
+
+    // 친구 초대 모달
+    const inviteModal = new bootstrap.Modal(document.querySelector(".inviteModal"));
+    const inviteButton = document.querySelector("#inviteButton");
+    const inviteBtn = document.querySelector(".inviteBtn");
+    const searchInput = document.querySelector("#searchUser");
+    const friendListContainer = document.querySelector(".friend-list");
+
+    inviteButton.addEventListener("click", function () {
+        console.log("친구 초대 클릭");
+        inviteModal.show();
+        fetchUserList(); // 유저 목록 초기 로드
+    });
+
+    // 초대 버튼 클릭 시 실행
+    inviteBtn.addEventListener("click", function () {
+        const selectedUsers = Array.from(
+            document.querySelectorAll('.friend-item input[type="checkbox"]:checked')
+        ).map(checkbox => checkbox.value);
+
+        console.log("선택된 유저 ID들:", selectedUsers);
+
+        if (selectedUsers.length === 0) {
+            alert("초대할 유저를 선택하세요.");
+            return;
+        }
+
+        // 현재 방 정보 확인
+        console.log("현재 채팅방 정보:", currentRoomInfo);
+
+        const availableSlots = currentRoomInfo.maxParticipants - currentRoomInfo.currentParticipants;
+
+        if (selectedUsers.length > availableSlots) {
+            alert(selectedUsers.length + "명을 초대할 수 없습니다. 남은 자리는 " + availableSlots + "명입니다.");
+            return;
+        }
+
+        const inviteObj = selectedUsers.map(mid => ({
+            chatingRoomDTO: {
+                roomId: currentRoomId,
+                currentParticipants: currentRoomInfo.currentParticipants,
+                maxParticipants: currentRoomInfo.maxParticipants
+            },
+            chatRoomParticipantsDTO: {
+                chatRoomId: currentRoomId,
+                senderId: mid
+            }
+        }));
+
+        console.log("초대할 유저 목록:", inviteObj);
+
+        inviteUser(inviteObj)
+            .then(result => {
+                alert("초대를 완료 했습니다.");
+                location.reload();
+            })
+            .catch(e => alert("초대 중 오류 발생"));
+    });
+
+
+    // 유저 검색
+    searchInput.addEventListener("input", function () {
+        const keyword = searchInput.value.trim();
+        console.log("검색어1 :", keyword);
+        fetchUserList(keyword);  // 검색 키워드에 따라 유저 목록 갱신
+    });
+
+
+    // 유저 목록 가져오기
+    async function fetchUserList(keyword) {
+        if (!currentRoomId) {
+            return alert("채팅방을 먼저 선택해주세요.");
+        }
+        try {
+            const userList = await getUserListInvite(currentRoomId, keyword);
+            console.log("받아온 유저 목록:", userList); // 디버깅
+            renderUserList(userList);
+        } catch (error) {
+            console.error("유저 목록 가져오기 실패:", error);
+        }
+    }
+
+    // 유저 목록 렌더링
+    function renderUserList(userList) {
+        const friendListContainer = document.querySelector(".friend-list");
+        friendListContainer.innerHTML = "";
+
+        if (userList.length === 0) {
+            friendListContainer.innerHTML = '<p class="text-muted">검색 결과가 없습니다.</p>';
+            return;
+        }
+
+        userList.forEach(user => {
+            console.log('렌더링 중 유저 정보:', user); // 디버깅
+            const userItem = document.createElement("div");
+            userItem.classList.add("friend-item");
+            userItem.innerHTML = `
+            <input type="checkbox" id="friend-${user.mid}" value="${user.mid}">
+            <label for="friend-${user.mid}">${user.name}</label>
+        `;
+            friendListContainer.appendChild(userItem);
+        });
+    }
+
+
+</script>
+</body>
+</html>
