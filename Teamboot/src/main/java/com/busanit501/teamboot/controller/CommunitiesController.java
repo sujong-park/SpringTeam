@@ -110,26 +110,32 @@ public class CommunitiesController {
                                           @RequestParam(defaultValue = "0") int page,
                                           @RequestParam(defaultValue = "10") int size) {
         log.info("listCommunitiesWithList called with page: {}, size: {}", page, size);
+
         Pageable pageable = PageRequest.of(page, size);
         Page<CommunityWithCommentDTO> communityPage = communityService.getAllCommunity(pageable);
 
         model.addAttribute("communityPage", communityPage);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", communityPage.getTotalPages());
+        model.addAttribute("prev", communityPage.hasPrevious());
+        model.addAttribute("next", communityPage.hasNext());
+
         return "communities/list";
     }
 
     // 게시글 상세 조회 (댓글 포함)
-    @GetMapping("/{id}")
-    public String getCommunityDetail(@PathVariable Long id, Model model,
-                                     @AuthenticationPrincipal UserDetails userDetails) {
-        // 게시글 가져오기
-        Community community = communityService.getCommunityById(id);
+    @GetMapping("/{communityId}")
+    public String getCommunityDetail(
+            @PathVariable Long communityId,
+            @RequestParam(defaultValue = "1") int page,
+            Model model,
+            @AuthenticationPrincipal UserDetails userDetails) {
 
-        // 댓글 가져오기 (기본 페이지 및 크기 설정)
-        int page = 1; // 기본값
-        int size = 10; // 기본값
-        PageResponseDTO<CommentsDTO> comments = commentsService.getCommentsByCommunity(id, page, size);
+        // 게시글 가져오기
+        Community community = communityService.getCommunityById(communityId);
+
+        // 댓글 가져오기
+        PageResponseDTO<CommentsDTO> commentsPage = commentsService.getCommentsByCommunity(communityId, page, 10);
 
         // 로그인한 사용자 ID 가져오기
         String loggedInUserId = null;
@@ -137,9 +143,14 @@ public class CommunitiesController {
             loggedInUserId = userDetails.getUsername(); // UserDetails의 username은 ID로 매핑
         }
 
-        // Thymeleaf로 데이터 전달
-        model.addAttribute("comments", comments.getDtoList());
+        // 데이터 전달
         model.addAttribute("community", community);
+        model.addAttribute("comments", commentsPage.getDtoList());
+        model.addAttribute("page", commentsPage.getPage());
+        model.addAttribute("start", commentsPage.getStart());
+        model.addAttribute("end", commentsPage.getEnd());
+        model.addAttribute("prev", commentsPage.isPrev());
+        model.addAttribute("next", commentsPage.isNext());
         model.addAttribute("loggedInUserId", loggedInUserId);
 
         return "communities/read";

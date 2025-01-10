@@ -39,15 +39,24 @@
     <!-- 페이징 -->
     <nav aria-label="Page navigation" class="mt-4">
         <ul class="pagination justify-content-center">
+            <!-- 이전 버튼 -->
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                <a class="page-link" th:href="@{/communities(page=${currentPage - 1})}">이전</a>
+                <a class="page-link" th:href="@{/communities/list(page=${currentPage - 1})}" aria-label="이전">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
             </li>
+
+            <!-- 페이지 번호 -->
             <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                 th:classappend="${i == currentPage} ? 'active'">
-                <a class="page-link" th:href="@{/communities(page=${i})}" th:text="${i + 1}"></a>
+                <a class="page-link" th:href="@{'/communities/list?page=' + ${i}}" th:text="${i + 1}"></a>
             </li>
+
+            <!-- 다음 버튼 -->
             <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
-                <a class="page-link" th:href="@{/communities(page=${currentPage + 1})}">다음</a>
+                <a class="page-link" th:href="@{/communities/list(page=${currentPage + 1})}" aria-label="다음">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
             </li>
         </ul>
     </nav>

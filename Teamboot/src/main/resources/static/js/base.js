@@ -44,23 +44,24 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("댓글 작성 폼을 찾을 수 없습니다.");
     }
 
-    function loadComments() {
+    function loadComments(page = 1) {
         const communityId = document.querySelector('[name="communityId"]').value;
-
-        const page = 1; // 페이지 번호
-        const size = 10; // 페이지 크기
+        const size = 10; // 한 페이지에 보여줄 댓글 수
 
         fetch(`/comments/${communityId}?page=${page}&size=${size}`)
             .then(response => response.json())
             .then(data => {
                 const list = document.getElementById('comments-list');
+                const pagination = document.querySelector('.pagination');
+
+                // 댓글 목록 렌더링
                 if (data.dtoList && data.dtoList.length > 0) {
                     list.innerHTML = data.dtoList.map(comment => `
                     <div class="card shadow-sm mb-3">
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
                                 <strong>${comment.memberName}</strong>
-                                <small class="text-muted">${new Date(comment.regDate).toLocaleDateString()}</small>
+                                <small class="text-muted">${new Date(comment.created_at).toLocaleDateString()}</small>
                             </div>
                             <p class="mt-2 mb-0">${comment.content}</p>
                         </div>
@@ -69,7 +70,25 @@ document.addEventListener("DOMContentLoaded", function () {
                 } else {
                     list.innerHTML = `<p class="text-center py-4 text-muted">아직 댓글이 없습니다. 첫 번째 댓글을 남겨보세요!</p>`;
                 }
-            });
+
+                // 페이지 버튼 렌더링
+                if (pagination) {
+                    pagination.innerHTML = `
+                    <li class="page-item ${data.prev ? '' : 'disabled'}">
+                        <a class="page-link" href="#" onclick="loadComments(${data.start - 1})">이전</a>
+                    </li>
+                    ${Array.from({ length: data.end - data.start + 1 }, (_, i) => `
+                        <li class="page-item ${data.page == data.start + i ? 'active' : ''}">
+                            <a class="page-link" href="#" onclick="loadComments(${data.start + i})">${data.start + i}</a>
+                        </li>
+                    `).join('')}
+                    <li class="page-item ${data.next ? '' : 'disabled'}">
+                        <a class="page-link" href="#" onclick="loadComments(${data.end + 1})">다음</a>
+                    </li>
+                `;
+                }
+            })
+            .catch(error => console.error('댓글 로드 에러:', error));
     }
 
     window.showUpdateForm = function(commentId, currentContent) {
