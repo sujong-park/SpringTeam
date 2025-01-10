@@ -3,9 +3,11 @@ package com.busanit501.teamboot.service;
 import com.busanit501.teamboot.domain.Category;
 import com.busanit501.teamboot.domain.Community;
 import com.busanit501.teamboot.domain.Member;
+import com.busanit501.teamboot.dto.CommunityDTO;
 import com.busanit501.teamboot.dto.CommunityWithCommentDTO;
 import com.busanit501.teamboot.repository.CommunityRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -66,8 +68,5 @@ public class CommunityServiceImpl implements CommunityService {
         communityRepository.deleteById(id);
     }
 
-    @Override
-    public Page<Community> getCommunitiesByCategory(Category category, Pageable pageable) {
-        return communityRepository.findByCategory(category, pageable);
-    }
 }
+

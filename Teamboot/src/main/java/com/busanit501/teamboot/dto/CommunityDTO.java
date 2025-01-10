@@ -23,5 +23,4 @@ public class CommunityDTO {
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
     private List<CommentsDTO> comments;
-
 }

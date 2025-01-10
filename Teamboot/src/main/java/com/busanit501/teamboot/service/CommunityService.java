@@ -13,6 +13,4 @@ public interface CommunityService {
     Community createCommunity(Community community);
     Community editCommunity(Long id, Community community);
     void deleteCommunity(Long id);
-    Page<Community> getCommunitiesByCategory(Category category, Pageable pageable);
-
 }
