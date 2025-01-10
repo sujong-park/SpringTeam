@@ -1,9 +1,11 @@
 package com.busanit501.teamboot.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,27 +20,7 @@ public class Member extends BaseEntity {
     private String mid;
 
     private String mpw;
-    
-    private String name;
-
     private String email;
-
-    private LocalDate birth;
-
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
-
-    private String address;
-
-
-    private String profilePicture;
-
-    private String phoneNumber;
-
-    private Float rating;
-
-    private Long ratingCount;
-
     private boolean del;
     private boolean social;
 

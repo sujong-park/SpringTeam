@@ -19,8 +19,5 @@ public class CustomServletConfig implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/static/css/");
         registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/");
-        // 업로드된 이미지 정적 리소스로 접근하는 경로 허용
-        registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:uploads/");
     }
 }

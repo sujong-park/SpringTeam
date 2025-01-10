@@ -48,13 +48,13 @@ public class CustomSecurityConfig {
         // http.formLogin();
         http.formLogin(
                 formLogin ->
-                        formLogin.loginPage("/matching/list")
+                        formLogin.loginPage("/member/login")
         );
 
         // 순서4
         //로그인 후, 성공시 리다이렉트 될 페이지 지정, 간단한 버전.
         http.formLogin(formLogin ->
-                formLogin.defaultSuccessUrl("/matching/list",true)
+                formLogin.defaultSuccessUrl("/board/list",true)
         );
 
         // 순서5
@@ -73,7 +73,7 @@ public class CustomSecurityConfig {
 //        http.authorizeHttpRequests(
 //                authorizeRequests -> {
 //                    authorizeRequests.requestMatchers
-//                            ("/css/**", "/js/**","/images/**","gallery/**",
+//                            ("/css/**", "/js/**","/images/**",
 //                                    "/member/login","/member/join", "/board/list",
 //                                    "http://localhost:8080/login/oauth2/code/kakao",
 //                                    "https://kauth.kakao.com",
@@ -102,7 +102,7 @@ public class CustomSecurityConfig {
         //
         http.logout(
                 logout -> logout.logoutUrl("/member/logout")
-                        .logoutSuccessUrl("/member/login")
+                        .logoutSuccessUrl("/member/login?logout")
 
         );
 
@@ -126,7 +126,7 @@ public class CustomSecurityConfig {
         //카카오 로그인 API 설정
         http.oauth2Login(
                 oauthLogin -> {
-                    oauthLogin.loginPage("/matching/list");
+                    oauthLogin.loginPage("/member/login");
                     // 카카오 로그인 후 , 후처리 적용하기.
                     oauthLogin.successHandler(authenticationSuccessHandler());
                 }

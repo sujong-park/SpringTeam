@@ -64,9 +64,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         log.info("로그인한 유저 확인 : "+ username);
         Optional<Member> result = memberRepository.getWithRoles(username);
         // 없으면 예외 발생시키기
-//        if (result.isEmpty()) {
-//            throw new UsernameNotFoundException(username);
-//        }
+        if (result.isEmpty()) {
+            throw new UsernameNotFoundException(username);
+        }
         // Member , 조회시, 권한 테이블도 같이 조인해서 조회.
         Member member = result.get();
         // 중요한 부분, 반환 타입 UserDetails 로 반환해야해서,

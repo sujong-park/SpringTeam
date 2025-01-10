@@ -1,6 +1,5 @@
 package com.busanit501.teamboot.security.dto;
 
-import com.busanit501.teamboot.domain.Gender;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -8,7 +7,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Map;
 
@@ -27,13 +25,6 @@ public class MemberSecurityDTO extends User implements OAuth2User {
     private String mid;
     private String mpw;
     private String email;
-    private String name;
-    private LocalDate birthday;
-    private Gender gender;
-    private String phone;
-    private String address;
-    private Float rating;
-    private Long ratingCount;
     private boolean del;
     private boolean social;
 
@@ -47,24 +38,6 @@ public class MemberSecurityDTO extends User implements OAuth2User {
         this.mid = username;
         this.mpw = password;
         this.email = email;
-        this.del = del;
-        this.social = social;
-
-    }
-
-    public MemberSecurityDTO(String mid, String password, String email,
-                             String name, LocalDate birthday, Gender gender, String phone, String address,
-                             boolean del, boolean social,
-                             Collection<? extends GrantedAuthority> authorities) {
-        super(mid, password, authorities);
-        this.mid = mid;
-        this.mpw = password;
-        this.email = email;
-        this.name = name;
-        this.birthday = birthday;
-        this.gender = gender;
-        this.phone = phone;
-        this.address = address;
         this.del = del;
         this.social = social;
 

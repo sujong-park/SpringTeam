@@ -17,7 +17,7 @@
                     <h5 class="card-title">
                         Board Register
                     </h5>
-                    <form id="registerForm" method="post" action="/board/register">
+                    <form method="post" action="/board/register">
                         <div class="mb-3">
                             <label for="title" class="form-control">제목</label>
                             <input type="text" class="form-control" id="title" name="title" placeholder="제목을 입력해주세요">
@@ -241,7 +241,7 @@ function showUploadFile({uuid, fileName, link}) {
         }
         target.innerHTML = str;
 
-        document.querySelector("form#registerForm").submit();
+        document.querySelector("form").submit();
 
     })
 
