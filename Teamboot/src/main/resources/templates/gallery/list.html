@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="www.thymeleaf.org"
+      layout:decorate="~{layout/base.html}">
+<body>
+<!-- content -->
+<div layout:fragment="content">
+    <style>
+        #side .sideMenu li.sideMenuProfile a {background: #F5F5F5;}
+    </style>
+
+    <div class="profile">
+        <div class="profile-image img"></div>
+        <div class="profile-info">
+            <div class="info-top">
+                <div class="manner">매너지수</div>
+                <button class="contact">메시지보내기</button>
+                <div class="vertical">
+                    <button class="verticalBtn" onclick="verticalClick.call(this)"><img th:src="@{/images/vertical_icon.svg}"></button>
+                    <div class="verticalOption" onmouseleave="verticalOption.call(this)">
+                        <ul>
+                            <li><a th:href="@{/member/modify}">정보수정</a></li>
+                            <li><a>신고하기</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="profileUser">Busanit501</div>
+            <div class="profileText">강아지 두 마리 키우고 있어요. 비비랑 씨씨를 키우고 있어요. <br>우리 애들은 안물어요. 걱정 마세요. <br>작업해야함.</div>
+            <ul class="myPetProfile">
+                <li>
+                    <a>
+                        <div class="thumb img">
+                            <img class="verified" th:src="@{/images/verified.svg}">
+                        </div>
+                        <div class="name">비비</div>
+                    </a>
+                </li>
+                <li>
+                    <a>
+                        <div class="thumb img"></div>
+                        <div class="name">씨씨</div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="profileContent contentContainer">
+        <ul class="profileTap">
+            <li class="on">
+                <button id="galleryListBtn">게시물<span class="count">43</span>
+                    <a th:href="@{/gallery/register}"><img th:src="@{/images/plus.svg}"></a>
+                </button>
+            </li>
+            <li>
+                <button id="petListBtn">반려동물<span class="count">2</span>
+                    <a th:href="@{/pet/register}"><img th:src="@{/images/plus.svg}"></a>
+                </button>
+            </li>
+        </ul>
+
+        <div id="gallery">
+            <ul>
+                <li th:each="dto:${responseDTO.dtoList}">
+                    <a class="thumb img" th:href="|@{/gallery/read(galleryId=${dto.galleryId})}&${link}|">
+                        <div class="galleryThumbSlide" th:if="${dto.galleryImages != null && dto.galleryImages.size()>0}">
+                            <img th:each="galleryImage: ${dto.galleryImages}" th:src="|/view/s_${galleryImage.uuid}_${galleryImage.fileName}|">
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!--페이징-->
+        <div class="pagination">
+            <ul>
+                <li class="page-item" th:if="${responseDTO.prev}">
+                    <a class="page-link" th:data-num="${responseDTO.start - 1}">Previous</a>
+                </li>
+                <th:blcok th:each="i:${#numbers.sequence(responseDTO.start,responseDTO.end)}">
+                    <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
+                        <a class="page-link"
+                           th:data-num="${i}">[[${i}]]</a>
+                    </li>
+                </th:blcok>
+
+                <li class="page-item" th:if="${responseDTO.next}">
+                    <a class="page-link" th:data-num="${responseDTO.end + 1}">Next</a>
+                </li>
+            </ul>
+        </div>
+        <!--페이징-->
+    </div>
+</div>
+<!-- content -->
+
+
+<!-- javascript -->
+<script layout:fragment="javascript" th:inline="javascript">
+    document.getElementById("galleryListBtn").addEventListener("click", function() {
+        window.location.href = "/gallery/list"; // 원하는 페이지로 변경
+    });
+    document.getElementById("petListBtn").addEventListener("click", function() {
+        window.location.href = "/pet/list"; // 원하는 페이지로 변경
+    });
+    // 페이징 이동 이벤트 처리.
+    document.querySelector(".pagination").addEventListener("click",
+        function (e) {
+            e.preventDefault()
+            e.stopPropagation()
+            // a 태그에 접근 할려면, 해당 요소 선택자 필요.
+            const target = e.target
+            //  a 태그 인경우에 이벤트 리스너 동작을하고,
+            // a 태그 가 아니면, 이벤트 처리 안함.
+            if (target.tagName !== "A") {
+                return
+            }
+            const num = target.getAttribute("data-num")
+
+            // 백틱, 숫자 키보드 1번 왼쪽에 보면.
+            //  기존 페이지 이동해서,
+            // 폼의 정보를 이용해서 이동.
+            const formObj = document.querySelector("form")
+            // 자바스크립트에서, 백틱 안에서, 문자열 구현하기가 쉽다.
+            formObj.innerHTML += `<input type="hidden" name="page" value="${num}">`
+            formObj.submit()
+
+
+        }, false)
+
+    //글작성, 수정, 삭제 여부를 목록 화면에서 , 모달창에 결과 화면 출력
+    const result = [[${result}]]
+
+    // alert -> 모달창으로 교체 작업.
+    const modal = new bootstrap.Modal(document.querySelector(".modal"))
+
+    if(result){
+        // alert(result)
+        modal.show()
+    }
+</script>
+<!-- javascript -->
+
+
+</body>
+</html>
