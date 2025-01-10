@@ -4,6 +4,10 @@
 <body>
 <!-- content -->
 <div layout:fragment="content">
+    <style>
+        #side .sideMenu li.sideMenuProfile a {background: #F5F5F5;}
+    </style>
+
     <div class="registerContainer">
         <form id="f1" method="post" th:action="@{/gallery/update}">
             <input type="hidden" name="keyword2" th:value="${pageRequestDTO.keyword}">
@@ -50,12 +54,11 @@
                    th:value="${#temporals.format(dto.regDate,'yyyy-MM-dd HH:mm:ss')}" disabled>
             <input type="hidden" class="form-control" id="modDate" name="modDate"
                    th:value="${#temporals.format(dto.modDate,'yyyy-MM-dd HH:mm:ss')}" disabled>
-
-            <div class="btn-box">
-                <button type="submit" class="btn btn-gray modBtn">수정하기</button>
-                <button type="button" class="btn btn-dark deleteBtn">삭제하기</button>
-            </div>
         </form>
+        <div class="btn-box">
+            <button type="submit" class="btn btn-gray modBtn">수정하기</button>
+            <button type="button" class="btn btn-dark deleteBtn">삭제하기</button>
+        </div>
     </div>
 
 

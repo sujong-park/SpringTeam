@@ -4,14 +4,15 @@
       xmlns:th="www.thymeleaf.org"
       layout:decorate="~{layout/base.html}"
 >
+<link rel="stylesheet" href="../../static/css/base.css">
 <script src="../../static/js/upload.js"></script>
 <body>
 <div layout:fragment="content">
-<!--    라이브 데모 모달-->
+    <!--    라이브 데모 모달-->
     <!-- Button trigger modal -->
-<!--    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">-->
-<!--        Launch demo modal-->
-<!--    </button>-->
+    <!--    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">-->
+    <!--        Launch demo modal-->
+    <!--    </button>-->
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1"
@@ -43,9 +44,9 @@
             </div>
         </div>
     </div>
-<!--    라이브 데모 모달-->
+    <!--    라이브 데모 모달-->
 
-<!--    로그인한 유저를 표시 해보기-->
+    <!--    로그인한 유저를 표시 해보기-->
     <div class="row mt-3">
         <div class="col">
             <h1 th:if="${user} != null">[[${user.Username}]]님환영합니다.</h1>
@@ -62,8 +63,8 @@
                 <div class="card-body">
                     <h5 class="card-title">검색 및 필터 </h5>
                     <form action="/board/list" method="get">
-<!--                        <input type="hidden" name="size" value="${responseDTO.size}">-->
-<!--                        수정 부분, 검색시, 제목:t, 작성자:w, 내용:c , 선택하는 화면-->
+                        <!--                        <input type="hidden" name="size" value="${responseDTO.size}">-->
+                        <!--                        수정 부분, 검색시, 제목:t, 작성자:w, 내용:c , 선택하는 화면-->
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <select class="form-select" name="type">
@@ -85,12 +86,12 @@
 
                                 </select>
                             </div>
-<!--                            검색 키워드 입력 창-->
-                           <input type="text" class="form-controll" name="keyword"
-                           th:value="${pageRequestDTO.keyword}">
+                            <!--                            검색 키워드 입력 창-->
+                            <input type="text" class="form-controll" name="keyword"
+                                   th:value="${pageRequestDTO.keyword}">
 
                         </div>
-<!--                        검색 창에서, 검색 키워드 입력 받는 화면 필요-->
+                        <!--                        검색 창에서, 검색 키워드 입력 받는 화면 필요-->
 
                         <div class="input-group mb-3">
                             <div class="float-end">
@@ -119,7 +120,7 @@
                         Board List
                     </h5>
 
-<!--                    작업중-->
+                    <!--                    작업중-->
                     <table class="table">
                         <thead>
                         <tr>
@@ -129,7 +130,7 @@
                             <th scope="col">RegDate</th>
                         </tr>
                         </thead>
-<!--                        ?page=1&type=t&keyword=3-->
+                        <!--                        ?page=1&type=t&keyword=3-->
                         <tbody th:with="link = ${pageRequestDTO.link}">
                         <tr th:each="dto:${responseDTO.dtoList}">
                             <th scope="row">
@@ -137,14 +138,14 @@
                             </th>
                             <td>
                                 <a th:href="|@{/board/read(bno=${dto.bno})}&${link}|">
-                                [[${dto.title}]]
+                                    [[${dto.title}]]
                                 </a>
-<!--                                댓글 갯수-->
+                                <!--                                댓글 갯수-->
                                 <span class="badge progress-bar-success"
-                                style="background-color: crimson">
+                                      style="background-color: crimson">
                                     [[${dto.replyCount}]]
                                 </span>
-<!--                                첨부된 이미지 출력 하기-->
+                                <!--                                첨부된 이미지 출력 하기-->
                                 <div th:if="${dto.boardImages != null && dto.boardImages.size()>0}">
                                     <img style="width: 100px" th:each="boardImage: ${dto.boardImages}"
                                          th:src="|/view/s_${boardImage.uuid}_${boardImage.fileName}|">
@@ -157,19 +158,11 @@
                         </tbody>
                     </table>
                     <!--페이징-->
-                    <div class="float-end">
-                        <ul class="pagination flex-wrap">
+                    <div class="pagination">
+                        <ul>
                             <li class="page-item" th:if="${responseDTO.prev}">
                                 <a class="page-link" th:data-num="${responseDTO.start - 1}">Previous</a>
                             </li>
-
-                            <!--                            페이지 번호 표시, 10개 임의로 표기-->
-<!--                            <th:block th:each="i:${#numbers.sequence(responseDTO.start,responseDTO.end)}">-->
-
-<!--                                <li th:class="${responseDTO.page == i }?'page-item active':'page-item'">-->
-<!--                                    <a class="page-link" data-num="${i}" href="#">[[${i}]]</a></li>-->
-<!--                            </th:block>-->
-
                             <th:blcok th:each="i:${#numbers.sequence(responseDTO.start,responseDTO.end)}">
                                 <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
                                     <a class="page-link"
