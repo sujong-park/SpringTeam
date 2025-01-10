@@ -1,36 +1,106 @@
+<!--<!doctype html>-->
+<!--<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
+<!--      xmlns:th="http://www.thymeleaf.org"-->
+<!--      layout:decorate="~{layout/base.html}">-->
+<!--<body>-->
+<!--<div layout:fragment="content" class="container mt-5">-->
+<!--    <div class="d-flex justify-content-between align-items-center mb-4">-->
+<!--        <h2 class="text-center flex-grow-1">커뮤니티</h2>-->
+<!--        <a th:href="@{/communities/register}" class="btn btn-primary">글쓰기</a>-->
+<!--    </div>-->
+
+<!--    <div class="list-group">-->
+<!--        <div class="list-group-item text-center py-4" th:if="${communityPage.empty}">-->
+<!--            게시글이 없습니다.-->
+<!--        </div>-->
+<!--        <div class="list-group-item py-3"-->
+<!--             th:each="communityWithComment, iterStat : ${communityPage.content}">-->
+<!--            <div class="d-flex justify-content-between align-items-center w-100">-->
+<!--                <div>-->
+<!--                    <div>-->
+<!--                        &lt;!&ndash; 제목에 링크 추가 &ndash;&gt;-->
+<!--                        <a th:href="@{/communities/{id}(id=${communityWithComment.communityId})}">-->
+<!--                            <strong th:text="'[' + ${communityWithComment.category} + '] ' + ${communityWithComment.title}"></strong>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                    <div class="text-muted small" th:text="${communityWithComment.content}">게시글 내용</div>-->
+<!--                </div>-->
+
+<!--                &lt;!&ndash; 작성자, 댓글, 작성일을 오른쪽으로 정렬 &ndash;&gt;-->
+<!--                <div class="text-end text-muted small d-flex align-items-center justify-content-end">-->
+<!--                    <span class="me-3" th:text="${communityWithComment.memberName != null ? communityWithComment.memberName : '작성자 없음'}">작성자</span>-->
+<!--                    <span class="me-3" th:text="'댓글: ' + ${communityWithComment.commentsCount}">댓글 수</span>-->
+<!--                    <span th:text="${#temporals.format(communityWithComment.created_at, 'yyyy-MM-dd')}">작성일</span>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; 페이징 &ndash;&gt;-->
+<!--    <nav aria-label="Page navigation" class="mt-4">-->
+<!--        <ul class="pagination justify-content-center">-->
+<!--            &lt;!&ndash; 이전 버튼 &ndash;&gt;-->
+<!--            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">-->
+<!--                <a class="page-link" th:href="@{/communities/list(page=${currentPage - 1})}" aria-label="이전">-->
+<!--                    <span aria-hidden="true">&laquo;</span>-->
+<!--                </a>-->
+<!--            </li>-->
+
+<!--            &lt;!&ndash; 페이지 번호 &ndash;&gt;-->
+<!--            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"-->
+<!--                th:classappend="${i == currentPage} ? 'active'">-->
+<!--                <a class="page-link" th:href="@{'/communities/list?page=' + ${i}}" th:text="${i + 1}"></a>-->
+<!--            </li>-->
+
+<!--            &lt;!&ndash; 다음 버튼 &ndash;&gt;-->
+<!--            <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">-->
+<!--                <a class="page-link" th:href="@{/communities/list(page=${currentPage + 1})}" aria-label="다음">-->
+<!--                    <span aria-hidden="true">&raquo;</span>-->
+<!--                </a>-->
+<!--            </li>-->
+<!--        </ul>-->
+<!--    </nav>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->
 <!doctype html>
 <html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{layout/base.html}">
 <body>
-<div layout:fragment="content" class="container mt-5">
+<div layout:fragment="content" class="contentContainer mt-5">
+    <!-- 상단 헤더 -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="text-center flex-grow-1">커뮤니티</h2>
-        <a th:href="@{/communities/register}" class="btn btn-primary">글쓰기</a>
+        <a th:href="@{/communities/register}" class="btn btn-dark">글쓰기</a>
     </div>
 
+    <!-- 커뮤니티 리스트 -->
     <div class="list-group">
+        <!-- 게시글이 없을 때 -->
         <div class="list-group-item text-center py-4" th:if="${communityPage.empty}">
             게시글이 없습니다.
         </div>
+
+        <!-- 게시글이 있을 때 -->
         <div class="list-group-item py-3"
              th:each="communityWithComment, iterStat : ${communityPage.content}">
-            <div class="d-flex justify-content-between align-items-center w-100">
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- 게시글 정보 -->
                 <div>
-                    <div>
-                        <!-- 제목에 링크 추가 -->
-                        <a th:href="@{/communities/{id}(id=${communityWithComment.communityId})}">
-                            <strong th:text="'[' + ${communityWithComment.category} + '] ' + ${communityWithComment.title}"></strong>
-                        </a>
-                    </div>
-                    <div class="text-muted small" th:text="${communityWithComment.content}">게시글 내용</div>
+                    <!-- 제목 -->
+                    <a th:href="@{/communities/{id}(id=${communityWithComment.communityId})}">
+                        <strong th:text="'[' + ${communityWithComment.category} + '] ' + ${communityWithComment.title}"></strong>
+                    </a>
+                    <!-- 내용 -->
+                    <div class="text-muted small mt-1" th:text="${communityWithComment.content}"></div>
                 </div>
 
-                <!-- 작성자, 댓글, 작성일을 오른쪽으로 정렬 -->
-                <div class="text-end text-muted small d-flex align-items-center justify-content-end">
-                    <span class="me-3" th:text="${communityWithComment.memberName != null ? communityWithComment.memberName : '작성자 없음'}">작성자</span>
-                    <span class="me-3" th:text="'댓글: ' + ${communityWithComment.commentsCount}">댓글 수</span>
-                    <span th:text="${#temporals.format(communityWithComment.created_at, 'yyyy-MM-dd')}">작성일</span>
+                <!-- 작성자, 댓글 수, 작성일 -->
+                <div class="text-end text-muted small">
+                    <div th:text="${communityWithComment.memberName != null ? communityWithComment.memberName : '작성자 없음'}"></div>
+                    <div th:text="'댓글: ' + ${communityWithComment.commentsCount}" class="mt-1"></div>
+                    <div th:text="${#temporals.format(communityWithComment.created_at, 'yyyy-MM-dd')}" class="mt-1"></div>
                 </div>
             </div>
         </div>
@@ -42,20 +112,20 @@
             <!-- 이전 버튼 -->
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                 <a class="page-link" th:href="@{/communities/list(page=${currentPage - 1})}" aria-label="이전">
-                    <span aria-hidden="true">&laquo;</span>
+                    &laquo;
                 </a>
             </li>
 
             <!-- 페이지 번호 -->
             <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                 th:classappend="${i == currentPage} ? 'active'">
-                <a class="page-link" th:href="@{'/communities/list?page=' + ${i}}" th:text="${i + 1}"></a>
+                <a class="page-link" th:href="@{/communities/list(page=${i})}" th:text="${i + 1}"></a>
             </li>
 
             <!-- 다음 버튼 -->
             <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
                 <a class="page-link" th:href="@{/communities/list(page=${currentPage + 1})}" aria-label="다음">
-                    <span aria-hidden="true">&raquo;</span>
+                    &raquo;
                 </a>
             </li>
         </ul>

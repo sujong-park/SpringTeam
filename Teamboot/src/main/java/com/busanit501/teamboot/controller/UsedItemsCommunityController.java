@@ -7,6 +7,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +30,8 @@ public class UsedItemsCommunityController {
     public String listUsedItemsCommunities(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            Model model) {
+            Model model,
+            @AuthenticationPrincipal UserDetails user) {
 
         log.info("listUsedItemsCommunities called with page: {}, size: {}", page, size);
 
@@ -38,6 +41,11 @@ public class UsedItemsCommunityController {
         model.addAttribute("communities", usedItemsCommunities.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", usedItemsCommunities.getTotalPages());
+
+        if (user != null) {
+            log.info("Logged in user: {}", user.getUsername());
+            model.addAttribute("user", user);
+        }
 
         return "communities/useditems"; // 중고 나눔 게시글 화면
     }
