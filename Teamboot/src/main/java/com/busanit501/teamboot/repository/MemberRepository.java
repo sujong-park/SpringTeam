@@ -20,6 +20,8 @@ public interface MemberRepository extends JpaRepository<Member, String> {
     @EntityGraph(attributePaths = "roleSet")
     Optional<Member> findByEmail(String email);
 
+    boolean existsByEmail(String email);
+
     // 사용자 패스워드 변경하는 기능.
     @Modifying
     @Transactional
