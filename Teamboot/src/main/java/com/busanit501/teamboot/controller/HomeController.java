@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
     @GetMapping("/")
     public String index() {
-        return "redirect:/home";
+        return "redirect:/matching/list";
     }
 
     @GetMapping("/home")
