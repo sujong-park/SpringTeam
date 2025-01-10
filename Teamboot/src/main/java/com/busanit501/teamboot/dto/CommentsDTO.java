@@ -1,5 +1,7 @@
 package com.busanit501.teamboot.dto;
 
+import com.busanit501.teamboot.domain.Comments;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -12,9 +14,21 @@ import java.time.LocalDateTime;
 public class CommentsDTO {
     private Long commentsId;
     private Long communityId;
-    private Long memberId;
+    private String memberId;
     private String memberName;
     private String content;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
+
+    public static CommentsDTO fromEntity(Comments comment) {
+        return CommentsDTO.builder()
+                .commentsId(comment.getCommentsId())
+                .communityId(comment.getCommunity().getCommunityId())
+                .memberId(comment.getMember().getMid()) // Member ID 가져오기
+                .memberName(comment.getMember().getName()) // Member 이름 가져오기
+                .content(comment.getContent())
+                .created_at(comment.getRegDate()) // 등록 날짜 가져오기
+                .updated_at(comment.getModDate()) // 수정 날짜 가져오기
+                .build();
+    }
 }

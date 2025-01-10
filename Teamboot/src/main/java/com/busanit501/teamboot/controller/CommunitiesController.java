@@ -1,11 +1,13 @@
 package com.busanit501.teamboot.controller;
 
 import com.busanit501.teamboot.domain.Category;
-import com.busanit501.teamboot.domain.Comments;
 import com.busanit501.teamboot.domain.Community;
 import com.busanit501.teamboot.domain.Member;
 import com.busanit501.teamboot.dto.CommunityDTO;
 import com.busanit501.teamboot.dto.CommunityWithCommentDTO;
+import com.busanit501.teamboot.dto.CommentsDTO;
+import com.busanit501.teamboot.dto.PageRequestDTO;
+import com.busanit501.teamboot.dto.PageResponseDTO;
 import com.busanit501.teamboot.repository.MemberRepository;
 import com.busanit501.teamboot.service.CommentsService;
 import com.busanit501.teamboot.service.CommunityService;
@@ -13,7 +15,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -119,20 +119,27 @@ public class CommunitiesController {
         return "communities/list";
     }
 
-
     // 게시글 상세 조회 (댓글 포함)
     @GetMapping("/{id}")
-    public String getCommunityDetail(@PathVariable Long id, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+    public String getCommunityDetail(@PathVariable Long id, Model model,
+                                     @AuthenticationPrincipal UserDetails userDetails) {
+        // 게시글 가져오기
         Community community = communityService.getCommunityById(id);
-        List<Comments> comments = commentsService.getCommentsByCommunityId(id);
 
+        // 댓글 가져오기 (기본 페이지 및 크기 설정)
+        int page = 1; // 기본값
+        int size = 10; // 기본값
+        PageResponseDTO<CommentsDTO> comments = commentsService.getCommentsByCommunity(id, page, size);
+
+        // 로그인한 사용자 ID 가져오기
         String loggedInUserId = null;
         if (userDetails != null) {
-            loggedInUserId = userDetails.getUsername();
+            loggedInUserId = userDetails.getUsername(); // UserDetails의 username은 ID로 매핑
         }
 
+        // Thymeleaf로 데이터 전달
+        model.addAttribute("comments", comments.getDtoList());
         model.addAttribute("community", community);
-        model.addAttribute("comments", comments);
         model.addAttribute("loggedInUserId", loggedInUserId);
 
         return "communities/read";
@@ -185,7 +192,6 @@ public class CommunitiesController {
 
         return "success";
     }
-
 
     // 게시글 삭제 처리
     @DeleteMapping("/delete/{id}")

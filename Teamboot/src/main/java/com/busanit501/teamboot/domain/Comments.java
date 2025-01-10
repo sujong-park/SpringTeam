@@ -27,4 +27,8 @@ public class Comments extends BaseEntity {
 
 //    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
 }
