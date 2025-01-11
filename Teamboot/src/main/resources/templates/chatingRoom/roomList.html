@@ -832,7 +832,8 @@
 
     async function sendMessage() {
         if (!currentRoomId) {
-            return alert("채팅방을 먼저 선택해주세요.");
+            alert("채팅방을 먼저 선택해주세요.");
+            return
         }
 
         const messageInput = document.querySelector("#chatMessageInput");
@@ -863,10 +864,15 @@
 
     inviteButton.addEventListener("click", function () {
         console.log("친구 초대 클릭");
+        if (!currentRoomId) {
+            alert("채팅방을 먼저 선택해주세요."); // 경고 메시지 출력
+            return; // 모달창을 띄우지 않고 종료
+        }
         inviteModal.show();
         // 유저 목록을 불러오기
         fetchUserList();
     });
+
 
     // 초대 버튼 클릭 시 실행
     inviteBtn.addEventListener("click", function () {
