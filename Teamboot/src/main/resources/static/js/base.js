@@ -17,7 +17,8 @@ document.addEventListener("DOMContentLoaded", function () {
             e.preventDefault();
             console.log("댓글 작성 버튼 클릭");
 
-            const content = document.querySelector('[name="content"]').value;
+            const contentInput = document.querySelector('[name="content"]');
+            const content = contentInput.value; // 입력값 가져오기
 
             fetch('/comments', {
                 method: 'POST',
@@ -32,7 +33,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.log("서버 응답:", response);
                     if (response.ok) {
                         console.log('댓글 등록 성공');
-                        loadComments();
+                        loadComments(); // 댓글 목록 갱신
+                        contentInput.value = ""; // 댓글 입력창 초기화
                     } else {
                         console.error('댓글 등록 실패');
                     }

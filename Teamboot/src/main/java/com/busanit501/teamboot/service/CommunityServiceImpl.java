@@ -31,12 +31,15 @@ public class CommunityServiceImpl implements CommunityService {
             Member member = (Member) row[1];
             Long commentCount = (Long) row[2];
 
-            return new CommunityWithCommentDTO(
+            return
+                    new CommunityWithCommentDTO(
                     community.getCommunityId(),
                     community.getTitle(),
                     community.getContent(),
                     community.getCategory(),
+                    member != null ? member.getMid() : "작성자 없음",  // 사용자 정보 없을 경우 처리
                     member != null ? member.getName() : "작성자 없음",  // 사용자 정보 없을 경우 처리
+                             member != null ? member.getMid() : null,  // memberId 설정 (DB에서 가져온 `member_id`
 //                    member != null ? member.getAddress() : "주소 미등록",
                     community.getRegDate(),
                     commentCount
