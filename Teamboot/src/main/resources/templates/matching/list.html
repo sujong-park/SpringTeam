@@ -1,20 +1,132 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="www.thymeleaf.org"
       layout:decorate="~{layout/base.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>매칭방 목록</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Google Font (Poppins) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+    <!-- 외부 CSS 파일 링크 -->
+    <link rel="stylesheet" th:href="@{/css/list.css}">
+</head>
 <body>
-<!-- content -->
 <div layout:fragment="content">
-    <h1 style="text-align: center;">Matching List</h1>
+<div class="container mt-5">
+    <!-- 인기 키워드 섹션 -->
+    <div class="keywords mb-4">
+        <h2 class="popular-keywords-title">
+            <img src="/img/dog.png" alt="강아지 아이콘" class="dog-icon"> 인기 키워드
+        </h2>
+        <div class="keyword-list">
+            <a th:each="keyword : ${keywords}"
+               th:href="@{/matching/list(query=${keyword})}"
+               class="badge badge-primary mr-2 mb-2 keyword-tag">
+                <span th:text="${keyword}">#Keyword</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- 검색바와 메이트 등록 버튼 -->
+    <div class="search-bar-container">
+        <!-- 검색바 -->
+        <form class="form-inline search-form" th:action="@{/matching/list}" method="get">
+            <input type="text" class="form-control search-input" name="query" placeholder="키워드를 입력하세요" th:value="${query}">
+            <button type="submit" class="btn btn-outline-primary search-btn">검색</button>
+        </form>
+
+        <!-- 메이트 등록 버튼 -->
+        <button class="btn btn-success create-button" onclick="location.href='/matching/create'">메이트 등록</button>
+    </div>
+
+    <!-- 검색 결과가 있을 경우: 필터링된 매칭방만 표시 -->
+    <div th:if="${query != null and !#strings.isEmpty(query) and !#lists.isEmpty(filteredRooms)}" class="filtered-rooms mb-5">
+        <h5 th:text='|&quot;${query}&quot; 키워드로 필터링된 매칭방|'>필터링된 매칭방</h5>
+        <div class="card-grid">
+            <a class="card" th:each="room : ${filteredRooms}"
+               th:href="@{/matching/detail/{id}(id=${room.roomId})}">
+                <!-- 프로필 사진 표시 -->
+                <img th:if="${room.profilePicture != null}" th:src="${room.profilePicture}" class="card-img-top room-image" alt="방 이미지">
+                <img th:if="${room.profilePicture == null}" th:src="@{/img/thumbnail-default.svg}" class="card-img-top room-image" alt="기본 이미지">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${room.title}">제목</h5>
+                    <p class="card-text">
+                    <div class="info-row">
+                        <strong class="info-label">모임 장소</strong>
+                        <span class="info-data" th:text="${room.place}" data-toggle="tooltip" data-placement="top" title="${room.place}">장소</span>
+                    </div>
+                    <div class="info-row">
+                        <strong class="info-label">참여 현황</strong>
+                        <span class="info-data" th:text='|${room.currentParticipants}/${room.maxParticipants}|'
+                              data-toggle="tooltip" data-placement="top" title='|${room.currentParticipants}/${room.maxParticipants}|'>0/0명</span>
+                    </div>
+                    <div class="info-row">
+                        <strong class="info-label">호스트</strong>
+                        <span class="info-data" th:text="${room.member.name}" data-toggle="tooltip" data-placement="top" title="${room.member.name}">호스트명</span>
+                    </div>
+                    <div class="info-row">
+                        <strong class="info-label">펫 타입</strong>
+                        <span class="info-data" th:text="${room.petType}" data-toggle="tooltip" data-placement="top" title="${room.petType}">펫 종류</span>
+                    </div>
+                    </p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- 검색 결과가 없을 경우: 검색어가 있을 때와 없을 때 다른 처리 -->
+    <div th:if="${query != null and !#strings.isEmpty(query) and #lists.isEmpty(filteredRooms)}" class="no-results mb-5">
+        <p>검색 결과가 없습니다: "<span th:text="${query}">검색어</span>"</p>
+    </div>
+
+    <!-- 검색어가 없을 경우: 모든 매칭방 표시 -->
+    <div th:if="${query == null or #strings.isEmpty(query)}" class="all-rooms">
+        <!-- "모든 매칭방" 텍스트 삭제 -->
+        <div class="card-grid">
+            <a class="card" th:each="room : ${allRooms}"
+               th:href="@{/matching/detail/{id}(id=${room.roomId})}">
+                <!-- 프로필 사진 표시 -->
+                <img th:if="${room.profilePicture != null}" th:src="${room.profilePicture}" class="card-img-top room-image" alt="방 이미지">
+                <img th:if="${room.profilePicture == null}" th:src="@{/img/thumbnail-default.svg}" class="card-img-top room-image" alt="기본 이미지">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${room.title}">제목</h5>
+                    <p class="card-text">
+                    <div class="info-row">
+                        <strong class="info-label">모임 장소</strong>
+                        <span class="info-data" th:text="${room.place}" data-toggle="tooltip" data-placement="top" title="${room.place}">장소</span>
+                    </div>
+                    <div class="info-row">
+                        <strong class="info-label">참여 현황</strong>
+                        <span class="info-data" th:text='|${room.currentParticipants}/${room.maxParticipants}|'
+                              data-toggle="tooltip" data-placement="top" title='|${room.currentParticipants}/${room.maxParticipants}|'>0/0명</span>
+                    </div>
+                    <div class="info-row">
+                        <strong class="info-label">호스트</strong>
+                        <span class="info-data" th:text="${room.member.name}" data-toggle="tooltip" data-placement="top" title="${room.member.name}">호스트명</span>
+                    </div>
+                    <div class="info-row">
+                        <strong class="info-label">펫 타입</strong>
+                        <span class="info-data" th:text="${room.petType}" data-toggle="tooltip" data-placement="top" title="${room.petType}">펫 종류</span>
+                    </div>
+                    </p>
+                </div>
+            </a>
+        </div>
+    </div>
 </div>
-<!-- content -->
-
-
-<!-- javascript -->
-<script layout:fragment="javascript" th:inline="javascript">
-
+</div>
+<!-- 외부 JS 파일 링크 -->
+<script th:src="@{/js/list.js}"></script>
+<!-- jQuery, Popper.js, Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Initialize Bootstrap tooltips -->
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
 </script>
-<!-- javascript -->
-
-
 </body>
 </html>
