@@ -79,7 +79,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private MemberSecurityDTO generateDTO(String email, Map<String, Object> params) {
-        Optional<Member> result = memberRepository.findByEmail(email);
+        Optional<Member> result = memberRepository.findByMid(email);
 
         // 사용자가, 데이터베이스에 없으면, , 새로 생성.
         // 소셜 로그인해서, 처음 유저를 만들 경우, 임의로 패스워드 1111 로 설정.

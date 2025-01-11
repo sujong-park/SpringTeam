@@ -1,33 +1,25 @@
 package com.busanit501.teamboot.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 //@ToString(exclude ="imageSet")
 public class ChatRoomParticipants extends BaseEntity {
-
-    @Id // PK, 기본키,
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long roomParticipantsId;
+    private long roomParticipantsId;
 
-    private Long chatRoomId;
+    @ManyToOne
+    @JoinColumn(name = "chatRoomId")
+    private ChatingRoom chatRoom;
 
-    private Long senderId;
-
-    @Enumerated(EnumType.STRING)
-    private Status Status;
-    
-    public enum Status {
-        Open,
-        CLOSED
-    }
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "senderId")
+    private Member sender;
 }

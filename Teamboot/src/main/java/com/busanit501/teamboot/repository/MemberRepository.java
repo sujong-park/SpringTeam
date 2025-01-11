@@ -18,7 +18,7 @@ public interface MemberRepository extends JpaRepository<Member, String> {
     Optional<Member> getWithRoles(String mid);
 
     @EntityGraph(attributePaths = "roleSet")
-    Optional<Member> findByEmail(String email);
+    Optional<Member> findByMid(String mid);
 
     // 사용자 패스워드 변경하는 기능.
     @Modifying

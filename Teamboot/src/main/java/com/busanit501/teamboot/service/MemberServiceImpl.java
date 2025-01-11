@@ -2,20 +2,23 @@ package com.busanit501.teamboot.service;
 
 import com.busanit501.teamboot.domain.Member;
 import com.busanit501.teamboot.domain.MemberRole;
+import com.busanit501.teamboot.dto.MemberDTO;
 import com.busanit501.teamboot.dto.MemberJoinDTO;
-import com.busanit501.teamboot.repository.MemberRepository;
+import com.busanit501.teamboot.repository.ChatMemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Log4j2
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
     private final ModelMapper modelMapper;
-    private final MemberRepository memberRepository;
+    private final ChatMemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
