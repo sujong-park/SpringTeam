@@ -1,6 +1,6 @@
 package com.busanit501.teamboot.dto;
 
-import com.busanit501.bootproject.domain.Comments;
+import com.busanit501.teamboot.domain.Comments;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 

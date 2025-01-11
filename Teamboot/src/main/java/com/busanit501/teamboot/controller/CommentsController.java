@@ -1,9 +1,9 @@
 package com.busanit501.teamboot.controller;
 
-import com.busanit501.bootproject.dto.CommentsDTO;
-import com.busanit501.bootproject.dto.PageResponseDTO;
-import com.busanit501.bootproject.security.dto.MemberSecurityDTO;
-import com.busanit501.bootproject.service.CommentsService;
+import com.busanit501.teamboot.dto.CommentsDTO;
+import com.busanit501.teamboot.dto.PageResponseDTO;
+import com.busanit501.teamboot.security.dto.MemberSecurityDTO;
+import com.busanit501.teamboot.service.CommentsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;

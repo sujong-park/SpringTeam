@@ -1,8 +1,8 @@
 package com.busanit501.teamboot.service;
 
-import com.busanit501.bootproject.domain.Member;
-import com.busanit501.bootproject.dto.MemberDTO;
-import com.busanit501.bootproject.repository.ChatMemberRepository;
+import com.busanit501.teamboot.domain.Member;
+import com.busanit501.teamboot.dto.MemberDTO;
+import com.busanit501.teamboot.repository.ChatMemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

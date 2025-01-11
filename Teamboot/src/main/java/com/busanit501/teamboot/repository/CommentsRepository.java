@@ -1,6 +1,6 @@
 package com.busanit501.teamboot.repository;
 
-import com.busanit501.bootproject.domain.Comments;
+import com.busanit501.teamboot.domain.Comments;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -18,14 +18,14 @@ public class Comments extends BaseEntity {
     private Long commentsId;
 
     @ManyToOne
-//    @JoinColumn(name = "community_id", nullable = false)
+    @JoinColumn(name = "community_id", nullable = false)
     private Community community;
 
     @ManyToOne
-//    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-//    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
     public void updateContent(String content) {

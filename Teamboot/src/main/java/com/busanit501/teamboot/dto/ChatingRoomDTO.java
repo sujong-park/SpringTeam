@@ -1,6 +1,6 @@
 package com.busanit501.teamboot.dto;
 
-import com.busanit501.bootproject.domain.ChatingRoom;
+import com.busanit501.teamboot.domain.ChatingRoom;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -1,100 +1,70 @@
 <!doctype html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="www.thymeleaf.org"
       layout:decorate="~{layout/base.html}">
-
 <body>
-<div layout:fragment="content" class="container mt-5">
-    <!-- Flash 메시지 표시 -->
-    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
-    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+<!-- content -->
+<div layout:fragment="content">
+    <div id="communitiesReadContainer" class="readContainer">
+        <div class="readHead">
+            <a class="back" th:href="@{/communities/list}">
+                <img th:src="@{/images/left_arrow.svg}">
+            </a>
+            <a class="update" th:if="${community.member.mid == loggedInUserId}" th:href="@{'/communities/update/' + ${community.communityId}}">수정하기</a>
+        </div>
 
-    <!-- 상단 목록으로 돌아가기 버튼 -->
-    <div class="mb-3">
-        <a th:href="@{/communities/list}" class="btn btn-outline-primary">목록으로</a>
-    </div>
-
-    <!-- 게시글 내용 -->
-    <div class="card mb-5 shadow-sm">
-        <div class="card-body">
-            <div class="text-center mb-4">
+        <div class="imgContainer">
+            <div class="img">
                 <img th:if="${community.imageUrl}" th:src="${community.imageUrl}" class="img-fluid rounded" alt="첨부 이미지">
-                <div th:if="${community.imageUrl == null}" class="text-muted py-5">이미지가 없습니다.</div>
             </div>
+        </div>
 
-            <h2 class="card-title" th:text="${community.title}">게시글 제목</h2>
-            <p class="text-muted" th:text="${community.content}">게시글 내용</p>
-            <div class="d-flex justify-content-between align-items-center text-muted">
-                <small th:text="${#temporals.format(community.regDate, 'yyyy.MM.dd')}">작성일</small>
-                <small th:text="'카테고리: ' + ${community.category}"></small>
+        <div class="readContent">
+            <div class="tag">
+                <div th:text="${community.category}"></div>
+                <div th:text="${#temporals.format(community.regDate, 'yyyy.MM.dd')}"></div>
             </div>
+            <h2 class="title" th:text="${community.title}">게시글 제목</h2>
+            <div class="txtContainer" th:text="${community.content}">게시글 내용</div>
+        </div>
 
-            <!-- 수정 및 삭제 버튼 -->
-            <div class="text-end mt-4">
-                <div th:if="${community.member.mid == loggedInUserId}">
-                    <a th:href="@{'/communities/update/' + ${community.communityId}}" class="btn btn-outline-secondary me-2">수정 및 삭제</a>
+
+
+        <div class="comment">
+            <!-- 로그인된 사용자의 memberId를 숨겨서 전달 -->
+            <input type="hidden" id="loggedInMemberId" th:value="${loggedInUserId}">
+
+            <form id="commentForm" class="commentForm">
+                <input type="hidden" name="communityId" th:value="${community.communityId}">
+                <textarea type="text" name="content" placeholder="댓글을 입력하세요" required></textarea>
+                <button type="submit" class="btn btn-dark">댓글 등록</button>
+            </form>
+
+            <!-- 댓글 목록 -->
+            <div class="commentList">
+                <div th:if="${#lists.isEmpty(comments)}">
+                    <p class="text-center py-4 text-muted">아직 댓글이 없습니다. 첫 번째 댓글을 남겨보세요!</p>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 댓글 섹션 -->
-    <div class="mt-5">
-        <h4>댓글</h4>
-
-        <!-- 댓글 작성 폼 -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-body">
-                <!-- 로그인된 사용자의 memberId를 숨겨서 전달 -->
-                <input type="hidden" id="loggedInMemberId" th:value="${loggedInUserId}">
-
-                <form id="commentForm" class="d-flex">
-                    <input type="hidden" name="communityId" th:value="${community.communityId}">
-                    <input type="text" class="form-control me-2" name="content" placeholder="댓글을 입력하세요" required>
-                    <button type="submit" id="submit-comment" class="btn btn-primary">댓글 등록</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- 댓글 목록 -->
-        <div id="comments-list" class="mt-4">
-            <div th:if="${#lists.isEmpty(comments)}">
-                <p class="text-center py-4 text-muted">아직 댓글이 없습니다. 첫 번째 댓글을 남겨보세요!</p>
+                <ul>
+                    <li th:each="comment : ${comments}">
+                        <div class="comment-info">
+                            <div class="user" th:text="${comment.memberId}">작성자 ID</div>
+                            <span th:text="${#temporals.format(comment.created_at, 'yyyy.MM.dd')}"></span>
+                        </div>
+                        <div class="comment-content" th:text="${comment.content}" th:id="'comment-content-' + ${comment.commentsId}"></div>
+                        <div class="comment-btn" th:if="${comment.memberId == loggedInUserId}">
+                            <button class="btn btn-gray" th:data-comments-id="${comment.commentsId}" th:data-comment-content="${comment.content}" onclick="handleUpdate(this)">수정</button>
+                            <button class="btn btn-dark" th:onclick="'deleteComment(' + ${comment.commentsId} + ')'">삭제</button>
+                        </div>
+                    </li>
+                </ul>
             </div>
 
-            <div th:each="comment : ${comments}" class="card shadow-sm mb-3">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <strong th:text="${comment.memberId}">작성자 ID</strong> <!-- 작성자를 Member ID로 표시 -->
-                        <small class="text-muted" th:text="${#temporals.format(comment.created_at, 'yyyy.MM.dd')}"></small>
-                    </div>
-                    <p class="mt-2 mb-0" th:text="${comment.content}" th:id="'comment-content-' + ${comment.commentsId}">댓글 내용</p>
-
-                    <div class="text-end mt-2" th:if="${comment.memberId == loggedInUserId}">
-                        <button class="btn btn-sm btn-outline-secondary"
-                                th:data-comments-id="${comment.commentsId}"
-                                th:data-comment-content="${comment.content}"
-                                onclick="handleUpdate(this)">
-                            수정
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger"
-                                th:onclick="'deleteComment(' + ${comment.commentsId} + ')'">
-                            삭제
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 페이징 버튼 -->
-        <div class="d-flex justify-content-center mt-4">
-            <nav aria-label="댓글 페이징">
-                <ul class="pagination">
+            <!-- 페이징 버튼 -->
+            <div class="pagination">
+                <ul>
                     <!-- 이전 버튼 -->
                     <li class="page-item" th:classappend="${!prev} ? 'disabled'">
-                        <a class="page-link" th:href="@{|/communities/${community.communityId}?page=${page - 1}|}" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
+                        <a class="page-link" th:href="@{|/communities/${community.communityId}?page=${page - 1}|}" aria-label="Previous">이전</a>
                     </li>
 
                     <!-- 페이지 번호 -->
@@ -104,21 +74,31 @@
 
                     <!-- 다음 버튼 -->
                     <li class="page-item" th:classappend="${!next} ? 'disabled'">
-                        <a class="page-link" th:href="@{|/communities/${community.communityId}?page=${page + 1}|}" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
+                        <a class="page-link" th:href="@{|/communities/${community.communityId}?page=${page + 1}|}" aria-label="Next">다음</a>
                     </li>
                 </ul>
-            </nav>
-        </div>
-    </div>
+            </div>
 
-    <!-- 하단 목록으로 돌아가기 버튼 -->
-    <div class="mt-5 text-center">
-        <a th:href="@{/communities/list}" class="btn btn-outline-primary">목록으로</a>
+        </div>
+
+
     </div>
+    <!-- Flash 메시지 표시 -->
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+
 </div>
 
 <script src="/js/comments.js" defer></script>
+
+
+<!-- javascript -->
+<script layout:fragment="javascript" th:inline="javascript">
+
+</script>
+<!-- javascript -->
+
+
 </body>
 </html>

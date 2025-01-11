@@ -1,14 +1,14 @@
 package com.busanit501.teamboot.service;
 
-import com.busanit501.bootproject.domain.Comments;
-import com.busanit501.bootproject.domain.Community;
-import com.busanit501.bootproject.domain.Member;
-import com.busanit501.bootproject.dto.CommentsDTO;
-import com.busanit501.bootproject.dto.PageRequestDTO;
-import com.busanit501.bootproject.dto.PageResponseDTO;
-import com.busanit501.bootproject.repository.CommentsRepository;
-import com.busanit501.bootproject.repository.CommunityRepository;
-import com.busanit501.bootproject.repository.MemberRepository;
+import com.busanit501.teamboot.domain.Comments;
+import com.busanit501.teamboot.domain.Community;
+import com.busanit501.teamboot.domain.Member;
+import com.busanit501.teamboot.dto.CommentsDTO;
+import com.busanit501.teamboot.dto.PageRequestDTO;
+import com.busanit501.teamboot.dto.PageResponseDTO;
+import com.busanit501.teamboot.repository.CommentsRepository;
+import com.busanit501.teamboot.repository.CommunityRepository;
+import com.busanit501.teamboot.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

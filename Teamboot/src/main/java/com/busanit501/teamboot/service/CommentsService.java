@@ -1,7 +1,7 @@
 package com.busanit501.teamboot.service;
 
-import com.busanit501.bootproject.dto.CommentsDTO;
-import com.busanit501.bootproject.dto.PageResponseDTO;
+import com.busanit501.teamboot.dto.CommentsDTO;
+import com.busanit501.teamboot.dto.PageResponseDTO;
 
 public interface CommentsService {
     Long createComment(CommentsDTO commentsDTO);

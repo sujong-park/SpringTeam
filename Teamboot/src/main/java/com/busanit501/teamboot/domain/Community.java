@@ -1,6 +1,6 @@
 package com.busanit501.teamboot.domain;
 
-import com.busanit501.bootproject.dto.CommunityDTO;
+import com.busanit501.teamboot.dto.CommunityDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

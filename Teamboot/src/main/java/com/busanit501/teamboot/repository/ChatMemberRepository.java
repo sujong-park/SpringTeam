@@ -1,6 +1,6 @@
 package com.busanit501.teamboot.repository;
 
-import com.busanit501.bootproject.domain.Member;
+import com.busanit501.teamboot.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

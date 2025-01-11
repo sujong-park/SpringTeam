@@ -1,7 +1,7 @@
 package com.busanit501.teamboot.repository;
 
-import com.busanit501.bootproject.domain.Category;
-import com.busanit501.bootproject.domain.Community;
+import com.busanit501.teamboot.domain.Category;
+import com.busanit501.teamboot.domain.Community;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

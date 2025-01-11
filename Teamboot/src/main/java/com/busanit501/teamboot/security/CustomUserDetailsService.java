@@ -1,8 +1,8 @@
 package com.busanit501.teamboot.security;
 
-import com.busanit501.bootproject.domain.Member;
-import com.busanit501.bootproject.repository.MemberRepository;
-import com.busanit501.bootproject.security.dto.MemberSecurityDTO;
+import com.busanit501.teamboot.domain.Member;
+import com.busanit501.teamboot.repository.MemberRepository;
+import com.busanit501.teamboot.security.dto.MemberSecurityDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -1,8 +1,8 @@
 package com.busanit501.teamboot.service;
 
-import com.busanit501.bootproject.domain.Category;
-import com.busanit501.bootproject.domain.Community;
-import com.busanit501.bootproject.dto.CommunityWithCommentDTO;
+import com.busanit501.teamboot.domain.Category;
+import com.busanit501.teamboot.domain.Community;
+import com.busanit501.teamboot.dto.CommunityWithCommentDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

@@ -1,10 +1,10 @@
 package com.busanit501.teamboot.service;
 
-import com.busanit501.bootproject.domain.Category;
-import com.busanit501.bootproject.domain.Community;
-import com.busanit501.bootproject.domain.Member;
-import com.busanit501.bootproject.dto.CommunityWithCommentDTO;
-import com.busanit501.bootproject.repository.CommunityRepository;
+import com.busanit501.teamboot.domain.Category;
+import com.busanit501.teamboot.domain.Community;
+import com.busanit501.teamboot.domain.Member;
+import com.busanit501.teamboot.dto.CommunityWithCommentDTO;
+import com.busanit501.teamboot.repository.CommunityRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,16 +27,19 @@ public class CommunityServiceImpl implements CommunityService {
             Member member = (Member) row[1];
             Long commentCount = (Long) row[2];
 
-            return new CommunityWithCommentDTO(
-                    community.getCommunityId(),
-                    community.getTitle(),
-                    community.getContent(),
-                    community.getCategory(),
-                    member != null ? member.getName() : "작성자 없음",  // 사용자 정보 없을 경우 처리
+            return
+                    new CommunityWithCommentDTO(
+                            community.getCommunityId(),
+                            community.getTitle(),
+                            community.getContent(),
+                            community.getCategory(),
+                            member != null ? member.getMid() : "작성자 없음",  // 사용자 정보 없을 경우 처리
+                            member != null ? member.getName() : "작성자 없음",  // 사용자 정보 없을 경우 처리
+                            member != null ? member.getMid() : null,  // memberId 설정 (DB에서 가져온 `member_id`
 //                    member != null ? member.getAddress() : "주소 미등록",
-                    community.getRegDate(),
-                    commentCount
-            );
+                            community.getRegDate(),
+                            commentCount
+                    );
         });
     }
 

@@ -1,6 +1,6 @@
 package com.busanit501.teamboot.service;
 
-import com.busanit501.bootproject.dto.MemberDTO;
+import com.busanit501.teamboot.dto.MemberDTO;
 
 import java.util.List;
 

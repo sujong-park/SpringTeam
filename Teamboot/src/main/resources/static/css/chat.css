@@ -14,7 +14,7 @@
 
 #chatListWrap {flex: 1; display: flex; flex-direction: column; overflow: auto;}
 #chatListWrap .searchContainer {padding: 0 20px;}
-#chatListWrap .chatList {padding: 0 20px; overflow: auto;}
+#chatListWrap .chatList {padding: 20px; overflow: auto;}
 #chatListWrap .chatList li {padding: 15px 20px; border-radius: 8px; cursor: pointer;}
 
 #chatListWrap .chatList li .chat-preview {display: flex;}

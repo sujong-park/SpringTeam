@@ -1,13 +1,13 @@
 package com.busanit501.teamboot.service;
 
-import com.busanit501.bootproject.domain.ChatingRoom;
-import com.busanit501.bootproject.domain.Member;
-import com.busanit501.bootproject.domain.Message;
-import com.busanit501.bootproject.dto.MessageDTO;
-import com.busanit501.bootproject.repository.ChatMemberRepository;
-import com.busanit501.bootproject.repository.ChatRoomParticipantsRepository;
-import com.busanit501.bootproject.repository.ChatingRoomRepository;
-import com.busanit501.bootproject.repository.MessageRepository;
+import com.busanit501.teamboot.domain.ChatingRoom;
+import com.busanit501.teamboot.domain.Member;
+import com.busanit501.teamboot.domain.Message;
+import com.busanit501.teamboot.dto.MessageDTO;
+import com.busanit501.teamboot.repository.ChatMemberRepository;
+import com.busanit501.teamboot.repository.ChatRoomParticipantsRepository;
+import com.busanit501.teamboot.repository.ChatingRoomRepository;
+import com.busanit501.teamboot.repository.MessageRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

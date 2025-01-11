@@ -1,7 +1,7 @@
 package com.busanit501.teamboot.controller;
 
-import com.busanit501.bootproject.dto.*;
-import com.busanit501.bootproject.service.GalleryService;
+import com.busanit501.teamboot.dto.*;
+import com.busanit501.teamboot.service.GalleryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

@@ -210,24 +210,22 @@ form.search .searchBtn {display: flex; align-items: center; justify-content: cen
 
 
 /* read-form */
-.readContainer {width: 100%; max-width: 680px; padding: 15px; margin: auto; padding: 0 0 100px;}
+.readContainer {width: 100%; max-width: 680px; margin: auto; padding: 0 0 100px;}
 .readContainer .readHead {display: flex; align-items: center; justify-content: space-between; margin: 0 0 30px;}
 .readContainer .readHead a.back {width: 20px; height: 20px;}
-.readContainer .readHead .update {line-height: 35px;
-    padding: 0 15px;
-    background: #F5F5F5;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    margin: 0 10px 0 0;}
+.readContainer .readHead .update {line-height: 35px; padding: 0 15px; background: #F5F5F5; border-radius: 8px; font-size: 14px; font-weight: 600;}
+
+.readContainer .imgContainer .img {width: fit-content;border-radius: 10px; overflow: hidden; margin: 0 auto 10px;}
+
+.readContainer .readContent {margin: 50px 0;}
+.readContainer .readContent .tag {display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 600; color: #A5A5A5; letter-spacing: -0.05em;}
+.readContainer .readContent .tag span:not(:last-child):after {content: "~"; margin: 0 5px;}
+.readContainer .readContent .title {font-size: 18px; margin: 20px 0 5px;}
+
+.readContainer .txtContainer {margin: 50px 0; font-size: 14px; line-height: 1.6;}
 
 .readContainer .infoForm {margin: 50px 0 0;}
-.readContainer .infoForm li {
-    display: flex;
-    align-items: flex-start;
-    font-size: 14px;
-    padding: 10px 0;
-}
+.readContainer .infoForm li {display: flex; align-items: flex-start; font-size: 14px; padding: 10px 0;}
 .readContainer .infoForm li .title {flex: none; width: 100px; color: #A5A5A5;}
 .readContainer .infoForm li > p {font-weight: 600;}
 .readContainer .infoForm li .map {flex: 1;}
@@ -235,21 +233,29 @@ form.search .searchBtn {display: flex; align-items: center; justify-content: cen
 
 
 
+/* comment */
+.comment {padding: 20px 0; border-top: 1px solid #D9D9D9;}
+.comment .commentForm {display: flex; height: 120px;}
+.comment .commentForm textarea {height: unset;}
+.comment .commentForm button {flex: none; width: 150px; height: unset; margin: 0 0 0 10px;}
+
+.comment .commentList {padding: 10px 0;}
+.comment .commentList ul li {padding: 10px 0; border-top: 1px solid #F5F5F5;}
+.comment .commentList ul li .comment-info {display: flex; align-items: center; justify-content: space-between; letter-spacing: -0.05em;}
+.comment .commentList ul li .comment-info .user {font-size: 14px; color: #a5a5a5; font-weight: 600;}
+.comment .commentList ul li .comment-info span {font-size: 13px; color: #C4C5C8;}
+.comment .commentList ul li .comment-content {margin: 10px 0 0; font-weight: 500; font-size: 15px;}
+.comment .comment-btn {display: flex; margin: 20px 0 0; gap: 5px;}
+.comment .comment-btn button {height: 35px; width: 60px; font-size: 12px;}
 
 
 
 
-.txtContainer {margin: 50px 0; font-size: 14px; line-height: 1.6;}
-.readContainer .imgContainer .img {
-    width: fit-content;
-    border-radius: 10px;
-    overflow: hidden;
-    margin: 0 auto 10px;
-}
 
 
 
-/*pagination*/
+
+    /*pagination*/
 .pagination {margin: 50px 0 0;}
 .pagination ul {display: flex; align-items: center; justify-content: center;}
 .pagination ul li {margin: 0 5px;}

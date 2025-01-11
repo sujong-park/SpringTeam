@@ -1,6 +1,6 @@
 package com.busanit501.teamboot.repository;
 
-import com.busanit501.bootproject.domain.ChatRoomParticipants;
+import com.busanit501.teamboot.domain.ChatRoomParticipants;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

@@ -1,9 +1,9 @@
 package com.busanit501.teamboot.controller;
 
-import com.busanit501.bootproject.dto.*;
-import com.busanit501.bootproject.service.ChatMemberService;
-import com.busanit501.bootproject.service.ChatingRoomService;
-import com.busanit501.bootproject.service.MessageService;
+import com.busanit501.teamboot.dto.*;
+import com.busanit501.teamboot.service.ChatMemberService;
+import com.busanit501.teamboot.service.ChatingRoomService;
+import com.busanit501.teamboot.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

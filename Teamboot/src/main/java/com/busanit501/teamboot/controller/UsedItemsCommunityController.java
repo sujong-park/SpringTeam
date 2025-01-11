@@ -1,8 +1,8 @@
 package com.busanit501.teamboot.controller;
 
-import com.busanit501.bootproject.domain.Category;
-import com.busanit501.bootproject.domain.Community;
-import com.busanit501.bootproject.service.CommunityService;
+import com.busanit501.teamboot.domain.Category;
+import com.busanit501.teamboot.domain.Community;
+import com.busanit501.teamboot.service.CommunityService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

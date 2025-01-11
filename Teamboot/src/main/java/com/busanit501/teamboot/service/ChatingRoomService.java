@@ -1,7 +1,7 @@
 package com.busanit501.teamboot.service;
 
-import com.busanit501.bootproject.dto.ChatRoomParticipantsDTO;
-import com.busanit501.bootproject.dto.ChatingRoomDTO;
+import com.busanit501.teamboot.dto.ChatRoomParticipantsDTO;
+import com.busanit501.teamboot.dto.ChatingRoomDTO;
 
 import java.util.List;
 

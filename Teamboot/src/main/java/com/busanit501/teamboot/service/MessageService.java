@@ -1,7 +1,7 @@
 package com.busanit501.teamboot.service;
 
 
-import com.busanit501.bootproject.dto.MessageDTO;
+import com.busanit501.teamboot.dto.MessageDTO;
 
 import java.util.List;
 
