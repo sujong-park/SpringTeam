@@ -54,7 +54,7 @@ public class CustomSecurityConfig {
         // 순서4
         //로그인 후, 성공시 리다이렉트 될 페이지 지정, 간단한 버전.
         http.formLogin(formLogin ->
-                formLogin.defaultSuccessUrl("/board/list",true)
+                formLogin.defaultSuccessUrl("/matching/list",true)
         );
 
         // 순서5
