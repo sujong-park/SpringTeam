@@ -2,10 +2,8 @@ package com.busanit501.teamboot.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.BatchSize;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.sql.Timestamp;
 
 @Entity
 @Getter
@@ -30,8 +28,8 @@ public class Message extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
-//    @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-//    private Timestamp sentAt;
+    @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private Timestamp sentAt;
 
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean isRead;

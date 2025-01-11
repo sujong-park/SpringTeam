@@ -1,9 +1,9 @@
 package com.busanit501.teamboot.security;
 
-import com.busanit501.teamboot.domain.Member;
-import com.busanit501.teamboot.domain.MemberRole;
-import com.busanit501.teamboot.repository.MemberRepository;
-import com.busanit501.teamboot.security.dto.MemberSecurityDTO;
+import com.busanit501.bootproject.domain.Member;
+import com.busanit501.bootproject.domain.MemberRole;
+import com.busanit501.bootproject.repository.MemberRepository;
+import com.busanit501.bootproject.security.dto.MemberSecurityDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -78,8 +78,51 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return email;
     }
 
+//    private MemberSecurityDTO generateDTO(String email, Map<String, Object> params) {
+//        Optional<Member> result = memberRepository.findByEmail(email);
+//
+//        // 사용자가, 데이터베이스에 없으면, , 새로 생성.
+//        // 소셜 로그인해서, 처음 유저를 만들 경우, 임의로 패스워드 1111 로 설정.
+//        if (result.isEmpty()) {
+//            Member member = Member.builder()
+//                    .mid(email)
+//                    .mpw(passwordEncoder.encode("1111"))
+//                    .email(email)
+//                    .social(true)
+//                    .build();
+//            member.addRole(MemberRole.USER);
+//            memberRepository.save(member);
+//
+//            // 화면에 출력 용도 사용하기 위해서, DTO로 변환
+//            // 로그인 할 때도 필요함.
+//            MemberSecurityDTO memberSecurityDTO =
+//                    new MemberSecurityDTO(email, "1111", email, false,
+//                            true, Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
+//            // 소셜 로그인 정보 담기.
+//            memberSecurityDTO.setProps(params);
+//            return memberSecurityDTO;
+//        } else {
+//            // 유저가 있는 경우,
+//            Member member = result.get();
+//            //
+//            MemberSecurityDTO memberSecurityDTO
+//                    = new MemberSecurityDTO(
+//                    member.getMid(),
+//                    member.getMpw(),
+//                    member.getEmail(),
+//                    member.isDel(),
+//                    member.isSocial(),
+//                    member.getRoleSet().stream().map(
+//                            memberRole -> new SimpleGrantedAuthority("ROLE_" + memberRole.name())
+//                    ).collect(Collectors.toList())
+//            );
+//            return memberSecurityDTO;
+//        }
+//
+//
+//    }
     private MemberSecurityDTO generateDTO(String email, Map<String, Object> params) {
-        Optional<Member> result = memberRepository.findByEmail(email);
+        Optional<Member> result = memberRepository.findByMid(email);
 
         // 사용자가, 데이터베이스에 없으면, , 새로 생성.
         // 소셜 로그인해서, 처음 유저를 만들 경우, 임의로 패스워드 1111 로 설정.

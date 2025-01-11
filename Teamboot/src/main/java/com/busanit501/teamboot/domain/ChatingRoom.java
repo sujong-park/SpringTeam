@@ -13,6 +13,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 //@ToString(exclude ="imageSet")
 public class ChatingRoom extends BaseEntity {
 
@@ -36,7 +37,7 @@ public class ChatingRoom extends BaseEntity {
     private Long currentParticipants;
 
     @Enumerated(EnumType.STRING)
-    private Status Status;
+    private Status status;
 
     public enum Status {
         Open,
@@ -66,7 +67,7 @@ public class ChatingRoom extends BaseEntity {
         this.title = title;
         this.description = description;
         this.maxParticipants = maxParticipants;
-        this.Status = status;
+        this.status = status;
     }
 
     public void exitRoom(long currentParticipants){

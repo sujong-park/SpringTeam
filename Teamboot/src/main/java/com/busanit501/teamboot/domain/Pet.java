@@ -24,8 +24,8 @@ public class Pet extends BaseEntity {
 
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    private Type type;
+//    @Enumerated(EnumType.STRING)
+    private Gender type;
 
     private LocalDate birth;
 

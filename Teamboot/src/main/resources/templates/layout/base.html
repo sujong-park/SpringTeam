@@ -15,7 +15,9 @@
 <!--          crossorigin="anonymous">-->
     <link rel="stylesheet" th:href="@{/css/base.css}">
     <link rel="stylesheet" th:href="@{/css/users.css}">
+    <link rel="stylesheet" th:href="@{/css/chat.css}">
     <link rel="stylesheet" th:href="@{/css/calendar.css}">
+    <link rel="stylesheet" th:href="@{/css/communities.css}">
 
     <!-- js -->
     <!-- <script th:src="@{이동할 경로}"></script> -->
@@ -40,17 +42,17 @@
                     </a>
                 </li>
                 <li class="sideMenuChat">
-                    <a th:href="@{/chat/list}">
+                    <a th:href="@{/chatingRoom/roomList}">
                         <div class="icon"><img th:src="@{/images/chats.svg}" alt=""></div>
                         <div class="txt">채팅</div>
                     </a>
                 </li>
-                <li class="sideMenuNotifications">
-                    <a th:href="@{/notifications/list}">
-                        <div class="icon"><img th:src="@{/images/bell.svg}" alt=""></div>
-                        <div class="txt">알림</div>
-                    </a>
-                </li>
+<!--                <li class="sideMenuNotifications">-->
+<!--                    <a th:href="@{/notifications/list}">-->
+<!--                        <div class="icon"><img th:src="@{/images/bell.svg}" alt=""></div>-->
+<!--                        <div class="txt">알림</div>-->
+<!--                    </a>-->
+<!--                </li>-->
                 <li class="sideMenuCalendar">
                     <a th:href="@{/calendar/list}">
                         <div class="icon"><img th:src="@{/images/calendar.svg}" alt="" ></div>
@@ -78,8 +80,8 @@
                 </form>
             </th:block>
             <ul class="headMenu">
-                <li><a th:href="@{/hospital/list}">동물병원</a></li>
-                <li><a th:href="@{/share/list}">중고나눔</a></li>
+                <li><a th:href="@{/communities/hospital}">동물병원</a></li>
+                <li><a th:href="@{/communities/useditems}">중고나눔</a></li>
                 <li><a th:href="@{/communities/list}">커뮤니티</a></li>
             </ul>
             <ul class="headMember">
@@ -123,7 +125,8 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="/js/upload.js"></script>
+<script th:src="@{/js/upload.js}"></script>
+<script th:src="@{/js/chatingRoom.js}"></script>
 <th:block layout:fragment="javascript">
 
 </th:block>

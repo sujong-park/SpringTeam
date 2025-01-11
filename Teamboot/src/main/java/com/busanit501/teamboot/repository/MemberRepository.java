@@ -1,6 +1,6 @@
 package com.busanit501.teamboot.repository;
 
-import com.busanit501.teamboot.domain.Member;
+import com.busanit501.bootproject.domain.Member;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -19,6 +19,9 @@ public interface MemberRepository extends JpaRepository<Member, String> {
 
     @EntityGraph(attributePaths = "roleSet")
     Optional<Member> findByEmail(String email);
+
+    @EntityGraph(attributePaths = "roleSet")
+    Optional<Member> findByMid(String mid);
 
     // 사용자 패스워드 변경하는 기능.
     @Modifying

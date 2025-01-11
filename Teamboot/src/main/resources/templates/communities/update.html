@@ -4,14 +4,138 @@
 <body>
 <!-- content -->
 <div layout:fragment="content">
-    <h1 style="text-align: center;">Communities Update</h1>
+    <div class="registerContainer">
+        <form id="editForm" th:object="${community}" th:data-id="${community.communityId}"
+              th:action="@{/update/{id}(id=${community.communityId})}" method="post" enctype="multipart/form-data">
+
+            <!-- 숨은 필드로 현재 페이지 정보와 카테고리 전달 -->
+            <!--        <input type="hidden" name="page" th:value="${currentPage}">-->
+            <input type="hidden" name="category" th:value="${community.category}">
+            <input type="hidden" name="page" th:value="${currentPage != null ? currentPage : 0}">
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input">
+                        <div class="title"></div>
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input">
+                        <div class="title">카테고리</div>
+                        <div>
+                            <select class="form-select" id="category" th:field="*{category}">
+                                <option value="GENERAL" th:selected="${community.category == 'GENERAL'}">자유게시판</option>
+                                <option value="HOSPITAL" th:selected="${community.category == 'HOSPITAL'}">동물병원</option>
+                                <option value="USEDITEMS" th:selected="${community.category == 'USEDITEMS'}">중고장터</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input">
+                        <div class="title">이미지</div>
+                        <div>
+                            <input type="file" class="input" id="file" name="file">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <ul class="uploadResult">
+                    <li class="card">
+                        <img th:if="${community.imageUrl}" th:src="${community.imageUrl}" class="img-fluid mb-4" alt="첨부 이미지">
+                    </li>
+                </ul>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input">
+                        <div class="title">제목</div>
+                        <div><input type="text" class="input" id="title" th:field="*{title}" required></div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input">
+                        <div class="title">내용</div>
+                        <div>
+                            <textarea id="content" th:field="*{content}" rows="5" required></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-box">
+                <button type="submit" class="btn btn-gray">수정 완료</button>
+                <button class="btn btn-dark submitBtn" id="deleteBtn" th:data-id="${community.communityId}">삭제</button>
+            </div>
+        </form>
+    </div>
 </div>
-<!-- content -->
 
 
 <!-- javascript -->
 <script layout:fragment="javascript" th:inline="javascript">
+    // -------------------------수정------------------------------------
+    document.querySelector("#editForm").onsubmit = function(e) {
+        e.preventDefault();
 
+        const communityId = this.dataset.id;
+        const formData = new FormData(this);
+
+        // 카테고리 값 명시적으로 설정
+        const selectedCategory = document.querySelector("#category").value;
+        formData.set("category", selectedCategory);
+
+        fetch(`/communities/update/${communityId}`, {
+            method: "POST",
+            body: formData
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert("게시글이 수정되었습니다.");
+                    window.location.href = `/communities/${communityId}`;
+                } else {
+                    response.text().then(text => {
+                        alert("수정 실패: " + text);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("오류가 발생했습니다.");
+            });
+    };
+
+    // 삭제 기능
+    document.querySelector("#deleteBtn").onclick = function(e) {
+        e.preventDefault();  // 폼 기본 제출 방지
+
+        const communityId = this.dataset.id;
+
+        if (confirm("정말 삭제하시겠습니까?")) {
+            fetch(`/communities/delete/${communityId}`, {
+                method: "DELETE"
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert("게시글이 삭제되었습니다.");
+                        window.location.href = "/communities/list";  // 목록 페이지로 이동
+                    } else {
+                        alert("삭제 실패: " + response.statusText);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("오류가 발생했습니다.");
+                });
+        }
+    };
 </script>
 <!-- javascript -->
 

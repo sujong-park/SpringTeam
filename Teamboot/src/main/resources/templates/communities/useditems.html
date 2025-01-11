@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="www.thymeleaf.org"
+      layout:decorate="~{layout/base.html}">
+<body>
+<!-- content -->
+<div layout:fragment="content">
+    <div class="communitiesContainer contentContainer">
+        <div class="ListWrap">
+            <div class="ListTop">
+                <ul class="filter">
+                    <li><a th:href="@{/communities/list}">전체</a></li>
+                    <li><a th:href="@{/communities/hospital}">동물병원</a></li>
+                    <li class="on"><a th:href="@{/communities/useditems}">중고나눔</a></li>
+                </ul>
+                <a th:href="@{/communities/register}" class="btn-normal">글쓰기</a>
+            </div>
+
+            <!-- 게시글이 없는 경우 -->
+            <div class="emplty" th:if="${communities.empty}">게시글이 없습니다.</div>
+
+            <div class="GalleryList">
+                <ul>
+                    <li th:each="community : ${communities}">
+                        <a class="thumb img" th:href="@{/communities/read{id}(id=${community.communityId})}">
+                            <img th:src="${community.imageUrl != null ? community.imageUrl : '/img/default.png'}">
+                        </a>
+                        <div class="info">
+                            <div class="tag">
+                                <span>00:00</span><span>24:00</span>
+                            </div>
+                            <a class="title" th:href="@{/communities/read{id}(id=${community.communityId})}" th:text="${community.title}"></a>
+                            <p class="text" th:text="${community.member != null && community.member.address != null ? community.member.address : '주소 미등록'}"></p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 페이징 -->
+    <div class="pagination">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/communities/useditems(page=${currentPage - 1})}">이전</a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/communities/useditems(page=${i})}" th:text="${i + 1}"></a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/communities/useditems(page=${currentPage + 1})}">다음</a>
+            </li>
+        </ul>
+    </div>
+    <!--페이징-->
+</div>
+
+
+<!-- javascript -->
+<script layout:fragment="javascript" th:inline="javascript">
+    // 페이징 이동 이벤트 처리.
+    document.querySelector(".pagination").addEventListener("click",
+        function (e) {
+            e.preventDefault()
+            e.stopPropagation()
+            // a 태그에 접근 할려면, 해당 요소 선택자 필요.
+            const target = e.target
+            //  a 태그 인경우에 이벤트 리스너 동작을하고,
+            // a 태그 가 아니면, 이벤트 처리 안함.
+            if (target.tagName !== "A") {
+                return
+            }
+            const num = target.getAttribute("data-num")
+
+            // 백틱, 숫자 키보드 1번 왼쪽에 보면.
+            //  기존 페이지 이동해서,
+            // 폼의 정보를 이용해서 이동.
+            const formObj = document.querySelector("form")
+            // 자바스크립트에서, 백틱 안에서, 문자열 구현하기가 쉽다.
+            formObj.innerHTML += `<input type="hidden" name="page" value="${num}">`
+            formObj.submit()
+
+
+        }, false)
+</script>
+<!-- javascript -->
+
+
+</body>
+</html>

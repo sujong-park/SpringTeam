@@ -4,17 +4,69 @@
 <body>
 <!-- content -->
 <div layout:fragment="content">
-    <h1 style="text-align: center;">Communities List</h1>
+    <div class="communitiesContainer contentContainer">
+        <div class="ListWrap">
+            <div class="ListTop">
+                <ul class="filter">
+                    <li class="on"><a th:href="@{/communities/list}">전체</a></li>
+                    <li><a th:href="@{/communities/hospital}">동물병원</a></li>
+                    <li><a th:href="@{/communities/useditems}">중고나눔</a></li>
+                </ul>
+                <a th:href="@{/communities/register}" class="btn-normal">글쓰기</a>
+            </div>
+
+            <!-- 게시글이 없는 경우 -->
+            <div class="emplty" th:if="${communityPage.empty}">게시글이 없습니다.</div>
+
+            <div class="List">
+                <table>
+                    <thead>
+                        <tr>
+                            <th width="60px"><div>번호</div></th>
+                            <th width="*"><div>제목</div></th>
+                            <th width="120px"><div>작성자</div></th>
+                            <th width="60px"><div>조회</div></th>
+                            <th width="100px"><div>작성일</div></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="communityWithComment, iterStat : ${communityPage.content}">
+                            <td><div th:text="${communityWithComment.communityId}"></div></td>
+                            <td class="title">
+                                <a th:href="@{/communities/{id}(id=${communityWithComment.communityId})}" th:text="'[' + ${communityWithComment.category} + '] ' + ${communityWithComment.title}"></a>
+                            </td>
+                            <td><div th:text="${communityWithComment.memberName != null ? communityWithComment.memberName : '-'}"></div></td>
+                            <td><div th:text="${communityWithComment.commentsCount}" class="mt-1"></div></td>
+                            <td><div th:text="${#temporals.format(communityWithComment.created_at, 'yyyy-MM-dd')}" class="mt-1"></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 페이징 -->
+    <div class="pagination">
+        <ul>
+            <!-- 이전 버튼 -->
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/communities/list(page=${currentPage - 1})}" aria-label="이전">이전</a>
+            </li>
+
+            <!-- 페이지 번호 -->
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/communities/list(page=${i})}" th:text="${i + 1}"></a>
+            </li>
+
+            <!-- 다음 버튼 -->
+            <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/communities/list(page=${currentPage + 1})}" aria-label="다음">다음</a>
+            </li>
+        </ul>
+    </div>
+    <!-- 페이징 -->
 </div>
-<!-- content -->
-
-
-<!-- javascript -->
-<script layout:fragment="javascript" th:inline="javascript">
-
-</script>
-<!-- javascript -->
-
-
 </body>
 </html>

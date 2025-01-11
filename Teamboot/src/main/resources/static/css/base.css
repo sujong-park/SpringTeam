@@ -108,6 +108,21 @@ textarea {width: 100%; height: 250px; padding: 20px; background: #F5F5F5; font-f
 .vertical.active .verticalOption {display: block;}
 
 
+
+
+form.search {position: relative; display: flex;
+    align-items: center; height: 46px;
+    background: #F5F5F5; border-radius: 10px; overflow: hidden;
+}
+form.search .input {flex: 1; padding: 0 0 0 20px;}
+form.search .searchBtn {display: flex; align-items: center; justify-content: center; width: 46px; height: 46px;}
+
+
+
+
+
+
+
 /* ==================== side */
 #side {position: sticky; top: 0; flex: none; width: 350px; height: 100vh; padding: 50px 20px; border-right: 1px solid #A5A5A5; }
 #side .logo {display:flex; align-items: center; justify-content: center; padding: 20px 15px;}
@@ -173,8 +188,25 @@ textarea {width: 100%; height: 250px; padding: 20px; background: #F5F5F5; font-f
 
 /* register-form */
 .registerContainer {width: 100%; max-width: 680px; padding: 15px; margin: auto;}
-
-
+.registerContainer form .form-group {}
+.registerContainer form .input-group {}
+.registerContainer form .input-group .input {}
+.registerContainer form .input-group .input input[type="file"] {line-height: 48px; font-size: 14px;}
+.registerContainer form select.form-select {appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: url("/images/arrow_down_bold.svg") no-repeat right 15px center #f5f5f5;
+    border: none;
+    border-radius: 8px;
+    padding: 0px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    min-width: 200px;
+    height: 50px;
+    font-family: "Noto Sans KR", Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    outline: none;
+}
 
 
 /* read-form */
@@ -221,15 +253,71 @@ textarea {width: 100%; height: 250px; padding: 20px; background: #F5F5F5; font-f
 .pagination {margin: 50px 0 0;}
 .pagination ul {display: flex; align-items: center; justify-content: center;}
 .pagination ul li {margin: 0 5px;}
-.pagination ul li a {font-size: 14px;
-    color: #ccc;
-    font-weight: 500;
-    padding: 5px; cursor: pointer;}
+.pagination ul li a {font-size: 14px; color: #ccc; font-weight: 500; padding: 5px; cursor: pointer;}
 
 .pagination ul li.active a {color: #000;}
 
 
+/* List */
+.ListWrap {}
+.ListTop {display: flex; align-items: center; justify-content: space-between; margin: 0 0 20px;}
+.ListTop .filter {display: flex;}
+.ListTop .filter li {display: flex; align-items: center; font-size: 14px; color: #A5A5A5;}
+.ListTop .filter li:not(:last-child):after {content:""; display: block; width: 1px; height: 10px; background: #e5e5e5; margin: 0 10px;}
+.ListTop .filter li.on {color: #000;}
+.ListWrap .emplty {display: flex; align-items: center; justify-content: center; height: 300px; font-size: 15px; background: #f5f5f5; border-radius: 10px;}
 
+.List table {width: 100%;}
+.List table thead {background: #F5F5F5; border-top: 1px solid #a5a5a5;}
+.List table thead th {}
+.List table thead th div {
+    font-size: 14px;
+    padding: 10px;
+    color: #a5a5a5;
+}
+.List table tbody tr {border-bottom: 1px solid #a5a5a5;}
+.List table tbody tr td {}
+.List table tbody tr td div {text-align: center; font-size: 14px; padding: 10px; color: #a5a5a5;}
+.List table tbody tr td a {
+    display: block;
+    width: 500px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.05em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* GalleryList */
+.GalleryList {}
+.GalleryList ul {display: flex; flex-wrap: wrap; margin: 0 -15px;}
+.GalleryList ul li {padding: 15px; width: calc(100% / 4);}
+.GalleryList ul li .thumb {
+    display: flex; align-items: center; justify-content: center;
+    height: calc(((100vw - 510px) / 4) - 30px);}
+.GalleryList ul li .thumb img {width: 100%; height: 100%; object-fit: cover;}
+
+.GalleryList ul li .info {padding: 10px 0;}
+.GalleryList ul li .info .tag {}
+.GalleryList ul li .info .tag span {display: inline-flex; align-items: center; font-size: 13px; color: #A5A5A5;}
+.GalleryList ul li .info .tag span:not(:last-child):after {content:"~"; margin: 0 5px;}
+.GalleryList ul li .info .title {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.05em;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 5px 0 10px;
+}
+.GalleryList ul li .info .text {font-size: 14px;}
+@media (max-width: 1440px) {
+    .GalleryList ul li .thumb {height: calc(((100vw - 400px) / 4) - 30px);}
+}
 
 
 
