@@ -3,47 +3,40 @@
       layout:decorate="~{layout/base.html}">
 <head>
     <title>동물병원 게시판</title>
+    <!-- CSS 파일 연결 -->
+    <link rel="stylesheet" th:href="@{/css/hospital.css}" />
 </head>
 <body>
-<div layout:fragment="content" class="container mt-5">
+<div layout:fragment="content" class="container mt-5 hospitalListWrap">
     <!-- 상단 헤더 -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="hospitalListTop">
         <h2 class="text-center flex-grow-1">동물병원</h2>
         <a th:href="@{/communities/register}" class="btn btn-primary small-btn">글쓰기</a>
     </div>
 
     <!-- 병원 카테고리 게시글 리스트 -->
-    <div class="row row-cols-1 row-cols-md-4 g-4">
-        <div class="col" th:each="community : ${communities}">
-            <div class="card h-100 shadow-sm">
-                <!-- 게시글 이미지 -->
-                <a th:href="@{/communities/{id}(id=${community.communityId})}" class="text-decoration-none">
-                    <img th:src="${community.imageUrl != null ? community.imageUrl : '/img/default.png'}"
-                         class="card-img-top" alt="게시글 이미지"
-                         style="height: 180px; object-fit: cover;">
+    <ul class="hospitalList">
+        <li th:each="community : ${communities}">
+            <a th:href="@{/communities/{id}(id=${community.communityId})}" class="thumb">
+                <div class="hospitalThumbSlide">
+                    <img th:src="${community.imageUrl != null ? community.imageUrl : '/img/default.png'}" alt="게시글 이미지">
+                </div>
+            </a>
+            <div class="hospitalInfo">
+                <a th:href="@{/communities/{id}(id=${community.communityId})}" class="text-dark text-decoration-none">
+                    <h5 th:text="${community.title}" class="hospitalRoomTitle">게시글 제목</h5>
                 </a>
-
-                <!-- 게시글 정보 -->
-                <div class="card-body">
-                    <a th:href="@{/communities/{id}(id=${community.communityId})}" class="text-dark text-decoration-none">
-                        <h5 class="card-title" th:text="${community.title}">게시글 제목</h5>
-                    </a>
-                    <p class="card-text" th:text="${community.content}">게시글 내용</p>
-                    <p class="text-muted small" th:text="${#temporals.format(community.regDate, 'yyyy-MM-dd')}">작성일</p>
-                </div>
-
-                <!-- 사용자 정보 -->
-                <div class="card-footer">
-                    <small class="text-muted" th:text="${community.member != null && community.member.address != null ? community.member.address : '주소 미등록'}"></small>
-                </div>
+                <p th:text="${community.content}">게시글 내용</p>
+                <p class="text-muted small" th:text="${#temporals.format(community.regDate, 'yyyy-MM-dd')}">작성일</p>
+                <small th:text="${community.member != null && community.member.address != null ? community.member.address : '주소 미등록'}"></small>
             </div>
-        </div>
+        </li>
 
         <!-- 게시글이 없는 경우 -->
-        <div class="col text-center" th:if="${communities.empty}">
+        <li class="text-center" th:if="${communities.empty}">
             <p>게시글이 없습니다.</p>
-        </div>
-    </div>
+        </li>
+    </ul>
 
     <!-- 페이징 -->
     <nav aria-label="Page navigation" class="mt-4">
