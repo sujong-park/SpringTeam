@@ -20,7 +20,8 @@
 }
 .hospitalListWrap .hospitalListTop ul li.on {color: #000;}
 
-.hospitalList {display: flex; flex-wrap: wrap; margin: 0 -15px;}
+.hospitalList {display: flex; flex-wrap: wrap; margin-bottom: 30px; /* 게시글과 페이징 사이의 간격 */}
+.pagination {margin-top: 20px; /* 페이징과 위 요소 간의 간격 */}
 .hospitalList li {width: calc(100% / 4); padding: 15px;}
 .hospitalList li a.thumb {width: 100%; height: 300px;}
 .hospitalList li a.thumb .hospitalThumbSlide {width: 100%; height: 100%; overflow: hidden;}
@@ -311,6 +312,7 @@
     letter-spacing: -0.05em;
 }
 .mate-list li button {margin: 0 0 0 auto; background: #000; color: #fff;}
+
 
 
 
