@@ -12,7 +12,7 @@
         <div class="profile-image img"></div>
         <div class="profile-info">
             <div class="info-top">
-                <div class="manner">매너지수</div>
+                <div class="manner">매너지수<span th:text="${user.rating != null ? user.rating : 0}"></span></div>
                 <button class="contact">메시지보내기</button>
                 <div class="vertical">
                     <button class="verticalBtn" onclick="verticalClick.call(this)"><img th:src="@{/images/vertical_icon.svg}"></button>
@@ -24,7 +24,7 @@
                     </div>
                 </div>
             </div>
-            <div class="profileUser">Busanit501</div>
+            <div class="profileUser">[[${user.Username}]]</div>
             <div class="profileText">강아지 두 마리 키우고 있어요. 비비랑 씨씨를 키우고 있어요. <br>우리 애들은 안물어요. 걱정 마세요. <br>작업해야함.</div>
             <ul class="myPetProfile">
                 <li>
@@ -97,7 +97,7 @@
 <!-- javascript -->
 <script layout:fragment="javascript" th:inline="javascript">
     document.getElementById("galleryListBtn").addEventListener("click", function() {
-        window.location.href = "/gallery/list"; // 원하는 페이지로 변경
+        window.location.href = "/pet/list"; // 원하는 페이지로 변경
     });
     document.getElementById("petListBtn").addEventListener("click", function() {
         window.location.href = "/pet/list"; // 원하는 페이지로 변경

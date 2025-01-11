@@ -38,6 +38,26 @@
                 <span>구글로 로그인</span>
             </button>
         </div>
+
+        <div class="card-body">
+            <!--            로그아웃 여부 확인하는 코드-->
+            <!--            파라미터로 logout 있다면, 로그인 입력폼 안보이게 하기-->
+            <!--
+            <th:block th:if="${param.logout != null}">
+                <h1>Logout........</h1>
+            </th:block>
+            -->
+
+            <!--방법2, 접근 권한이 없을 경우, 로그인 페이지에서 파라미터의 값으로 조건부 렌더링 -->
+            <!--
+            <th:block th:if="${param.error != null}">
+                <h1 th:if="${error == 'ACCESS_DENIED'}">접근 권한이 없습니다. Access Denied</h1>
+            </th:block>
+            -->
+
+            <!--            로그아웃 파라미터 추가 설정-->
+
+        </div>
     </div>
 
     <!--    끝나는 부분 fragment-->

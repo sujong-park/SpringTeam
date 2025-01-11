@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="www.thymeleaf.org"
+      layout:decorate="~{layout/base.html}">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>Simple Sidebar - Modify</title>
+    <!-- Favicon-->
+    <!--    <link rel="icon" type="image/x-icon" th:href="@{/assets/favicon.ico}"/>-->
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <!--    <link th:href="@{/css/styles.css}" rel="stylesheet"/>-->
+</head>
+<body class="align-middle">
+<div>
+    <div layout:fragment="content">
+
+        <div class="card align-self-center">
+            <div class="card-header">
+                Modify Page
+            </div>
+            <div class="card-body">
+
+                <!--            로그아웃 파라미터 추가 설정-->
+                <form id="registerForm" action="/member/join" method="post">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">mid</span>
+                        <input type="text" name="mid" class="form-control" placeholder="사용자 mid">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">mpw</span>
+                        <input type="password" name="mpw" class="form-control" placeholder="사용자 mpw">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">email</span>
+                        <input type="email" name="email" class="form-control" placeholder="사용자 email">
+                    </div>
+
+                    <div class="my-4">
+                        <button type="submit" class="btn btn-primary w-100 joinBtn">Join</button>
+                    </div>
+                    <div class="my-4">
+                        <button type="reset" class="btn btn-primary w-100 submitBtn">Reset</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--    fragment content  끝-->
+    <script layout:fragment="javascript" th:inline="javascript">
+        // 중복 아이디 처리 경고창 추가하기
+        const error = [[${error}]]
+
+
+        if(error && error === "mid") {
+            alert("중복된 아이디입니다.")
+        }
+
+    </script>
+</div>
+
+</body>
+</html>
