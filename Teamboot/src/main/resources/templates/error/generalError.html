@@ -1,0 +1,17 @@
+<!-- src/main/resources/templates/error/generalError.html -->
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>오류 발생</title>
+    <link rel="stylesheet" th:href="@{/css/error.css}">
+    <!-- 필요 시 Bootstrap CSS 등 추가 -->
+</head>
+<body>
+<div class="error-container">
+    <h1>오류가 발생했습니다.</h1>
+    <p th:text="${errorMessage}">에러 메시지</p>
+    <a th:href="@{/}" class="btn btn-primary">홈으로 돌아가기</a>
+</div>
+</body>
+</html>
