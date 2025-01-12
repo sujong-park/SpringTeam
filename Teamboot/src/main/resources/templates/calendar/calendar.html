@@ -102,8 +102,8 @@
                 selectable: true,
                 selectMirror: true,
                 events: async function(fetchInfo, successCallback, failureCallback) {
-                    const mid = getCurrentUserMid();
-                    const schedules = await getUserSchedules(mid);
+                    const userId = BigInt(1); // 실제 userId로 교체
+                    const schedules = await getUserSchedules(userId);
                     successCallback(schedules);
                 },
                 // 날짜 선택 시 선택된 날짜 저장

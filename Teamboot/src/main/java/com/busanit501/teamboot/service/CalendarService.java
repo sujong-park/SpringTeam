@@ -3,58 +3,73 @@ package com.busanit501.teamboot.service;
 import com.busanit501.teamboot.domain.Calendar;
 import com.busanit501.teamboot.domain.MatchingRoom;
 import com.busanit501.teamboot.domain.Member;
-import com.busanit501.teamboot.domain.ScheduleStatus;
-import com.busanit501.teamboot.repository.CalendarRepository;
+
+import com.busanit501.teamboot.dto.CalendarDTO;
+import com.busanit501.teamboot.dto.MatchingRoomDTO;
+
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 
-@Service
-@Log4j2
-public class CalendarService {
+public interface CalendarService {
 
-    @Autowired
-    private CalendarRepository calendarRepository;
 
-    @Transactional
-    public void saveSchedule(Member loginmember, MatchingRoom room, List<Member> participants) {
-        log.info("Saving schedule for roomId: {} with participants", room.getRoomId());
+    void saveSchedule(Member loginmember, MatchingRoom room, List<Member> participants);
+//    void saveMatchingAndCalendar(MatchingRoomDTO matchingRoomDTO);
+    List<CalendarDTO> getUserSchedules(String mid);
+    void updateScheduleStatus();
 
-        try {
-            // 매칭방 생성자(호스트) 저장
-            Calendar hostCalendar = Calendar.builder()
-                    .member(loginmember)
-                    .schedulename(room.getTitle())
-                    .walkDate(room.getMeetingDate())
-                    .walkTime(room.getMeetingTime())
-                    .walkPlace(room.getPlace())
-                    .status(ScheduleStatus.SCHEDULED)
-                    .build();
-            calendarRepository.save(hostCalendar);
+    Calendar addSchedule(CalendarDTO calendarDTO);
+    void updateSchedule(Long id, CalendarDTO calendarDTO);
+    void deleteSchedule(Long id);
 
-            // 참여자 모두 저장
-            for (Member participant : participants) {
-                Calendar participantCalendar = Calendar.builder()
-                        .member(participant)
-                        .schedulename(room.getTitle())
-                        .walkDate(room.getMeetingDate())
-                        .walkTime(room.getMeetingTime())
-                        .walkPlace(room.getPlace())
-                        .status(ScheduleStatus.SCHEDULED)
-                        .build();
-                calendarRepository.save(participantCalendar);
-                log.info("Schedule saved for participant: {}", participant.getMid());
-            }
 
-            log.info("Schedule saved successfully for roomId: {}", room.getRoomId());
-        } catch (Exception ex) {
-            log.error("Error while saving schedule: ", ex);
-            throw ex;
-        }
+
+    default CalendarDTO entityToDto(Calendar calendar) {
+        return CalendarDTO.builder()
+                .scheduleId(calendar.getScheduleId())
+                .mid(calendar.getMember().getMid())
+                .schedulename(calendar.getSchedulename())
+                .walkDate(calendar.getWalkDate())
+                .walkTime(calendar.getWalkTime())
+                .walkPlace(calendar.getWalkPlace())
+                .status(calendar.getStatus())
+                .matching(calendar.getMatching())
+                .schedulStart(calendar.getSchedulStart())
+                .schedulEnd(calendar.getSchedulEnd())
+                .build();
     }
+
+    // DTO to Entity
+    default Calendar dtoToEntity(CalendarDTO dto) {
+        return Calendar.builder()
+                .member(Member.builder().mid(dto.getMid()).build())
+                .schedulename(dto.getSchedulename())
+                .walkDate(dto.getWalkDate())
+                .walkTime(dto.getWalkTime())
+                .walkPlace(dto.getWalkPlace())
+                .status(dto.getStatus())
+                .matching(dto.getMatching())
+                .schedulStart(dto.getSchedulStart())
+                .schedulEnd(dto.getSchedulEnd())
+                .build();
+    }
+
+
+//    default MatchingRoom matchinroomdtoEntity(MatchingRoomDTO dto) {
+//        return MatchingRoom.builder()
+//                .host(User.builder().userId(dto.getHostId()).build())
+//                .user(User.builder().userId(dto.getUserId()).build())
+//                .title(dto.getTitle())
+//                .description(dto.getDescription())
+//                .place(dto.getPlace())
+//                .meetingDate(dto.getMeetingDate())
+//                .meetingTime(dto.getMeetingTime())
+//                .build();
+//    }
 }
 
 

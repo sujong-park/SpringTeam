@@ -46,18 +46,18 @@ public class Calendar extends BaseEntity {
     private String walkPlace;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column
+//            (nullable = false)
     @Builder.Default
-    private ScheduleStatus status = ScheduleStatus.SCHEDULED;  // 산책 상태 (예정, 완료, 취소)
-
+    private ScheduleStatus status = ScheduleStatus.SCHEDULED;
 
 
     @Column(name = "matching")
     private Boolean matching;
     @Column(name = "schedul_start")
-    private LocalTime schedulStart;
+    private LocalDate schedulStart;
     @Column(name = "schedul_end")
-    private LocalTime schedulEnd;
+    private LocalDate schedulEnd;
 
     public void changeStatus(ScheduleStatus status) {
 
