@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="www.thymeleaf.org"
+      layout:decorate="~{layout/base.html}">
+<body>
+<!-- content -->
+<div layout:fragment="content">
+    <style>
+        #side .sideMenu li.sideMenuMatching a {background: #F5F5F5;}
+    </style>
+
+    <div id="matchingReadContainer" class="readContainer">
+        <div class="readHead">
+            <a class="back" th:href="@{/matching/list}">
+                <img th:src="@{/images/left_arrow.svg}">
+            </a>
+            <a class="update">수정하기</a>
+        </div>
+
+        <div class="imgContainer">
+            <div class="img">
+                <img th:src="@{/images/test/gallery1.jpg}">
+            </div>
+        </div>
+
+        <div class="matchingInfo">
+            <div class="tag">
+                <div class="location">
+                    <span>서울</span><span>압구정동</span>
+                </div>
+                <div class="participants">2/4명</div>
+            </div>
+            <a class="matchingRoomTitle">평일 오후 한강공원 같이 산책하실 분 3명~4명 모임모임모임모임오미 구해요.</a>
+            <div class="description">
+                1시간 정도 편하게 산책하실 분
+            </div>
+            <ul class="infoForm">
+                <li>
+                    <div class="title">날짜</div>
+                    <p>2025.20.20</p>
+                </li>
+                <li>
+                    <div class="title">시간</div>
+                    <p>18:00</p>
+                </li>
+                <li>
+                    <div class="title">장소</div>
+                    <div class="map">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3261.537037233892!2d129.05481037635164!3d35.16816515798652!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3568eb41fdb8ba3d%3A0x7a2af1771124ab48!2z67aA7IKw7Iuc66-86rO17JuQ!5e0!3m2!1sko!2skr!4v1736415553884!5m2!1sko!2skr" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        <p>부산 시민공원</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="participants">
+            <div class="user host">
+                <a class="userName">BusanIT501</a>
+                <ul class="petList">
+                    <li>
+                        <div class="thumb">
+                            <img th:src="@{/images/test/gallery1.jpg}">
+                            <img class="verified" th:src="@{/images/verified.svg}">
+                        </div>
+                        <div class="name">메리</div>
+                    </li>
+                    <li>
+                        <div class="thumb">
+                            <img th:src="@{/images/test/gallery2.jpg}">
+                        </div>
+                        <div class="name">베리</div>
+                    </li>
+                </ul>
+            </div>
+            <div class="user">
+                <a  class="userName">BusanIT501</a>
+                <ul class="petList">
+                    <li>
+                        <div class="thumb">
+                            <img th:src="@{/images/test/gallery3.jpg}">
+                            <img class="verified" th:src="@{/images/verified.svg}">
+                        </div>
+                        <div class="name">푸푸</div>
+                    </li>
+                </ul>
+            </div>
+            <div class="user">
+                <a th:href="@{/gallery/}" class="userName">BusanIT501</a>
+                <ul class="petList">
+                    <li>
+                        <div class="thumb">
+                            <img th:src="@{/images/test/gallery4.jpg}">
+                        </div>
+                        <div class="name">초코</div>
+                    </li>
+                    <li>
+                        <div class="thumb">
+                            <img th:src="@{/images/test/gallery5.jpg}">
+                        </div>
+                        <div class="name">유로</div>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- content -->
+
+
+<!-- javascript -->
+<script layout:fragment="javascript" th:inline="javascript">
+
+</script>
+<!-- javascript -->
+
+
+</body>
+</html>

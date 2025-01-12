@@ -45,6 +45,12 @@ public class MatchingController {
     private final CalendarService calendarService;
     private final MemberRepository memberRepository;
 
+    // 리스트가 생성이 안되서 임의로 넣음.
+    @GetMapping("/read")
+    public void read(@AuthenticationPrincipal UserDetails user, Model model) {
+        model.addAttribute("user", user);
+    }
+
     /**
      * 매칭방 리스트 조회 페이지
      *

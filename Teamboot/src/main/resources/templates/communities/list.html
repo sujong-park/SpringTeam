@@ -1,6 +1,9 @@
 <!doctype html>
 <html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="www.thymeleaf.org"
       layout:decorate="~{layout/base.html}">
+<head>
+    <script th:src="@{/js/communities/js}"></script>
+</head>
 <body>
 <!-- content -->
 <div layout:fragment="content">
@@ -16,7 +19,7 @@
             </div>
 
             <!-- 게시글이 없는 경우 -->
-            <div class="emplty" th:if="${communityPage.empty}">게시글이 없습니다.</div>
+            <div class="empty" th:if="${communityPage.empty}">게시글이 없습니다.</div>
 
             <div class="List">
                 <table>
