@@ -38,5 +38,4 @@ public class MemberServiceImpl implements MemberService {
     public boolean checkEmailExists(String email) {
         return memberRepository.existsById(email);
     }
-
 }

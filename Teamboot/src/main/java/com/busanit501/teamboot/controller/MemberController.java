@@ -35,10 +35,7 @@ public class MemberController {
             log.info("logoutTest user ====================");
         }
         if (error != null) {
-            // 403 , error 만 확인한 상태
             log.info("logoutTest error ====================" + error);
-//            redirectAttributes.addFlashAttribute(
-//                    "error", error);
             model.addAttribute("error", error);
         }
 
@@ -53,7 +50,6 @@ public class MemberController {
     @PostMapping("/join")
     public String joinPost(MemberJoinDTO memberJoinDTO,
                            RedirectAttributes redirectAttributes) {
-        // 서비스 만들어서, 연결 해주기.
         try{
             memberService.join(memberJoinDTO);
         } catch (MemberService.MidExistException e) {

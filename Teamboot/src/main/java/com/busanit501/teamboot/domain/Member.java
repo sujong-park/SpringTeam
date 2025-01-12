@@ -46,6 +46,7 @@ public class Member extends BaseEntity {
     @Builder.Default
     private Set<MemberRole> roleSet = new HashSet<>();
 
+
     // 멤버 값 교체하는 메서드 추가.
     public void changePassword(String mpw) {
         this.mpw = mpw;
