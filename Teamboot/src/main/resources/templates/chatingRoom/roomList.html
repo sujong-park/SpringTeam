@@ -143,8 +143,8 @@
                 <!-- 모달 하단 버튼들 -->
                 <div class="modal-footer">
                     <!-- 수정, 삭제, 닫기 버튼 (호스트일 때만 표시) -->
-                    <button type="button" class="btn btn-gray room-delete-btn" style="display: none;">삭제</button>
                     <button type="button" class="btn btn-dark room-edit-btn" style="display: none;">수정</button>
+                    <button type="button" class="btn btn-gray room-delete-btn" style="display: none;">삭제</button>
                     <!-- 나가기, 닫기 버튼 (일반 사용자가 들어갔을 때 표시) -->
                     <button type="button" class="btn btn-dark room-leave-btn" style="display: none;">방 나가기</button>
                 </div>
@@ -178,8 +178,8 @@
                         <input type="number" class="form-control edit-maxParticipants">
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">상태</span>
-                        <select class="form-select edit-status">
+                        <span class="input-group-text" hidden="hidden">상태</span>
+                        <select class="form-select edit-status" hidden="hidden">
                             <option value="Open">Open</option>
                             <option value="Closed">CLOSED</option>
                         </select>
@@ -488,7 +488,7 @@
                     };
                     exitUser(exitObj)
                         .then(result => {
-                            alert(result + "님이 방에서 나갔습니다.");
+                            alert("방에서 나갔습니다.");
                             roomInfoModal.hide();
                             location.reload();
                         })
@@ -679,6 +679,11 @@
 
     inviteButton.addEventListener("click", function () {
         console.log("친구 초대 클릭");
+        // 방 선택 여부 확인
+        if (!currentRoomId || !currentRoomInfo) {
+            alert("초대할 방이 선택되지 않았습니다. 방을 먼저 선택해주세요.");
+            return; // 방이 선택되지 않으면 초대 모달을 열지 않음
+        }
         inviteModal.show();
         // 유저 목록을 불러오기
         fetchUserList();
