@@ -27,7 +27,7 @@
 <div id="wrap">
     <th:block th:if="${user} != null">
         <div id="side">
-            <div class="logo"><a th:href="@{/home}"><img th:src="@{/images/logo.svg}"></a></div>
+            <div class="logo"><a th:href="@{/matching/list}"><img th:src="@{/images/logo.svg}"></a></div>
             <ul class="sideMenu">
                 <li class="sideMenuProfile">
                     <a th:href="@{/gallery/list}">
@@ -70,7 +70,7 @@
     </th:block>
     <div class="mainContent">
         <header id="header">
-            <div class="logo" th:if="${user} == null"><a th:href="@{/home}"><img th:src="@{/images/logo.svg}"></a></div>
+            <div class="logo" th:if="${user} == null"><a th:href="@{/matching/list}"><img th:src="@{/images/logo.svg}"></a></div>
             <th:block th:if="${user} != null">
                 <form action="" method="get">
                     <div class="search">
