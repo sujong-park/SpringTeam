@@ -17,7 +17,6 @@
         <a href="#" id="addEvent">일정 추가</a>
     </div>
 
-
     <!-- 모달 열기 버튼 (모달 외부) -->
     <!--    <button onclick="openModal()">일정 추가</button>-->
     <!-- Modal -->
@@ -111,9 +110,10 @@
                         successCallback(schedules);
                     },
                     // 날짜 선택 시 선택된 날짜 저장
-                    select: function (info) {
-                        startDate = info.startStr; // 선택된 시작 날짜 저장
-                        endDate = info.endStr; // 선택된 끝 날짜 저장
+                    select: function (info) { //풀캘린더에서 선택한 날짜나 이벤트를 클릭햇을때 호출
+                        startDate = info.startStr; // 선택된 시작 날짜 저장 // 날짜와 시가늘 포함한 문자열임 하루 더 나오는 이유는 이벤트 끝난 날짜
+                        endDate = info.endStr;
+                        console.log({startDate, endDate})
                     },
                     eventClick: function (info) { // info는 eventClick 핸들러에서 제공되는 객체
                         // const walkDate = info.extendedProps.matching ? `${info.event.start} ~ ${info.event.extendedProps.end}` : info.event.start;
@@ -133,6 +133,7 @@
                     }
                 });
                 calendar.render();
+
 
 
                 document.getElementById('addEvent').addEventListener('click', function () {
@@ -158,8 +159,6 @@
                     modal.style.display = 'none';
                 });
 
-                //-------------------------------------
-                // 오른쪽 클릭 메뉴 표시
             })
 
 
@@ -184,10 +183,6 @@
 
                 // }
             });
-
-            async function handleClickAddSchedule() {
-                await addSchedule({startDate, endDate});
-            }
 
         </script>
 
