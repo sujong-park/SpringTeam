@@ -10,7 +10,7 @@
     <style>
         #side .sideMenu li.sideMenuChat a {background: #F5F5F5;}
         .mainContent {display: flex; flex-direction: column; height: 100vh; overflow: auto;}
-        .content {flex: 1; display: flex; padding: 0; overflow: auto;}
+        .content {display: flex; padding: 0; overflow: auto;}
     </style>
 
     <div id="chatContainer">
@@ -65,7 +65,7 @@
         <!-- 채팅창 시작 -->
         <div id="chatViewWrap" class="chat-window">
             <div class="contentTitle">
-                <div class="title">채팅<span></span></div>
+                <div class="title">채팅방<span></span></div>
                 <button class="icon-button" id="inviteButton" title="친구 초대">
                     <img th:src="@{/images/plus.svg}">
                 </button>
@@ -138,10 +138,8 @@
                 </div>
                 <div class="modal-body text-center room-info-modal-body">
                     <div class="chat-avatar"></div>
-                    <div class="room-title-wrap">
-                        <h4 class="room-title"></h4>
-                        <p class="room-participants"></p>
-                    </div>
+                    <h4 class="room-title"></h4>
+                    <p class="room-participants"></p>
                     <p class="room-description"></p>
                 </div>
                 <!-- 모달 하단 버튼들 -->
@@ -250,12 +248,8 @@
         .modal-body .form-label {display: block; font-size: 15px; font-weight: 600; color: #A5A5A5; margin: 0 0 10px;}
         .modal-body .form-control {height: 50px; padding: 0 20px; border-radius: 8px;}
 
-        .modal-footer {padding: 20px; display: flex; gap: 10px;}
+        .modal-footer {padding: 20px;}
 
-        .room-title-wrap {display: flex; align-items: center;}
-        .room-title-wrap .room-title {font-size: 18px; font-weight: 800; letter-spacing: -0.05em;}
-        .room-title-wrap .room-participants {font-size: 13px; letter-spacing: -0.05em; font-weight: 600; color: #a5a5a5; margin: 0 0 0 5px;}
-        .room-description {font-size: 15px; padding: 5px 0;}
 
     </style>
 
@@ -336,7 +330,6 @@
             });
         });
     }
-
     // +버튼 클릭 시 채팅방 생성 모달을 띄움
     document.querySelector('#addButton').addEventListener('click', function () {
         console.log("방 추가 클릭");
@@ -626,6 +619,35 @@
                         messageDiv.classList.add('right');
                     } else {
                         messageDiv.classList.add('left');
+                    }
+                    // 본인의 메시지에 대해서만 클릭 이벤트를 추가
+                    if (chatMessage.senderId === currentUser) {
+                        messageDiv.addEventListener('click', () => {
+                            // 클릭된 메시지의 messageId를 콘솔에 출력
+                            console.log("삭제할 messageId" + chatMessage.messageId);
+
+                            // 삭제 여부를 확인하는 확인창을 띄움
+                            const confirmDelete = confirm("이 메시지를 삭제하시겠습니까?");
+
+                            // 사용자가 '확인'을 누르면 메시지를 삭제
+                            if (confirmDelete) {
+                                // deleteMessage 함수 호출하여 해당 메시지를 삭제
+                                deleteMessage(chatMessage.messageId)
+                                    .then(response => {
+                                        // 삭제가 성공적으로 이루어졌으면
+                                        if (response.messageId === chatMessage.messageId) {
+                                            console.log("메시지 삭제 성공");
+                                            // 메시지 새로고침을 위해 loadChatMessages를 다시 호출
+                                            loadChatMessages(roomId);
+                                        }
+                                    })
+                                    .catch(err => {
+                                        // 삭제 중 에러가 발생한 경우
+                                        console.error("메시지 삭제 중 오류 발생:", err);
+                                        alert("메시지 삭제에 실패했습니다.");
+                                    });
+                            }
+                        });
                     }
                     // 메시지를 chatMessages DOM에 추가
                     chatMessages.appendChild(messageDiv);
