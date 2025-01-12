@@ -1,5 +1,6 @@
 package com.busanit501.teamboot.service;
 
+import com.busanit501.teamboot.domain.Member;
 import com.busanit501.teamboot.dto.MemberJoinDTO;
 
 public interface MemberService {
@@ -7,4 +8,6 @@ public interface MemberService {
 
     }
     void join(MemberJoinDTO memberJoinDTO) throws MidExistException;
+
+
 }

@@ -41,7 +41,7 @@ public class Community extends BaseEntity {
 
     @Column(length = 300)
     private String imageUrl;
-
+    @Builder.Default
     private int commentCount = 0;
 
     @OneToMany(mappedBy = "community", cascade = CascadeType.ALL, orphanRemoval = true)
