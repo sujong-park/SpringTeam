@@ -134,8 +134,10 @@
                 </div>
                 <div class="modal-body text-center room-info-modal-body">
                     <div class="chat-avatar"></div>
-                    <h4 class="room-title"></h4>
-                    <p class="room-participants"></p>
+                    <div class="room-title-wrap">
+                        <h4 class="room-title"></h4>
+                        <p class="room-participants"></p>
+                    </div>
                     <p class="room-description"></p>
                 </div>
                 <!-- 모달 하단 버튼들 -->
@@ -244,8 +246,12 @@
         .modal-body .form-label {display: block; font-size: 15px; font-weight: 600; color: #A5A5A5; margin: 0 0 10px;}
         .modal-body .form-control {height: 50px; padding: 0 20px; border-radius: 8px;}
 
-        .modal-footer {padding: 20px;}
+        .modal-footer {padding: 20px; display: flex; gap: 10px;}
 
+        .room-title-wrap {display: flex; align-items: center;}
+        .room-title-wrap .room-title {font-size: 18px; font-weight: 800; letter-spacing: -0.05em;}
+        .room-title-wrap .room-participants {font-size: 13px; letter-spacing: -0.05em; font-weight: 600; color: #a5a5a5; margin: 0 0 0 5px;}
+        .room-description {font-size: 15px; padding: 5px 0;}
 
     </style>
 
