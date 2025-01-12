@@ -12,13 +12,14 @@ async function getUserSchedules(mid) {
     const response = await fetch(`/schedule/${mid}`);
     const schedules = await response.json();
 
+
     const matchingSchedules = schedules.filter(schedule => schedule.matching === true); // 매칭룸에서 넘어온 데이터
     const personalSchedules = schedules.filter(schedule => schedule.matching === false); // 직접 추가된 일정 데이터
 
     const matchingEvents = matchingSchedules.map(schedule => ({
         title: schedule.schedulename,
         start: new Date(schedule.walkDate),  // LocalDate를 JavaScript Date 객체로 변환
-
+        // end: new Date(schedule.schedulEnd),
         extendedProps: {
             day: schedule.walkDate,  // 날짜 그대로 사용
             time: schedule.walkTime,
@@ -57,16 +58,18 @@ function displayEventDetails(eventDetails) {
     console.log(formatDate(eventDetails.startDate))
     console.log(formatDate(eventDetails.endDate))
 
-    console.log(eventDetails.matching)
-    if(eventDetails.matching){
+    console.log(modalDate);
+
+    console.log('eventDetails.matching:', eventDetails.matching);
+    if(Boolean(eventDetails.matching===true)){
         console.log('모달에 들어갈 데이터',formatDate(eventDetails.startDate))
-        modalDate.innetText = formatDate(eventDetails.startDate)  || 'N/A';
+        modalDate.innerText = formatDate(eventDetails.startDate);
     }else{
         console.log('매칭 데이터 안들어가나',formatDate(eventDetails.startDate))
         modalDate.innerText = `${formatDate(eventDetails.startDate)} ~ ${formatDate(eventDetails.endDate)}`;
     }
 
-    // modalDate.innetText = eventDetails.matching ? formatDate(eventDetails.startDate) : `${formatDate(eventDetails.startDate)} ~ ${formatDate(eventDetails.endDate)}`;
+    // modalDate.innetText = eventDetails.matching === true ? formatDate(eventDetails.startDate) : `${formatDate(eventDetails.startDate)} ~ ${formatDate(eventDetails.endDate)}`;
 
 
     modalTime.innerText = formatTime(eventDetails.walkTime) || 'N/A';  // 시간 정보

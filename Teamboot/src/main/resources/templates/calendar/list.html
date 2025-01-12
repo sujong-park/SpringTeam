@@ -79,119 +79,118 @@
         </div>
     </div>
 
+        <!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>-->
+        <!--    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>-->
+        <!--    <script src="/js/schedule.js"></script>-->
+        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+        <script src="/js/schedule.js"></script>
 
-    <!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>-->
-    <!--    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>-->
-    <!--    <script src="/js/schedule.js"></script>-->
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
-    <script src="/js/schedule.js"></script>
+        <script>
+            let startDate = "";
+            let endDate = "";
 
-    <script>
-        let startDate = "";
-        let endDate = "";
+            document.addEventListener('DOMContentLoaded', function () {
+                var calendarEl = document.getElementById('calendar');
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+                    },
+                    navLinks: true,
+                    businessHours: true,
+                    editable: true,
+                    selectable: true,
+                    selectMirror: true,
+                    events: async function (fetchInfo, successCallback, failureCallback) {
+                        const mid = getCurrentUserMid();
+                        console.log(mid)
+                        const schedules = await getUserSchedules(mid);
+                        console.log(schedules)
+                        successCallback(schedules);
+                    },
+                    // 날짜 선택 시 선택된 날짜 저장
+                    select: function (info) {
+                        startDate = info.startStr; // 선택된 시작 날짜 저장
+                        endDate = info.endStr; // 선택된 끝 날짜 저장
+                    },
+                    eventClick: function (info) { // info는 eventClick 핸들러에서 제공되는 객체
+                        // const walkDate = info.extendedProps.matching ? `${info.event.start} ~ ${info.event.extendedProps.end}` : info.event.start;
+                        //
+                        const eventDetails = {
+                            schedulename: info.event.title,  // 이벤트 제목 (예: 산책 이름)
+                            // walkDate: info.event.start, // 추가된 날짜 정보
+                            startDate: info.event.start,
+                            endDate: info.event.end,
+                            walkTime: info.event.extendedProps.time,  // 시간 정보
+                            place: info.event.extendedProps.place,  // 장소 정보
+                            matching: info.event.extendedProps.matching
 
-        document.addEventListener('DOMContentLoaded', function () {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
-                },
-                navLinks: true,
-                businessHours: true,
-                editable: true,
-                selectable: true,
-                selectMirror: true,
-                events: async function (fetchInfo, successCallback, failureCallback) {
-                    const mid = getCurrentUserMid();
-                    console.log(mid)
-                    const schedules = await getUserSchedules(mid);
-                    console.log(schedules)
-                    successCallback(schedules);
-                },
-                // 날짜 선택 시 선택된 날짜 저장
-                select: function (info) {
-                    startDate = info.startStr; // 선택된 시작 날짜 저장
-                    endDate = info.endStr; // 선택된 끝 날짜 저장
-                },
-                eventClick: function (info) { // info는 eventClick 핸들러에서 제공되는 객체
-                    // const walkDate = info.extendedProps.matching ? `${info.event.start} ~ ${info.event.extendedProps.end}` : info.event.start;
-                    //
-                    const eventDetails = {
-                        schedulename: info.event.title,  // 이벤트 제목 (예: 산책 이름)
-                        // walkDate: info.event.start, // 추가된 날짜 정보
-                        startDate: info.event.start,
-                        endDate: info.event.end,
-                        walkTime: info.event.extendedProps.time,  // 시간 정보
-                        place: info.event.extendedProps.place,  // 장소 정보
-                        matching: info.event.extendedProps.matching
+                        };
+                        // console.log("이벤트디테일 확인",eventDetails);
+                        displayEventDetails(eventDetails);
+                    }
+                });
+                calendar.render();
 
-                    };
-                    // console.log("이벤트디테일 확인",eventDetails);
-                    displayEventDetails(eventDetails);
-                }
+
+                document.getElementById('addEvent').addEventListener('click', function () {
+                    // addSchedule();
+                    openModal({startDate, endDate});
+                });
+
+                document.getElementById('closeModal').addEventListener('click', function () {
+                    document.getElementById('scheduleModal').style.display = 'none';
+                });
+
+                document.getElementById('closeModalFooter').addEventListener('click', function () {
+                    document.getElementById('scheduleModal').style.display = 'none';
+                });
+
+                document.getElementById('closeaddModal').addEventListener('click', () => {
+                    const modal = document.getElementById('scheduleaddModal');
+                    modal.style.display = 'none';
+                });
+
+                document.getElementById('closeaddModalFooter').addEventListener('click', () => {
+                    const modal = document.getElementById('scheduleaddModal');
+                    modal.style.display = 'none';
+                });
+
+                //-------------------------------------
+                // 오른쪽 클릭 메뉴 표시
+            })
+
+
+            const contextMenu = document.querySelector("#contextMenu");
+
+            window.addEventListener('contextmenu', function (event) {
+                // if (selectedStartDate && selectedEndDate) {
+                event.preventDefault(); // 기본 우클릭 메뉴 방지
+                const x = event.clientX;
+                const y = event.clientY;
+                // clientX y는 로드됐을때 값만 가지고 있음
+                const scrollX = window.scrollX;
+                const scrollY = window.scrollY;
+                // 스크롤ㄷ
+                console.log(scrollY)
+
+                contextMenu.style.left = x + 10 + scrollX + 'px';
+                contextMenu.style.top = y + 10 + scrollY + 'px';
+                //스크롤이 된값만큼 와이값을 더함
+                contextMenu.style.display = 'block';
+
+
+                // }
             });
-            calendar.render();
 
+            async function handleClickAddSchedule() {
+                await addSchedule({startDate, endDate});
+            }
 
-            document.getElementById('addEvent').addEventListener('click', function () {
-                // addSchedule();
-                openModal({startDate, endDate});
-            });
+        </script>
 
-            document.getElementById('closeModal').addEventListener('click', function () {
-                document.getElementById('scheduleModal').style.display = 'none';
-            });
-
-            document.getElementById('closeModalFooter').addEventListener('click', function () {
-                document.getElementById('scheduleModal').style.display = 'none';
-            });
-
-            document.getElementById('closeaddModal').addEventListener('click', () => {
-                const modal = document.getElementById('scheduleaddModal');
-                modal.style.display = 'none';
-            });
-
-            document.getElementById('closeaddModalFooter').addEventListener('click', () => {
-                const modal = document.getElementById('scheduleaddModal');
-                modal.style.display = 'none';
-            });
-
-            //-------------------------------------
-            // 오른쪽 클릭 메뉴 표시
-        })
-
-
-        const contextMenu = document.querySelector("#contextMenu");
-
-        window.addEventListener('contextmenu', function (event) {
-            // if (selectedStartDate && selectedEndDate) {
-            event.preventDefault(); // 기본 우클릭 메뉴 방지
-            const x = event.clientX;
-            const y = event.clientY;
-            // clientX y는 로드됐을때 값만 가지고 있음
-            const scrollX = window.scrollX;
-            const scrollY = window.scrollY;
-            // 스크롤ㄷ
-            console.log(scrollY)
-
-            contextMenu.style.left = x + 10 + scrollX + 'px';
-            contextMenu.style.top = y + 10 + scrollY + 'px';
-            //스크롤이 된값만큼 와이값을 더함
-            contextMenu.style.display = 'block';
-
-
-            // }
-        });
-
-        async function handleClickAddSchedule() {
-            await addSchedule({startDate, endDate});
-        }
-
-    </script>
-
-</div>
+    </div>
 </body>
 </html>
