@@ -33,8 +33,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.log("서버 응답:", response);
                     if (response.ok) {
                         console.log('댓글 등록 성공');
-                        loadComments(); // 댓글 목록 갱신
                         contentInput.value = ""; // 댓글 입력창 초기화
+                        location.reload(); // 페이지 새로고침
                     } else {
                         console.error('댓글 등록 실패');
                     }
@@ -49,6 +49,8 @@ document.addEventListener("DOMContentLoaded", function () {
     function loadComments(page = 1) {
         const communityId = document.querySelector('[name="communityId"]').value;
         const size = 10; // 한 페이지에 보여줄 댓글 수
+
+        console.log(`loadComments 호출됨: communityId=${communityId}, page=${page}`);
 
         fetch(`/comments/${communityId}?page=${page}&size=${size}`)
             .then(response => response.json())
@@ -113,7 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 })
                 .catch(error => console.error("Error:", error));
         }
-    }
+    };
 
     window.deleteComment = function(commentId) {
         if (confirm("정말로 댓글을 삭제하시겠습니까?")) {
@@ -132,7 +134,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 .catch(error => console.error("Error:", error));
         }
     };
-
 
     // 추가된 handleUpdate 함수
     window.handleUpdate = function(button) {
@@ -165,7 +166,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 .catch(error => console.error("요청 에러:", error));
         }
     };
-
 
     // comments.js 코드 끝
 });
