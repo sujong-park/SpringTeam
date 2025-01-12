@@ -10,7 +10,7 @@
     <style>
         #side .sideMenu li.sideMenuChat a {background: #F5F5F5;}
         .mainContent {display: flex; flex-direction: column; height: 100vh; overflow: auto;}
-        .content {display: flex; padding: 0; overflow: auto;}
+        .content {flex: 1; display: flex; padding: 0; overflow: auto;}
     </style>
 
     <div id="chatContainer">
@@ -61,7 +61,7 @@
         <!-- 채팅창 시작 -->
         <div id="chatViewWrap" class="chat-window">
             <div class="contentTitle">
-                <div class="title">채팅방 목록<span></span></div>
+                <div class="title">채팅<span></span></div>
                 <button class="icon-button" id="inviteButton" title="친구 초대">
                     <img th:src="@{/images/plus.svg}">
                 </button>
