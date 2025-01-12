@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="www.thymeleaf.org"
+      layout:decorate="~{layout/base.html}">
+<body>
+<!-- content -->
+<div layout:fragment="content">
+    <style>
+        #side .sideMenu li.sideMenuProfile a {background: #F5F5F5;}
+        #petReadContainer .pet-profile .title {text-align: center;}
+    </style>
+
+    <div id="petReadContainer" class="readContainer">
+        <div class="readHead">
+            <a class="back" th:href="|@{/pets/list}?${link}|">
+                <img th:src="@{/images/left_arrow.svg}">
+            </a>
+            <a class="update" th:href="|@{/pets/update}?petId=${dto.petId}&${link}|">수정하기</a>
+        </div>
+
+        <div class="imgContainer" th:if="${dto.fileNames != null && dto.fileNames.size()>0}">
+            <div class="img" th:each="fileName: ${dto.fileNames}">
+                <img th:src="|/view/${fileName}|">
+            </div>
+        </div>
+
+        <div class="readContent">
+            <div class="pet-profile">
+                <div class="title" th:text="${dto.name}">이름</div>
+            </div>
+        </div>
+
+        <ul class="infoForm">
+            <li>
+                <div class="title">생년월일</div>
+                <p th:text="${dto.birth}"></p>
+            </li>
+            <li>
+                <div class="title">품종</div>
+                <p th:text="${dto.type}"></p>
+            </li>
+            <li>
+                <div class="title">성별</div>
+                <p th:text="${dto.gender}"></p>
+            </li>
+            <li>
+                <div class="title">몸무게</div>
+                <p th:text="${dto.weight}"></p>
+            </li>
+            <li>
+                <div class="title">성격</div>
+                <p>[[${dto.personality}]]</p>
+            </li>
+        </ul>
+        </div>
+
+
+    </div>
+</div>
+<!-- content -->
+
+
+<!-- javascript -->
+<script layout:fragment="javascript" th:inline="javascript">
+
+</script>
+<!-- javascript -->
+
+
+</body>
+</html>

@@ -53,7 +53,7 @@
             </li>
             <li>
                 <button id="petListBtn">반려동물<span class="count">2</span>
-                    <a th:href="@{/pet/register}"><img th:src="@{/images/plus.svg}"></a>
+                    <a th:href="@{/pets/register}"><img th:src="@{/images/plus.svg}"></a>
                 </button>
             </li>
         </ul>
@@ -63,7 +63,7 @@
                 <li th:each="dto:${responseDTO.dtoList}">
                     <a class="thumb img" th:href="|@{/gallery/read(galleryId=${dto.galleryId})}&${link}|">
                         <div class="galleryThumbSlide" th:if="${dto.galleryImages != null && dto.galleryImages.size()>0}">
-                            <img th:each="galleryImage: ${dto.galleryImages}" th:src="|/view/s_${galleryImage.uuid}_${galleryImage.fileName}|">
+                            <img th:each="galleryImage: ${dto.galleryImages}" th:src="|/view/${galleryImage.uuid}_${galleryImage.fileName}|">
                         </div>
                     </a>
                 </li>
@@ -100,7 +100,7 @@
         window.location.href = "/gallery/list"; // 원하는 페이지로 변경
     });
     document.getElementById("petListBtn").addEventListener("click", function() {
-        window.location.href = "/pet/list"; // 원하는 페이지로 변경
+        window.location.href = "/pets/list"; // 원하는 페이지로 변경
     });
     // 페이징 이동 이벤트 처리.
     document.querySelector(".pagination").addEventListener("click",

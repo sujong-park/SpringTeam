@@ -9,7 +9,7 @@
     </style>
 
     <div class="registerContainer">
-        <form id="updateForm" method="post" th:action="@{/gallery/update}">
+        <form id="updateForm" th:action="@{/pets/register}" method="post">
             <input type="hidden" name="keyword2" th:value="${pageRequestDTO.keyword}">
             <input type="hidden" name="page2" th:value="${pageRequestDTO.page}">
             <input type="hidden" name="type2" th:value="${pageRequestDTO.type}">
@@ -39,38 +39,75 @@
                     <!-- 첨부한 이미지의 요소를 첨부할 예정. 서버 전달용이라서, -->
                 </div>
             </div>
+
+
+
             <div class="form-group">
                 <div class="input-group">
                     <div class="input">
-                        <div class="title">내용</div>
+                        <div class="title">이름</div>
                         <div>
-                            <textarea type="text" id="content" name="content" rows="5">[[${dto.content}]]</textarea>
+                            <input type="text" name="name" id="name" class="input" th:value="${dto.name}">
+                            <div class="form-check">
+                                <input  type="radio" id="male" name="gender" value="MALE" required class="form-check-input" checked="checked">
+                                <label for="male" value="MALE" th:checked="${dto.gender} == 'MALE'">수컷</label>
+                                <input type="radio" id="female" name="gender" value="FEMALE" class="form-check-input">
+                                <label for="female" value="FEMALE" th:checked="${dto.gender} == 'FEMALE'">암컷</label>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <input type="hidden" class="form-control" id="writer" name="writer" th:value="${dto.writer}" readonly>
-            <input type="hidden" class="form-control" id="regDate" name="regDate"
-                   th:value="${#temporals.format(dto.regDate,'yyyy-MM-dd HH:mm:ss')}" disabled>
-            <input type="hidden" class="form-control" id="modDate" name="modDate"
-                   th:value="${#temporals.format(dto.modDate,'yyyy-MM-dd HH:mm:ss')}" disabled>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input">
+                        <div class="title">생년월일</div>
+                        <div>
+                            <input type="date" id="birth" name="birth" class="input" th:value="${dto.birth}">
+                        </div>
+                    </div>
+                    <div class="input">
+                        <div class="title">몸무게</div>
+                        <div>
+                            <input type="text" id="weight" name="weight" class="input" th:value="${dto.weight}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input">
+                        <div class="title">품종</div>
+                        <div>
+                            <input type="text" id="type" name="type" class="input" th:value="${dto.type}">
+                            <button type="button" class="btn" id="petVerifiedBtn">등록</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input">
+                        <div class="title">성격</div>
+                        <div>
+                            <textarea type="text" id="personality" name="personality" rows="5">[[${dto.personality}]]</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-box">
+                <a th:href="@{/pets/list}" class="btn btn-gray">수정하기</a>
+                <button type="submit" class="btn btn-dark submitBtn">삭제하기</button>
+            </div>
         </form>
-        <div class="btn-box">
-            <button type="submit" class="btn btn-gray modBtn">수정하기</button>
-            <button type="button" class="btn btn-dark deleteBtn">삭제하기</button>
-        </div>
     </div>
-
-
-    <!--    서버에 비동기 통신 지원하는 도구, axios 필요. -->
-    <!--    업로드 정의한 함수 필요-->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="/js/upload.js"></script>
 </div>
 <!-- content -->
 
 
 <!-- javascript -->
+
 <script layout:fragment="javascript" th:inline="javascript">
 
     // 유효성 체크 오류 발생시, alert 경고창 알려주기.
@@ -106,7 +143,7 @@
             // 추가.
             appendNotShowData()
 
-            formObj.action = "/board/delete"
+            formObj.action = "/pets/delete"
             formObj.method = "post"
 
             formObj.submit()

@@ -53,20 +53,20 @@
             </li>
             <li class="on">
                 <button id="petListBtn">반려동물<span class="count">2</span>
-                    <a th:href="@{/pet/register}"><img th:src="@{/images/plus.svg}"></a>
+                    <a th:href="@{/pets/register}"><img th:src="@{/images/plus.svg}"></a>
                 </button>
             </li>
         </ul>
 
         <div id="pet">
             <ul>
-<!--                <li th:each="dto:${responseDTO.dtoList}">-->
-<!--                    <a class="thumb img" th:href="|@{/gallery/read(galleryId=${dto.galleryId})}&${link}|">-->
-<!--                        <div class="galleryThumbSlid" th:if="${dto.galleryImages != null && dto.galleryImages.size()>0}">-->
-<!--                            <img th:each="galleryImage: ${dto.galleryImages}" th:src="|/view/s_${galleryImage.uuid}_${galleryImage.fileName}|">-->
-<!--                        </div>-->
-<!--                    </a>-->
-<!--                </li>-->
+                <li th:each="dto:${responseDTO.dtoList}">
+                    <a class="thumb img" th:href="|@{/pets/read(petId=${dto.petId})}&${link}|">
+                        <div class="petThumbSlid" th:if="${dto.petImages != null && dto.petImages.size()>0}">
+                            <img th:each="petImage: ${dto.petImages}" th:src="|/view/${petImage.uuid}_${petImage.fileName}|">
+                        </div>
+                    </a>
+                </li>
                 <li>
                     <a class="thumb img" th:href="@{/pet/read}">
                         <div class="petThumbSlide">
@@ -179,7 +179,7 @@
         window.location.href = "/gallery/list"; // 원하는 페이지로 변경
     });
     document.getElementById("petListBtn").addEventListener("click", function() {
-        window.location.href = "/pet/list"; // 원하는 페이지로 변경
+        window.location.href = "/pets/list"; // 원하는 페이지로 변경
     });
 </script>
 <!-- javascript -->

@@ -1,17 +1,14 @@
 <!doctype html>
-<html lang="ko"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="www.thymeleaf.org"
-      layout:decorate="~{layout/base.html}"
->
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="www.thymeleaf.org"
+      layout:decorate="~{layout/base.html}">
 <body>
+<!-- content -->
 <div layout:fragment="content">
     <style>
         #side .sideMenu li.sideMenuProfile a {background: #F5F5F5;}
     </style>
-
     <div class="registerContainer">
-        <form id="registerForm" method="post" action="/gallery/register">
+        <form id="registerForm" th:action="@{/pets/register}" method="post">
             <div class="form-group">
                 <div class="input-group">
                     <div class="input">
@@ -34,26 +31,67 @@
             <div class="form-group">
                 <div class="input-group">
                     <div class="input">
-                        <div class="title">내용</div>
+                        <div class="title">이름</div>
                         <div>
-                            <textarea type="text" id="content" name="content" rows="5"></textarea>
+                            <input type="text" name="name" id="name" class="input">
+                            <div class="form-check">
+                                <input  type="radio" id="male" name="gender" value="MALE" required class="form-check-input" checked="checked">
+                                <label for="male" class="form-check-label">암컷</label>
+                                <input type="radio" id="female" name="gender" value="FEMALE" class="form-check-input">
+                                <label for="female" class="form-check-label">수컷</label>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <input type="hidden" th:value="${user.Username}" class="form-control" id="writer" name="writer" readonly>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input">
+                        <div class="title">생년월일</div>
+                        <div>
+                            <input type="date" id="birth" name="birth" class="input">
+                        </div>
+                    </div>
+                    <div class="input">
+                        <div class="title">몸무게</div>
+                        <div>
+                            <input type="text" id="weight" name="weight" class="input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input">
+                        <div class="title">품종</div>
+                        <div>
+                            <input type="text" id="type" name="type" class="input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input">
+                        <div class="title">성격</div>
+                        <div>
+                            <textarea type="text" id="personality" name="personality" rows="5"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="btn-box">
-                <a th:href="@{/gallery/list}" class="btn btn-gray">취소</a>
+                <a th:href="@{/pets/list}" class="btn btn-gray">취소</a>
                 <button type="submit" class="btn btn-dark submitBtn">작성</button>
             </div>
         </form>
     </div>
 </div>
-<!--끝 나는 부분 layout:fragment="content"-->
+<!-- content -->
 
 
-<!--자바스크립트 추가하는 영역-->
+<!-- javascript -->
 <script layout:fragment="javascript" th:inline="javascript">
 
     // 서버로부터, 인증 정보를 받기.
@@ -181,6 +219,7 @@
 
 
 </script>
+<!-- javascript -->
 
 
 </body>
