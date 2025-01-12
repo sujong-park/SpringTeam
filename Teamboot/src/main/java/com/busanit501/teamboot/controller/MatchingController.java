@@ -1,15 +1,13 @@
 package com.busanit501.teamboot.controller;
 
-import com.busanit501.teamboot.domain.MatchingRoom;
-import com.busanit501.teamboot.domain.Member;
-import com.busanit501.teamboot.domain.Pet;
-import com.busanit501.teamboot.domain.RoomParticipant;
+import com.busanit501.teamboot.domain.*;
 import com.busanit501.teamboot.dto.MatchingRoomDTO;
 import com.busanit501.teamboot.exception.ResourceNotFoundException;
 import com.busanit501.teamboot.repository.MemberRepository;
 import com.busanit501.teamboot.service.CalendarService;
 import com.busanit501.teamboot.service.MatchingService;
 import com.busanit501.teamboot.service.PetService;
+import com.nimbusds.oauth2.sdk.GeneralException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -24,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
@@ -37,30 +36,16 @@ public class MatchingController {
     private final MatchingService matchingService;
     private final PetService petService;
     private final CalendarService calendarService;
-    private final MemberRepository memberRepository; // MemberRepository 추가
+    private final MemberRepository memberRepository;
 
     // 매칭 리스트 조회
     @GetMapping("/list")
     public String list(Model model,
                        @RequestParam(value = "query", required = false) String query,
-                       @AuthenticationPrincipal UserDetails userDetails, // CustomUserDetails -> UserDetails로 변경
-                       RedirectAttributes redirectAttributes) {
+                       @AuthenticationPrincipal UserDetails userDetails,
+                       RedirectAttributes redirectAttributes) throws GeneralException {
 
-        if (userDetails == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "로그인이 필요합니다.");
-            return "redirect:/member/login";
-        }
-
-        // UserDetails에서 username (mid)을 가져와 Member 조회
-        Member loginMember = memberRepository.findByMid(userDetails.getUsername())
-                .orElse(null);
-
-        if (loginMember == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "사용자 정보를 찾을 수 없습니다.");
-            return "redirect:/member/login";
-        }
-
-        log.info("loginMember: {}", loginMember);
+        Member loginMember = getAuthenticatedMember(userDetails, redirectAttributes, "redirect:/member/login");
 
         // 모든 매칭방 리스트 가져오기
         List<MatchingRoomDTO> allRooms = matchingService.getAllRooms();
@@ -85,20 +70,8 @@ public class MatchingController {
 
     // 매칭방 생성 폼
     @GetMapping("/create")
-    public String createForm(@AuthenticationPrincipal UserDetails userDetails, Model model, RedirectAttributes redirectAttributes) {
-        if (userDetails == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "로그인이 필요합니다.");
-            return "redirect:/member/login";
-        }
-
-        // UserDetails에서 username (mid)을 가져와 Member 조회
-        Member loginMember = memberRepository.findByMid(userDetails.getUsername())
-                .orElse(null);
-
-        if (loginMember == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "사용자 정보를 찾을 수 없습니다.");
-            return "redirect:/member/login";
-        }
+    public String createForm(@AuthenticationPrincipal UserDetails userDetails, Model model, RedirectAttributes redirectAttributes) throws GeneralException {
+        Member loginMember = getAuthenticatedMember(userDetails, redirectAttributes, "redirect:/member/login");
 
         List<Pet> userPets = petService.findAllBymId(loginMember.getMid());
         model.addAttribute("userPets", userPets);
@@ -117,22 +90,10 @@ public class MatchingController {
     public String createSubmit(@Valid @ModelAttribute("matchingRoomDTO") MatchingRoomDTO dto,
                                BindingResult bindingResult,
                                @RequestParam(name = "imageFile", required = false) MultipartFile imageFile,
-                               @AuthenticationPrincipal UserDetails userDetails, // CustomUserDetails -> UserDetails로 변경
+                               @AuthenticationPrincipal UserDetails userDetails,
                                Model model,
-                               RedirectAttributes redirectAttributes) {
-        if (userDetails == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "로그인이 필요합니다.");
-            return "redirect:/member/login";
-        }
-
-        // UserDetails에서 username (mid)을 가져와 Member 조회
-        Member loginMember = memberRepository.findByMid(userDetails.getUsername())
-                .orElse(null);
-
-        if (loginMember == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "사용자 정보를 찾을 수 없습니다.");
-            return "redirect:/member/login";
-        }
+                               RedirectAttributes redirectAttributes) throws GeneralException {
+        Member loginMember = getAuthenticatedMember(userDetails, redirectAttributes, "redirect:/member/login");
 
         if (bindingResult.hasErrors()) {
             List<Pet> userPets = petService.findAllBymId(loginMember.getMid());
@@ -143,7 +104,6 @@ public class MatchingController {
         try {
             if (imageFile != null && !imageFile.isEmpty()) {
                 String originalFilename = imageFile.getOriginalFilename();
-                // 고유한 파일명을 생성하여 저장
                 String uniqueFileName = UUID.randomUUID().toString() + "_" + originalFilename;
                 String uploadDir = "C:/upload/"; // 실제 서버 환경에 맞게 수정
                 File uploadDirectory = new File(uploadDir);
@@ -163,11 +123,7 @@ public class MatchingController {
             return "redirect:/matching/list";
 
         } catch (RuntimeException | IOException e) {
-            List<Pet> userPets = petService.findAllBymId(loginMember.getMid());
-            model.addAttribute("userPets", userPets);
-            model.addAttribute("errorMessage", "매칭방 생성 중 오류가 발생했습니다: " + e.getMessage());
-            log.error("매칭방 생성 오류: ", e);
-            return "matching/create";
+            throw new GeneralException("매칭방 생성 중 오류가 발생했습니다.", e);
         }
     }
 
@@ -175,23 +131,9 @@ public class MatchingController {
     @GetMapping("/detail/{id}")
     public String getMatchingRoomDetail(@PathVariable("id") Long roomId,
                                         Model model,
-                                        @AuthenticationPrincipal UserDetails userDetails, // CustomUserDetails -> UserDetails로 변경
-                                        RedirectAttributes redirectAttributes) {
-        if (userDetails == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "로그인이 필요합니다.");
-            return "redirect:/member/login";
-        }
-
-        // UserDetails에서 username (mid)을 가져와 Member 조회
-        Member loginMember = memberRepository.findByMid(userDetails.getUsername())
-                .orElse(null);
-
-        if (loginMember == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "사용자 정보를 찾을 수 없습니다.");
-            return "redirect:/member/login";
-        }
-
-        log.info("loginMember: {}", loginMember);
+                                        @AuthenticationPrincipal UserDetails userDetails,
+                                        RedirectAttributes redirectAttributes) throws GeneralException {
+        Member loginMember = getAuthenticatedMember(userDetails, redirectAttributes, "redirect:/member/login");
 
         try {
             MatchingRoom room = matchingService.getRoomById(roomId);
@@ -236,8 +178,7 @@ public class MatchingController {
 
             return "matching/detail";
         } catch (ResourceNotFoundException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/matching/list";
+            throw new ResourceNotFoundException(e.getMessage(), e);
         }
     }
 
@@ -245,27 +186,14 @@ public class MatchingController {
     @GetMapping("/edit/{id}")
     public String editForm(@PathVariable("id") Long roomId,
                            Model model,
-                           @AuthenticationPrincipal UserDetails userDetails, // CustomUserDetails -> UserDetails로 변경
-                           RedirectAttributes redirectAttributes) {
-        if (userDetails == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "로그인이 필요합니다.");
-            return "redirect:/member/login";
-        }
-
-        // UserDetails에서 username (mid)을 가져와 Member 조회
-        Member loginMember = memberRepository.findByMid(userDetails.getUsername())
-                .orElse(null);
-
-        if (loginMember == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "사용자 정보를 찾을 수 없습니다.");
-            return "redirect:/member/login";
-        }
+                           @AuthenticationPrincipal UserDetails userDetails,
+                           RedirectAttributes redirectAttributes) throws GeneralException, AccessDeniedException {
+        Member loginMember = getAuthenticatedMember(userDetails, redirectAttributes, "redirect:/member/login");
 
         try {
             MatchingRoom room = matchingService.getRoomById(roomId);
             if (!room.getMember().getMid().equals(loginMember.getMid())) {
-                redirectAttributes.addFlashAttribute("errorMessage", "방장만 수정할 수 있습니다.");
-                return "redirect:/matching/detail/" + roomId;
+                throw new AccessDeniedException("방장만 수정할 수 있습니다.");
             }
 
             MatchingRoomDTO dto = matchingService.convertToDto(room);
@@ -276,8 +204,9 @@ public class MatchingController {
             model.addAttribute("userPets", userPets);
             return "matching/edit";
         } catch (ResourceNotFoundException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/matching/list";
+            throw new ResourceNotFoundException(e.getMessage(), e);
+        } catch (AccessDeniedException e) {
+            throw new AccessDeniedException(e.getMessage());
         }
     }
 
@@ -287,22 +216,10 @@ public class MatchingController {
                              @Valid @ModelAttribute("matchingRoomDTO") MatchingRoomDTO dto,
                              BindingResult bindingResult,
                              @RequestParam(name = "imageFile", required = false) MultipartFile imageFile,
-                             @AuthenticationPrincipal UserDetails userDetails, // CustomUserDetails -> UserDetails로 변경
+                             @AuthenticationPrincipal UserDetails userDetails,
                              Model model,
-                             RedirectAttributes redirectAttributes) {
-        if (userDetails == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "로그인이 필요합니다.");
-            return "redirect:/member/login";
-        }
-
-        // UserDetails에서 username (mid)을 가져와 Member 조회
-        Member loginMember = memberRepository.findByMid(userDetails.getUsername())
-                .orElse(null);
-
-        if (loginMember == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "사용자 정보를 찾을 수 없습니다.");
-            return "redirect:/member/login";
-        }
+                             RedirectAttributes redirectAttributes) throws GeneralException {
+        Member loginMember = getAuthenticatedMember(userDetails, redirectAttributes, "redirect:/member/login");
 
         if (bindingResult.hasErrors()) {
             List<Pet> userPets = petService.findAllBymId(loginMember.getMid());
@@ -340,69 +257,42 @@ public class MatchingController {
             return "redirect:/matching/detail/" + roomId;
 
         } catch (Exception e) {
-            List<Pet> userPets = petService.findAllBymId(loginMember.getMid());
-            model.addAttribute("userPets", userPets);
-            model.addAttribute("errorMessage", "매칭방 수정 중 오류가 발생했습니다.");
-            log.error("매칭방 수정 오류: ", e);
-            return "matching/edit";
+            throw new GeneralException("매칭방 수정 중 오류가 발생했습니다.", e);
         }
     }
 
     // 매칭방 삭제
     @PostMapping("/delete/{id}")
     public String deleteRoom(@PathVariable Long id,
-                             @AuthenticationPrincipal UserDetails userDetails, // CustomUserDetails -> UserDetails로 변경
-                             RedirectAttributes redirectAttributes) {
-        if (userDetails == null) {
-            redirectAttributes.addFlashAttribute("deleteErrorMessage", "로그인이 필요합니다.");
-            return "redirect:/member/login";
-        }
-
-        // UserDetails에서 username (mid)을 가져와 Member 조회
-        Member loginMember = memberRepository.findByMid(userDetails.getUsername())
-                .orElse(null);
-
-        if (loginMember == null) {
-            redirectAttributes.addFlashAttribute("deleteErrorMessage", "사용자 정보를 찾을 수 없습니다.");
-            return "redirect:/member/login";
-        }
+                             @AuthenticationPrincipal UserDetails userDetails,
+                             RedirectAttributes redirectAttributes) throws GeneralException, AccessDeniedException {
+        Member loginMember = getAuthenticatedMember(userDetails, redirectAttributes, "redirect:/member/login");
 
         try {
             MatchingRoom room = matchingService.getRoomById(id);
             if (!room.getMember().getMid().equals(loginMember.getMid())) {
-                redirectAttributes.addFlashAttribute("deleteErrorMessage", "방장만 삭제할 수 있습니다.");
-                return "redirect:/matching/list";
+                throw new AccessDeniedException("방장만 삭제할 수 있습니다.");
             }
 
             matchingService.deleteRoom(id);
             redirectAttributes.addFlashAttribute("deleteSuccessMessage", "매칭방이 성공적으로 삭제되었습니다.");
+            return "redirect:/matching/list";
+        } catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundException(e.getMessage(), e);
+        } catch (AccessDeniedException e) {
+            throw new AccessDeniedException(e.getMessage());
         } catch (Exception ex) {
-            redirectAttributes.addFlashAttribute("deleteErrorMessage", "삭제 중 문제가 발생했습니다.");
-            log.error("매칭방 삭제 오류: ", ex);
+            throw new GeneralException("매칭방 삭제 중 문제가 발생했습니다.", ex);
         }
-
-        return "redirect:/matching/list";
     }
 
     // 스케줄 확정
     @PostMapping("/confirm/{id}")
     public String confirmSchedule(@PathVariable Long id,
-                                  @AuthenticationPrincipal UserDetails userDetails, // CustomUserDetails -> UserDetails로 변경
-                                  RedirectAttributes redirectAttributes) {
+                                  @AuthenticationPrincipal UserDetails userDetails,
+                                  RedirectAttributes redirectAttributes) throws GeneralException {
         log.info("Confirm request received for roomId: {}", id);
-        if (userDetails == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "로그인이 필요합니다.");
-            return "redirect:/member/login";
-        }
-
-        // UserDetails에서 username (mid)을 가져와 Member 조회
-        Member loginMember = memberRepository.findByMid(userDetails.getUsername())
-                .orElse(null);
-
-        if (loginMember == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "사용자 정보를 찾을 수 없습니다.");
-            return "redirect:/member/login";
-        }
+        Member loginMember = getAuthenticatedMember(userDetails, redirectAttributes, "redirect:/member/login");
 
         try {
             MatchingRoom room = matchingService.getRoomById(id);
@@ -413,9 +303,7 @@ public class MatchingController {
 
             return "redirect:/matching/list";
         } catch (Exception ex) {
-            log.error("Error while confirming schedule: ", ex);
-            redirectAttributes.addFlashAttribute("errorMessage", "스케줄 확정 중 문제가 발생했습니다.");
-            return "redirect:/matching/detail/" + id;
+            throw new GeneralException("스케줄 확정 중 문제가 발생했습니다.", ex);
         }
     }
 
@@ -423,92 +311,63 @@ public class MatchingController {
     @PostMapping("/apply/{roomId}")
     public String applyRoom(@PathVariable("roomId") Long roomId,
                             @RequestParam(value = "additionalPetIds", required = false) List<Long> additionalPetIds,
-                            @AuthenticationPrincipal UserDetails userDetails, // CustomUserDetails -> UserDetails로 변경
-                            RedirectAttributes redirectAttributes) {
-        if (userDetails == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "로그인이 필요합니다.");
-            return "redirect:/member/login";
-        }
-
-        // UserDetails에서 username (mid)을 가져와 Member 조회
-        Member loginMember = memberRepository.findByMid(userDetails.getUsername())
-                .orElse(null);
-
-        if (loginMember == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "사용자 정보를 찾을 수 없습니다.");
-            return "redirect:/member/login";
-        }
+                            @AuthenticationPrincipal UserDetails userDetails,
+                            RedirectAttributes redirectAttributes) throws GeneralException {
+        Member loginMember = getAuthenticatedMember(userDetails, redirectAttributes, "redirect:/member/login");
 
         try {
             log.info("Member {} is applying to room {}", loginMember.getMid(), roomId);
             log.info("Selected pet IDs: {}", additionalPetIds);
             matchingService.applyRoom(roomId, loginMember.getMid(), additionalPetIds);
             redirectAttributes.addFlashAttribute("successMessage", "참가 신청이 성공적으로 완료되었습니다.");
+            return "redirect:/matching/detail/" + roomId;
         } catch (RuntimeException e) {
-            log.error("Error applying to room: {}", e.getMessage());
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            throw new GeneralException("참가 신청 중 오류가 발생했습니다.", e);
         }
-
-        return "redirect:/matching/detail/" + roomId;
     }
 
     // 참가자 승인
     @PostMapping("/accept/{roomId}/{memberId}")
     public String acceptParticipant(@PathVariable("roomId") Long roomId,
                                     @PathVariable("memberId") String memberId,
-                                    @AuthenticationPrincipal UserDetails userDetails, // CustomUserDetails -> UserDetails로 변경
-                                    RedirectAttributes redirectAttributes) {
-        if (userDetails == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "로그인이 필요합니다.");
-            return "redirect:/member/login";
-        }
-
-        // UserDetails에서 username (mid)을 가져와 Member 조회
-        Member loginMember = memberRepository.findByMid(userDetails.getUsername())
-                .orElse(null);
-
-        if (loginMember == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "사용자 정보를 찾을 수 없습니다.");
-            return "redirect:/member/login";
-        }
+                                    @AuthenticationPrincipal UserDetails userDetails,
+                                    RedirectAttributes redirectAttributes) throws GeneralException {
+        Member loginMember = getAuthenticatedMember(userDetails, redirectAttributes, "redirect:/member/login");
 
         try {
             matchingService.acceptParticipant(roomId, memberId);
             redirectAttributes.addFlashAttribute("successMessage", "참가자가 승인되었습니다.");
+            return "redirect:/matching/detail/" + roomId;
         } catch (RuntimeException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            log.error("참가자 승인 오류: ", e);
+            throw new GeneralException("참가자 승인 중 오류가 발생했습니다.", e);
         }
-        return "redirect:/matching/detail/" + roomId;
     }
 
     // 참가자 거절
     @PostMapping("/reject/{roomId}/{memberId}")
     public String rejectParticipant(@PathVariable("roomId") Long roomId,
                                     @PathVariable("memberId") String memberId,
-                                    @AuthenticationPrincipal UserDetails userDetails, // CustomUserDetails -> UserDetails로 변경
-                                    RedirectAttributes redirectAttributes) {
-        if (userDetails == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "로그인이 필요합니다.");
-            return "redirect:/member/login";
-        }
-
-        // UserDetails에서 username (mid)을 가져와 Member 조회
-        Member loginMember = memberRepository.findByMid(userDetails.getUsername())
-                .orElse(null);
-
-        if (loginMember == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "사용자 정보를 찾을 수 없습니다.");
-            return "redirect:/member/login";
-        }
+                                    @AuthenticationPrincipal UserDetails userDetails,
+                                    RedirectAttributes redirectAttributes) throws GeneralException {
+        Member loginMember = getAuthenticatedMember(userDetails, redirectAttributes, "redirect:/member/login");
 
         try {
             matchingService.rejectParticipant(roomId, memberId);
             redirectAttributes.addFlashAttribute("successMessage", "참가자가 거절되었습니다.");
+            return "redirect:/matching/detail/" + roomId;
         } catch (RuntimeException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            log.error("참가자 거절 오류: ", e);
+            throw new GeneralException("참가자 거절 중 오류가 발생했습니다.", e);
         }
-        return "redirect:/matching/detail/" + roomId;
+    }
+
+    // 인증된 사용자 조회 메소드
+    private Member getAuthenticatedMember(UserDetails userDetails, RedirectAttributes redirectAttributes, String redirectUrl) throws GeneralException {
+        if (userDetails == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "로그인이 필요합니다.");
+            throw new GeneralException("로그인이 필요합니다.");
+        }
+
+        return memberRepository.findByMid(userDetails.getUsername())
+                .orElseThrow(() -> new GeneralException("사용자 정보를 찾을 수 없습니다."));
     }
 }
