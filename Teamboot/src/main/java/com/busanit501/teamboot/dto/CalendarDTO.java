@@ -29,6 +29,7 @@ public class CalendarDTO {
     @FutureOrPresent
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate walkDate;  // 산책 날짜
+
     @NotNull
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime walkTime;  // 산책 시간

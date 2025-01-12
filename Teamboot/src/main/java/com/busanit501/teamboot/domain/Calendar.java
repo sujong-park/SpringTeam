@@ -36,10 +36,10 @@ public class Calendar extends BaseEntity {
     @Column(name = "schedule_name", nullable = false)
     private String schedulename;
 
-    @Column(name = "walk_date", nullable = false)
+    @Column(name = "walk_date")
     private LocalDate walkDate;  // 산책 날짜
 
-    @Column(name = "walk_time", nullable = false)
+    @Column(name = "walk_time")
     private LocalTime walkTime;  // 산책 시간
 
     @Column(name = "walk_place", nullable = false)
@@ -54,8 +54,10 @@ public class Calendar extends BaseEntity {
 
     @Column(name = "matching")
     private Boolean matching;
+
     @Column(name = "schedul_start")
     private LocalDate schedulStart;
+
     @Column(name = "schedul_end")
     private LocalDate schedulEnd;
 

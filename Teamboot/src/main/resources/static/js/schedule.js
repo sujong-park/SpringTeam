@@ -1,133 +1,101 @@
 // schedule.js
 // 유저의 전체 일정 확인하기---------------------
+function getCurrentUserMid() {
+    const midDOM = document.querySelector("#mid");
+    const mid = midDOM.innerText;
+
+    return mid;
+}
+
 async function getUserSchedules(mid) {
-    // const response = await fetch(`/schedule/${userId}`);
-    // const schedules = await response.json();
-    // // var eventDate = new Date(event.walkDateIso);
-    // return schedules.map(schedule => ({
-    //     title: schedule.schedulename,
-    //     start: new Date(schedule.walkDateIso),  // LocalDate를 JavaScript Date 객체로 변환
-    //     extendedProps: {
-    //         day: schedule.walkDate,  // 날짜 그대로 사용
-    //         time: schedule.walkTime,
-    //         place: schedule.walkPlace,
-    //         // matching: schedule.matching
-    //     }
-    // }));
+    console.log(mid)
     const response = await fetch(`/schedule/${mid}`);
     const schedules = await response.json();
-
-    console.log("스케쥴 확인해보기",schedules);
 
     const matchingSchedules = schedules.filter(schedule => schedule.matching === true); // 매칭룸에서 넘어온 데이터
     const personalSchedules = schedules.filter(schedule => schedule.matching === false); // 직접 추가된 일정 데이터
 
     const matchingEvents = matchingSchedules.map(schedule => ({
         title: schedule.schedulename,
-        start: new Date(schedule.walkDateIso),  // LocalDate를 JavaScript Date 객체로 변환
+        start: new Date(schedule.walkDate),  // LocalDate를 JavaScript Date 객체로 변환
+
         extendedProps: {
             day: schedule.walkDate,  // 날짜 그대로 사용
             time: schedule.walkTime,
             place: schedule.walkPlace,
+            matching: schedule.matching
         }
     }));
 
     const personalEvents = personalSchedules.map(schedule => ({
         title: schedule.schedulename,
-        start: new Date(schedule.schedulStartIso),  // 시작 시간
-        end: new Date(schedule.schedulEndIso),  // 끝 시간
+        start: new Date(schedule.schedulStart),  // 시작 시간
+        end: new Date(schedule.schedulEnd),  // 끝 시간
         extendedProps: {
             time: schedule.walkTime,
             place: schedule.walkPlace,
+            // end: new Date(schedule.schedulEnd),
+            matching: schedule.matching
         }
     }));
 
     return [...matchingEvents, ...personalEvents];
 }
 
-// // 일정 추가 모달을 표시하는 함수
-// function openScheduleModal(startDate, endDate) {
-//
-//     document.getElementById('scheduleModal').style.display = 'block';
-//
-//     // 모달에 선택한 날짜 범위 표시
-//     document.getElementById('scheduleName').value = '';
-//     document.getElementById('schedulePlace').value = '';
-//
-//     // 폼 제출 시 일정 저장
-//     document.getElementById('scheduleForm').onsubmit = function(event) {
-//         event.preventDefault();
-//
-//         // 선택한 날짜, 장소, 이름 가져오기
-//         var scheduleName = document.getElementById('scheduleName').value;
-//         var schedulePlace = document.getElementById('schedulePlace').value;
-//
-//         // 서버로 비동기 요청 보내기 (예시로 JSON 포맷으로 요청)
-//         addScheduleToServer({
-//             scheduleName: scheduleName,
-//             schedulePlace: schedulePlace,
-//             scheduleStart: startDate,  // 선택한 시작 날짜
-//             scheduleEnd: endDate,      // 선택한 끝 날짜
-//             matching: false            // 매칭된 일정이 아니므로 false
-//         });
-//
-//         // 모달 닫기
-//         document.getElementById('scheduleModal').style.display = 'none';
-//     };
-// }
-// 일정 추가 시 모달 열기
 
-function openModal() {
+//(모달) 상세 정보---------------------------
+function displayEventDetails(eventDetails) {
+
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDate = document.getElementById('modalDate');
+    const modalTime = document.getElementById('modalTime');
+    const modalPlace = document.getElementById('modalPlace');
+    const modalMatching = document.getElementById("modalMatching");
+
+    modalTitle.innerText = eventDetails.schedulename;// 일정 제목
+    console.log(`${formatDate(eventDetails.startDate)} ~ ${formatDate(eventDetails.endDate)}`)
+    console.log(formatDate(eventDetails.startDate))
+    console.log(formatDate(eventDetails.endDate))
+
+    console.log(eventDetails.matching)
+    if(eventDetails.matching){
+        console.log('모달에 들어갈 데이터',formatDate(eventDetails.startDate))
+        modalDate.innetText = formatDate(eventDetails.startDate)  || 'N/A';
+    }else{
+        console.log('매칭 데이터 안들어가나',formatDate(eventDetails.startDate))
+        modalDate.innerText = `${formatDate(eventDetails.startDate)} ~ ${formatDate(eventDetails.endDate)}`;
+    }
+
+    // modalDate.innetText = eventDetails.matching ? formatDate(eventDetails.startDate) : `${formatDate(eventDetails.startDate)} ~ ${formatDate(eventDetails.endDate)}`;
+
+
+    modalTime.innerText = formatTime(eventDetails.walkTime) || 'N/A';  // 시간 정보
+    modalPlace.innerText = eventDetails.place || 'N/A';    // 장소 정보
+    modalMatching.innerText = eventDetails.matching
+
+    // 모달 띄우기
+    document.getElementById('scheduleModal').style.display = 'flex';
+}
+
+
+function openModal(date) {
     const modal = document.getElementById('scheduleaddModal');
+
+    const startDateInputDOM = document.getElementById("modalStartDate");
+    const endDateInputDOM = document.getElementById("modalEndDate");
+
+    startDateInputDOM.value = date.startDate;
+    endDateInputDOM.value = date.endDate;
+
     modal.style.display = 'block'; // 모달 보이기
 }
 
 
-// users
-// }
-// // 서버에 일정추가하는 함수
-// function addScheduleToServer(scheduleData) {
-//     console.log("서버에 전송될 일정 데이터:", scheduleData);
-//     fetch('/schedule/add', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify(scheduleData),
-//     })
-//         .then(response => response.json())
-//         .then(data => {
-//             console.log("일정 추가 성공:", data);
-//             alert("일정이 추가되었습니다!");
-//         })
-//         .catch(error => {
-//             console.error("일정 추가 오류:", error);
-//             alert("일정 추가에 실패했습니다.");
-//         });
-// }
-//
-
-
-//
-// // 우클릭 메뉴 표시
-// function showContextMenu(event, date) {
-//     // 우클릭 메뉴
-//     let contextMenu = document.getElementById('contextMenu');
-//     let selectedDate = null;
-//
-//     // if (event.button == 2) return;
-//     event.preventDefault();
-//     selectedDate = date;
-//     contextMenu.style.top = event.pageY + 'px';
-//     contextMenu.style.left = event.pageX + 'px';
-//     contextMenu.style.display = 'block';
-// }
-
 // 비동기 함수로 일정 저장
-async function addSchedule() {
+async function addSchedule(date) {
     const schedulename = document.getElementById('addmodalTitle').value;
-    const schedulStart = new Date(schedulStart).toISOString().split('T')[0]; // "YYYY-MM-DD"
-    const schedulEnd = new Date(schedulEnd).toISOString().split('T')[0]; // "YYYY-MM-DD"
+    const schedulStart = new Date(date.startDate).toISOString().split('T')[0]; // "YYYY-MM-DD"
+    const schedulEnd = new Date(date.endDate).toISOString().split('T')[0]; // "YYYY-MM-DD"
     const walkTime = document.getElementById('addmodalTime').value;
     const timeRegex = /^([01]?[0-9]|2[0-3]):([0-5][0-9])$/; // HH:mm 형식 검증
     const walkPlace = document.getElementById('addmodalPlace').value;
@@ -142,15 +110,12 @@ async function addSchedule() {
         schedulename,
         schedulStart,
         schedulEnd,
-        // schedulStart: new Date(schedulStart).toISOString(),
-        // schedulEnd: new Date(schedulEnd).toISOString(),
-        walkTime:timeRegex,
+        walkTime,
         walkPlace,
         matching: false
     };
     // 서버로 전송되는 데이터 확인
     console.log('Sending data:', calendarDTO);
-
 
 
     try {
@@ -160,33 +125,23 @@ async function addSchedule() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(calendarDTO)
-            // body: JSON.stringify({
-            //     schedulename: title,
-            //     schedulStart: startDate,
-            //     schedulEnd: endDate,
-            //     walkTime: time,
-            //     walkPlace: place
-            // })
         });
-        if (response.ok) {
-            alert('일정 추가 성공');
-            location.reload(); // 새로 고침하여 일정 반영
-        } else {
-            alert('일정 추가 실패');
-        }
+
+        alert("일정이 추가 되었습니다.")
+        window.location.reload();
     } catch (error) {
         console.error('Error:', error);
         alert('서버 요청 중 오류가 발생했습니다.');
     }
     //-----------------------
 
-        // if (response.ok) {
-        //     alert('일정 추가 성공');
-        //     location.reload(); // 새로 고침하여 일정 반영
-        // } else {
-        //     alert('일정 추가 실패함');
-        // }
-        //--------------------
+    // if (response.ok) {
+    //     alert('일정 추가 성공');
+    //     location.reload(); // 새로 고침하여 일정 반영
+    // } else {
+    //     alert('일정 추가 실패함');
+    // }
+    //--------------------
     // .then(response => {
     //         if (response.ok) {
     //             alert('일정 추가 성공');
@@ -209,7 +164,7 @@ async function addSchedule() {
     //     console.error('Error:', error);
     //     alert('서버 요청 중 오류가 발생했습니다.');
     // }
-        //--------------------
+    //--------------------
     //     if (response.ok) {
     //         alert('일정 추가 성공');
     //         document.getElementById('scheduleaddModal').style.display = 'none'; // 모달 닫기
@@ -261,23 +216,6 @@ async function addSchedule() {
 //         console.error('일정 추가 오류:', error);
 //     }
 // }
-//(모달) 상세 정보---------------------------
-function displayEventDetails(eventDetails) {
-
-    const modalTitle = document.getElementById('modalTitle');
-    const modalDate = document.getElementById('modalDate');
-    const modalTime = document.getElementById('modalTime');
-    const modalPlace = document.getElementById('modalPlace');
-
-
-    modalTitle.innerText = eventDetails.schedulename;// 일정 제목
-    modalDate.innerText = formatDate(eventDetails.walkDate) || 'N/A';  // 일정 날짜 형식 수정
-    modalTime.innerText = formatTime(eventDetails.walkTime) || 'N/A';  // 시간 정보
-    modalPlace.innerText = eventDetails.place || 'N/A';    // 장소 정보
-
-    // 모달 띄우기
-    document.getElementById('scheduleModal').style.display = 'flex';
-}
 
 //---------------------------------------------
 // 시간 형식 변환 함수

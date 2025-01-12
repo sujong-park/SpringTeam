@@ -33,7 +33,7 @@ public class CalendarRepositoryTest {
     public void testAddCalendarEvent() {
 
         Member testUser = memberRepository.findByMid("test2@gmail.com").orElseThrow(() -> new RuntimeException("user 오류"));
-        MatchingRoom matching = matchingRoomRepository.findById(23L).orElseThrow(() -> new RuntimeException("matchingroom 오류"));
+        MatchingRoom matching = matchingRoomRepository.findById(22L).orElseThrow(() -> new RuntimeException("matchingroom 오류"));
 
         // 일정 추가
         Calendar calendar = calendarRepository.save(
