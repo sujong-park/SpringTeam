@@ -1,0 +1,276 @@
+/*#calendar {*/
+/*    max-width: 100%;*/
+/*    height: 600px;*/
+/*    margin: 0 auto;*/
+/*}*/
+body {
+    margin: 40px 10px;
+    padding: 0;
+    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+    font-size: 14px;
+}
+
+/*#calendar {*/
+/*    max-width: 700px;*/
+/*    display: flex;*/
+/*    margin: 0 auto;*/
+/*    margin-top: 5%;*/
+/*}*/
+
+
+#mainContent {
+    width: 80%;
+    margin: 3%;
+}
+
+#calendar-container {
+    margin-top: 30px;
+    border-top: 1px solid #ccc;
+    /*border-top: 1px solid #ccc;*/
+    min-width: 1100px;
+    display: flex;
+    justify-content: space-between;
+    /*border-top: 1px solid #ccc;*/
+    padding-top: 20px;
+    /*margin-top: 10%;*/
+}
+
+#calendar {
+    min-width: 700px;
+    max-width: 70%;
+    margin-left: 30px;
+
+
+}
+
+#eventDetails {
+    width: 25%;
+    padding: 20px;
+    border-left: 1px solid #ccc;
+    /*border-radius: 5px;*/
+    /*background-color: #f9f9f9;*/
+}
+
+#eventDetails h3 {
+    margin-bottom: 15px;
+}
+
+#eventInfo p {
+    margin: 5px 0;
+}
+
+#addEventButton {
+    display: block;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#addEventButton:hover {
+    background-color: #45a049;
+}
+
+
+
+.fc-day-sun .fc-col-header-cell-cushion {
+    color: red;
+}
+.fc-day-sat .fc-col-header-cell-cushion {
+    color: blue;
+}
+/*토일요일제외*/
+.fc-daygrid-day .fc-daygrid-day-number {
+    color: black;
+}
+
+.fc-daygrid-day.fc-day-sun .fc-daygrid-day-number{
+    color: red;
+}
+.fc-daygrid-day.fc-day-sat .fc-daygrid-day-number{
+    color: blue;
+}
+
+
+
+#contextMenu {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 1000;
+    padding: 10px;
+}
+#contextMenu a {
+    display: block;
+    padding: 8px;
+    text-decoration: none;
+    color: #333;
+}
+#contextMenu a:hover {
+    background-color: #f5f5f5;
+}
+
+/*------------------------*/
+/* 모달 기본 스타일 */
+.custom-modal {
+    display: none; /* 기본적으로 숨김 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 배경 어둡게 */
+    z-index: 1000; /* 다른 콘텐츠 위에 표시 */
+    justify-content: center;
+    align-items: center;
+}
+
+.custom-modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    width: 300px;
+}
+
+.custom-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.custom-modal-body {
+    margin-top: 10px;
+}
+
+.custom-modal-footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+/*///////////////////*/
+
+ /*모달 배경*/
+
+.custom-add-modal {
+    display: none; /* 기본적으로 숨김 */
+    position: fixed;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    /*left: 0;*/
+    /*top: 0;*/
+     top: 50%; /* 세로 중앙 */
+     left: 50%; /* 가로 중앙 */
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* 반투명 배경 */
+    overflow: hidden;
+}
+
+/*.custom-add-modal {*/
+/*    position: fixed; !* 화면 기준으로 고정 위치 *!*/
+/*    top: 50%; !* 세로 중앙 *!*/
+/*    left: 50%; !* 가로 중앙 *!*/
+/*    transform: translate(-50%, -50%); !* 중앙 정렬 *!*/
+/*    display: none; !* 초기에는 숨김 *!*/
+/*    z-index: 1000; !* 다른 요소 위에 표시 *!*/
+/*    background: white; !* 모달 배경색 *!*/
+/*    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); !* 그림자 효과 *!*/
+/*    padding: 16px; !* 내부 여백 *!*/
+/*    border-radius: 8px; !* 모서리 둥글게 *!*/
+/*}
+*/
+/* 모달 내용 */
+.custom-addmodal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+}
+input[type="time"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: #fff; /* 원하는 배경색으로 설정 */
+}
+
+/* 헤더 스타일 */
+.custom-addmodal-header h5 {
+    margin: 0;
+    font-size: 18px;
+}
+
+/* 닫기 버튼 */
+.close-button {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 20px;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.close-button:hover {
+    color: #000;
+}
+
+/* 바디 스타일 */
+.custom-addmodal-body form div {
+    margin-bottom: 15px;
+}
+
+.custom-addmodal-body label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+/* 입력 필드 */
+.custom-addmodal-body input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* 푸터 버튼 */
+.custom-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.save-button,
+.close-button {
+    padding: 8px 16px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.save-button {
+    background-color: #007bff;
+    color: white;
+}
+
+.save-button:hover {
+    background-color: #0056b3;
+}

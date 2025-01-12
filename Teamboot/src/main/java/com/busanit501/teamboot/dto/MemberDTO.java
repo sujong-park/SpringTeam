@@ -12,4 +12,8 @@ import lombok.NoArgsConstructor;
 public class MemberDTO {
     private String mid;
     private String name;
+
+
+
+
 }
