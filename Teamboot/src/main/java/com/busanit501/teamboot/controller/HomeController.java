@@ -12,12 +12,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
     @GetMapping("/")
     public String index() {
+
         return "redirect:/home";
     }
 
     @GetMapping("/home")
     public void home(@AuthenticationPrincipal UserDetails user, Model model) {
-
+        log.info("home method called with user: {}", user);
         model.addAttribute("user", user);
 
     }

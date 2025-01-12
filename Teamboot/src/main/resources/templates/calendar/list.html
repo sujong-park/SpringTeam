@@ -103,7 +103,9 @@
                 selectMirror: true,
                 events: async function(fetchInfo, successCallback, failureCallback) {
                     const mid = getCurrentUserMid();
+                    console.log("mid확인해보자",mid)
                     const schedules = await getUserSchedules(mid);
+
                     successCallback(schedules);
                 },
                 // 날짜 선택 시 선택된 날짜 저장

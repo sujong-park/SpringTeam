@@ -17,7 +17,7 @@ async function getUserSchedules(mid) {
     const response = await fetch(`/schedule/${mid}`);
     const schedules = await response.json();
 
-    console.log(schedules);
+    console.log("스케쥴 확인해보기",schedules);
 
     const matchingSchedules = schedules.filter(schedule => schedule.matching === true); // 매칭룸에서 넘어온 데이터
     const personalSchedules = schedules.filter(schedule => schedule.matching === false); // 직접 추가된 일정 데이터
