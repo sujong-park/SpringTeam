@@ -1,0 +1,259 @@
+/* list.css */
+
+/* 적용할 폰트 설정 */
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* 인기 키워드 섹션 스타일 */
+.popular-keywords-title {
+    font-size: 24px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.popular-keywords-title .dog-icon {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
+
+/* 검색창 스타일 */
+.search-bar-container {
+    display: flex;
+    align-items: center; /* 세로 정렬 */
+    justify-content: space-between; /* 양쪽 정렬 */
+    margin-bottom: 20px;
+    gap: 10px; /* 검색창과 버튼 간 간격 */
+}
+
+.search-form {
+    flex-grow: 1; /* 검색창이 공간을 최대한 차지하도록 */
+    max-width: 60%; /* 검색창의 최대 너비 */
+    display: flex;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    overflow: hidden;
+}
+
+.search-input {
+    flex-grow: 1;
+    border: none;
+    padding: 10px 15px;
+}
+
+.search-btn {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.search-btn:hover {
+    background-color: #0056b3;
+}
+
+/* 메이트 등록 버튼 */
+.create-button {
+    background-color: white;
+    color: #6386ac;
+    border: 1px solid #79a5d5;
+    border-radius: 25px;
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.2s;
+    cursor: pointer;
+    margin-left: 300px; /* 왼쪽 정렬 */
+    margin-right: auto; /* 오른쪽 여백 자동 */
+}
+
+
+.create-button:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+
+/* 키워드 태그 스타일 */
+.keyword-tag {
+    display: inline-block;
+    padding: 8px 15px;
+    margin-right: 8px;
+    background-color: #f8f9fa;
+    border-radius: 20px;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.2s;
+}
+
+.keyword-tag:hover {
+    background-color: #e9ecef;
+    text-decoration: none;
+    color: inherit;
+}
+
+/* 카드 그리드 스타일 */
+.card-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 20px; /* 카드 간 간격을 20px로 설정 */
+}
+
+.card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    transition: transform 0.2s, height 0.3s; /* 호버 시 높이 변화 추가 */
+    cursor: pointer;
+    flex: 1 1 calc(25% - 20px); /* 한 줄에 4개씩 표시, 간격 20px 고려 */
+    max-width: calc(25% - 20px); /* 동일한 최대 너비 설정 */
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    text-decoration: none;
+    color: inherit;
+    height: auto; /* 높이 자동 조정 */
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+/* 프로필 이미지 스타일 */
+.room-image {
+    height: 180px;
+    object-fit: cover;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+/* 카드 본문 스타일 */
+.card-body {
+    padding: 10px 15px; /* 패딩 줄이기 */
+    flex-grow: 1;
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px; /* 간격 줄이기 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 정보 행 스타일 */
+.info-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px; /* 간격 줄이기 */
+}
+
+.info-label {
+    width: 90px; /* 레이블의 고정 너비 조정 */
+    font-weight: 600; /* 굵기 조정 */
+    color: #333;
+    font-size: 14px; /* 글씨 크기 조정 */
+}
+
+.info-data {
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+    color: #555;
+    font-size: 14px; /* 글씨 크기 조정 */
+    transition: all 0.3s; /* 호버 시 전환 효과 */
+}
+
+/* 카드 호버 시 텍스트 모두 표시 */
+.card:hover .info-data {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    max-width: none;
+}
+
+/* 검색 결과 없는 경우 스타일 */
+.no-results {
+    text-align: center;
+    font-size: 18px;
+    color: #6c757d;
+}
+
+/* 인기 키워드 리스트 스타일 */
+.keyword-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* 카드 전체 클릭 시 포인터 커서 */
+.card {
+    cursor: pointer;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1200px) {
+    .card {
+        flex: 1 1 calc(33.333% - 20px); /* 한 줄에 3개씩 표시 */
+        max-width: calc(33.333% - 20px);
+    }
+}
+
+@media (max-width: 768px) {
+    .card {
+        flex: 1 1 calc(50% - 20px); /* 한 줄에 2개씩 표시 */
+        max-width: calc(50% - 20px);
+    }
+
+    .create-button {
+        position: static;
+        margin-top: 15px;
+    }
+
+    .search-bar-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .search-form {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .info-label {
+        width: 80px; /* 작은 화면에서 레이블 너비 조정 */
+        font-size: 13px;
+    }
+
+    .info-data {
+        max-width: 100%; /* 데이터가 줄어들지 않도록 */
+        font-size: 13px;
+    }
+
+    .card-title {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 576px) {
+    .card {
+        flex: 1 1 100%; /* 한 줄에 1개씩 표시 */
+        max-width: 100%;
+    }
+
+    .info-label {
+        width: 90px; /* 작은 화면에서도 일정한 너비 유지 */
+        font-size: 14px;
+    }
+
+    .info-data {
+        font-size: 14px;
+    }
+}

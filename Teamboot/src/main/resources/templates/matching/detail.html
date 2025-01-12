@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ko" layout:decorate="~{layout/base.html}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>매칭방 상세</title>
+    <link rel="stylesheet" th:href="@{/css/detail.css}">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 카카오 맵 API 로드 -->
+    <!--    <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_KAKAO_MAP_API_KEY&libraries=services"></script>-->
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="detail-container">
+        <!-- 성공/실패 메시지 표시 -->
+<!--        <div class="alert alert-success" role="alert" th:if="${successMessage}">-->
+<!--            <span th:text="${successMessage}"></span>-->
+<!--        </div>-->
+<!--        <div class="alert alert-danger" role="alert" th:if="${errorMessage}">-->
+<!--            <span th:text="${errorMessage}"></span>-->
+<!--        </div>-->
+
+
+        <!-- 상단 바: 호스트용 버튼 -->
+        <div class="detail-topbar">
+            <div class="host-action-buttons" th:if="${isHost}">
+                <button class="btn host-action-btn" onclick="openParticipantManageModal()">참여관리</button>
+                <a class="btn host-action-btn" th:href="@{/matching/edit/{id}(id=${room.roomId})}">수정</a>
+                <form method="post" th:action="@{/matching/confirm/{id}(id=${room.roomId})}">
+                    <button class="btn host-action-btn" type="submit">확정</button>
+                </form>
+            </div>
+        </div>
+
+
+        <!-- 메인 이미지 섹션 -->
+        <div class="main-image-section">
+            <img alt="메인 이미지" class="main-image" th:if="${room.profilePicture != null}" th:src="${room.profilePicture}">
+            <img alt="기본이미지" class="main-image" th:if="${room.profilePicture == null}"
+                 th:src="@{/img/thumbnail-default.svg}">
+        </div>
+
+        <!-- 장소 및 참여 현황 표시 -->
+        <div class="info-row">
+            <div class="place-text" th:text="${room.place}">서울 | 안구정동</div>
+            <div class="participant-count">
+                <span th:text="${room.currentParticipants}">2</span>/<span th:text="${room.maxParticipants}">4</span>명
+            </div>
+        </div>
+
+        <!-- 매칭방 제목 및 설명 -->
+        <h2 class="room-title" th:text="${room.title}">매칭방 제목</h2>
+        <p class="room-description" th:text="${room.description}">매칭방 설명</p>
+        <!-- 모임 날짜 및 시간 표시 -->
+        <div class="date-row">
+            <span class="label">날짜</span>
+            <span th:text="${#temporals.format(room.meetingDate, 'yyyy-MM-dd')}">2025-01-10</span>
+        </div>
+        <div class="time-row">
+            <span class="label">시간</span>
+            <span th:text="${#temporals.format(room.meetingTime, 'HH:mm')}">19:00</span>
+        </div>
+        <!-- 참여자 현황 표시 -->
+        <div class="participant-section">
+            <div class="participants-wrapper">
+                <!-- 승인된 참가자 목록 렌더링 -->
+                <div class="participant-container" th:each="entry : ${acceptedMap.entrySet()}">
+                    <!-- 참가자 회원 정보 -->
+                    <div class="participant-user">
+                        <span th:text="${entry.key.name}">UserName</span>
+                    </div>
+                    <!-- 참가자 펫 정보 (한 줄로 표시) -->
+                    <div class="participant-pets">
+                        <div class="pet-container" th:each="pet : ${entry.value}">
+                            <!--                            <img th:if="${pet.profilePicture != null}" th:src="${pet.profilePicture}" class="pet-img" />-->
+                            <!--                            <img th:if="${pet.profilePicture == null}" th:src="@{/img/pet-default.svg}" class="pet-img" />-->
+                            <span class="pet-name" th:text="${pet.name}">PetName</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 하단 버튼 영역 -->
+        <div class="bottom-buttons">
+            <div th:if="${isHost}">
+                <button class="btn btn-dark" onclick="location.href='/matching/list'" type="button">확인</button>
+            </div>
+            <div th:if="${!isHost}">
+                <!-- 신청하지 않은 경우: 취소 및 신청 버튼 표시 -->
+                <div th:if="${!hasApplied}">
+                    <button class="btn btn-secondary" onclick="history.back()" type="button">취소</button>
+                    <button class="btn btn-primary" onclick="openPetSelectModal()" type="button">신청</button>
+                </div>
+                <!-- 신청한 경우: 확인 버튼만 표시 -->
+                <div th:if="${hasApplied}">
+                    <button class="btn btn-dark" onclick="location.href='/matching/list'" type="button">확인</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 호스트가 '참여관리' 버튼 클릭 시 나타나는 모달 -->
+    <div class="modal" id="participantManageModal" style="display:none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- 모달 헤더 -->
+                <div class="modal-header">
+                    <h5 class="modal-title">참여자 승인/거절</h5>
+                    <button class="close" onclick="closeParticipantManageModal()" type="button">&times;</button>
+                </div>
+                <!-- 모달 바디 -->
+                <div class="modal-body">
+
+                    <!-- 대기 중인 참가자 목록이 있는 경우 -->
+                    <div th:if="${pendingMap != null and !#maps.isEmpty(pendingMap)}">
+                        <div th:each="entry : ${pendingMap.entrySet()}">
+
+                            <!-- 회원 이름 및 승인/거절 버튼 -->
+                            <p>
+                                <strong th:text="${entry.key.name}">UserName</strong>
+                                <!-- 승인 버튼 -->
+                            <form method="post"
+                                  style="display:inline;"
+                                  th:action="@{/matching/accept/{roomId}/{memberId}(roomId=${room.roomId}, memberId=${entry.key.mid})}">
+                                <button class="btn btn-success btn-sm">승인</button>
+                            </form>
+                            <!-- 거절 버튼 -->
+                            <form method="post"
+                                  style="display:inline;"
+                                  th:action="@{/matching/reject/{roomId}/{memberId}(roomId=${room.roomId}, memberId=${entry.key.mid})}">
+                                <button class="btn btn-danger btn-sm">거절</button>
+                            </form>
+                            </p>
+
+                            <!-- 회원의 펫 목록 표시 -->
+                            <div class="user-pet-list">
+                            <span th:each="pet : ${entry.value}">
+                                <!-- 펫 이름 표시 -->
+                                <span th:text="${pet.name}">펫이름</span>
+                                <!-- 필요시 나열 또는 줄바꿈, CSS로 조절 -->
+                            </span>
+                            </div>
+
+                            <hr/>
+                        </div>
+                    </div>
+
+                    <!-- 대기 중인 참가자가 없는 경우 -->
+                    <div th:if="${#maps.isEmpty(pendingMap)}">
+                        대기중인 참가자가 없습니다.
+                    </div>
+
+                </div>
+                <!-- 모달 푸터 -->
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeParticipantManageModal()" type="button">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 일반 회원 신청 시 펫 선택 모달 -->
+    <div class="modal" id="petSelectModal" style="display:none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- 참가 신청 폼 -->
+                <form method="post" th:action="@{/matching/apply/{roomId}(roomId=${room.roomId})}">
+                    <!-- 모달 헤더 -->
+                    <div class="modal-header">
+                        <h5 class="modal-title">신청할 반려동물 선택</h5>
+                        <button class="close" onclick="closePetSelectModal()" type="button">&times;</button>
+                    </div>
+                    <!-- 모달 바디 -->
+                    <div class="modal-body">
+                        <p>체크하면 선택, 해제하면 취소. 여러 마리 가능</p>
+                        <div th:each="pet : ${memberPets}">
+                            <!-- 펫 선택 체크박스 -->
+                            <label class="form-check-label">
+                                <input class="form-check-input" th:name="additionalPetIds" th:value="${pet.petId}"
+                                       type="checkbox"/>
+                                <span th:text="${pet.name}">반려동물이름</span>
+                            </label>
+                            <br/>
+                        </div>
+                    </div>
+                    <!-- 모달 푸터 -->
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="closePetSelectModal()" type="button">취소</button>
+                        <button class="btn btn-primary" type="submit">신청</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- jQuery, Popper.js, Bootstrap JS 로드 -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script th:src="@{/js/create.js}"></script>
+
+    <script>
+    // 호스트 - 참여관리 모달
+    function openParticipantManageModal() {
+    const modal = document.getElementById('participantManageModal');
+    modal.style.display = 'block';
+    }
+    function closeParticipantManageModal() {
+    const modal = document.getElementById('participantManageModal');
+    modal.style.display = 'none';
+    }
+
+    // 유저 - 펫 선택 모달
+    function openPetSelectModal() {
+    const modal = document.getElementById('petSelectModal');
+    modal.style.display = 'block';
+    }
+    function closePetSelectModal() {
+    const modal = document.getElementById('petSelectModal');
+    modal.style.display = 'none';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const applyButton = document.querySelector('.btn-primary');
+    if (applyButton) {
+    applyButton.addEventListener('click', openPetSelectModal);
+    }
+    });
+    // 지도 예시 (카카오)
+    document.addEventListener('DOMContentLoaded', function(){
+    function initMap(address) {
+    if (typeof kakao === 'undefined') {
+    console.error('카카오맵 API 로드 실패');
+    return;
+    }
+    const container = document.querySelector('.map-placeholder');
+    if (!container) {
+    console.warn('지도 컨테이너가 존재하지 않습니다.');
+    return;
+    }
+    const geocoder = new kakao.maps.services.Geocoder();
+    geocoder.addressSearch(address, function(result, status){
+    if(status === kakao.maps.services.Status.OK){
+    const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+    const map = new kakao.maps.Map(container, { center: coords, level: 3 });
+    const marker = new kakao.maps.Marker({ position: coords });
+    marker.setMap(map);
+    } else {
+    container.innerHTML = '<div style="color:red">주소를 찾을 수 없습니다</div>';
+    }
+    });
+    }
+
+    const place = /*[[${room.place}]]*/ '서울';
+    initMap(place);
+    });
+    </script>
+</div>
+</body>
+</html>
