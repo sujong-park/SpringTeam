@@ -158,6 +158,42 @@
 }
 .mate-list li button {margin: 0 0 0 auto; background: #000; color: #fff;}
 
+/* 공통 메시지 스타일 */
+#chatViewWrap .chatView .message {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+}
+
+/* 상대방 메시지 스타일 (좌측) */
+#chatViewWrap .chatView .message.left {
+    align-items: flex-start;
+}
+
+#chatViewWrap .chatView .message.left .message-content {
+    background-color: #e5e5e5;
+    color: #000;
+    border-radius: 10px;
+    padding: 10px 15px;
+    max-width: 60%;
+    word-break: break-word;
+}
+
+/* 본인 메시지 스타일 (우측) */
+#chatViewWrap .chatView .message.right {
+    align-items: flex-end;
+}
+
+#chatViewWrap .chatView .message.right .message-content {
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 10px;
+    padding: 10px 15px;
+    max-width: 60%;
+    word-break: break-word;
+}
+
+
 
 
 
