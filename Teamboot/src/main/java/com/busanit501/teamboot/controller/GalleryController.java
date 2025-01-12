@@ -139,7 +139,7 @@ public class GalleryController {
 
     }
 
-    @PreAuthorize("principal.username == #galleryDTO.writer")
+    // @PreAuthorize("principal.username == #galleryDTO.writer")
     @PostMapping("/delete")
     // 삭제시,
     // 주의사항,
