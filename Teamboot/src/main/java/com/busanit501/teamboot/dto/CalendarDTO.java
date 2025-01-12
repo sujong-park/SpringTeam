@@ -25,7 +25,7 @@ public class CalendarDTO {
     //    private Long matchingId;
     private String schedulename; // 일정명
 
-    @NotNull
+
     @FutureOrPresent
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate walkDate;  // 산책 날짜
