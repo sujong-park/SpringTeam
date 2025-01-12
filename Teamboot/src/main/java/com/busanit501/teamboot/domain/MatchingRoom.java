@@ -1,30 +1,28 @@
 package com.busanit501.teamboot.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
-@Entity
-@Getter
 @Builder
 @AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
-//@ToString(exclude ="imageSet")
+@Entity
+@Table(name = "matching_rooms")
 public class MatchingRoom extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "room_id")
     private Long roomId;
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "host_id", nullable = false)
-//    private User host;
 
     @Column(nullable = false)
     private String title;
@@ -44,20 +42,23 @@ public class MatchingRoom extends BaseEntity {
     @Column(nullable = false)
     private Long maxParticipants;
 
-    private String imageUrl;
+    private String profilePicture;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id", nullable = false)
-//    private User user;
-//
-//    @OneToMany(mappedBy = "matchingRoom", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<RoomParticipant> participants = new ArrayList<>();
-//
-//    public Long getCurrentParticipants() {
-//        return participants.stream()
-//                .filter(p -> p.getStatus() == RoomParticipant.ParticipantStatus.Accepted)
-//                .map(RoomParticipant::getUser)
-//                .distinct()
-//                .count();
-//    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mid", nullable = false)
+    private Member member;
+
+    @OneToMany(mappedBy = "matchingRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @OnDelete(action = OnDeleteAction.CASCADE) // 외래 키 삭제 시 CASCADE 동작
+    private List<RoomParticipant> participants = new ArrayList<>();
+
+    public Long getCurrentParticipants() {
+        return participants.stream()
+                .filter(p -> p.getStatus() == RoomParticipant.ParticipantStatus.Accepted)
+                .map(RoomParticipant::getMember)
+                .distinct()
+                .count();
+    }
+
 }
