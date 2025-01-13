@@ -4,12 +4,17 @@ import com.busanit501.teamboot.dto.MemberJoinDTO;
 import com.busanit501.teamboot.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/member")
@@ -30,10 +35,7 @@ public class MemberController {
             log.info("logoutTest user ====================");
         }
         if (error != null) {
-            // 403 , error 만 확인한 상태
             log.info("logoutTest error ====================" + error);
-//            redirectAttributes.addFlashAttribute(
-//                    "error", error);
             model.addAttribute("error", error);
         }
 
@@ -48,7 +50,6 @@ public class MemberController {
     @PostMapping("/join")
     public String joinPost(MemberJoinDTO memberJoinDTO,
                            RedirectAttributes redirectAttributes) {
-        // 서비스 만들어서, 연결 해주기.
         try{
             memberService.join(memberJoinDTO);
         } catch (MemberService.MidExistException e) {
@@ -57,6 +58,15 @@ public class MemberController {
         }
         redirectAttributes.addFlashAttribute("result", "success");
         return "redirect:/member/login";
+    }
+
+    //이메일 중복 기믹 수행
+    @PostMapping("/check-email")
+    public ResponseEntity<Map<String, Boolean>> checkEmail(@RequestParam String email) {
+        boolean exists = memberService.checkEmailExists(email);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("exists", exists);
+        return ResponseEntity.ok(response);
     }
 
     //회원 수정용 화면, 임시 화면
