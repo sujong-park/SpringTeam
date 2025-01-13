@@ -21,16 +21,21 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void join(MemberJoinDTO memberJoinDTO) throws MidExistException {
         String mid = memberJoinDTO.getMid();
-         boolean exist = memberRepository.existsById(mid);
-         if (exist) {
-             throw new MidExistException();
-         }
-         // 중복 아이디가 없다. 회원 가입 진행하기.
-      Member member = modelMapper.map(memberJoinDTO, Member.class);
-         // 평문 패스워드, 암호화
+        boolean exist = memberRepository.existsById(mid);
+        if (exist) {
+            throw new MidExistException();
+        }
+        // 중복 아이디가 없다. 회원 가입 진행하기.
+        Member member = modelMapper.map(memberJoinDTO, Member.class);
+        // 평문 패스워드, 암호화
         member.changePassword(passwordEncoder.encode(memberJoinDTO.getMpw()));
         // 일반 유저 권한 추가.
         member.addRole(MemberRole.USER);
-         memberRepository.save(member);
+        memberRepository.save(member);
+    }
+
+    @Override
+    public boolean checkEmailExists(String email) {
+        return memberRepository.existsById(email);
     }
 }
