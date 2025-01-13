@@ -2,7 +2,6 @@ package com.busanit501.teamboot.service;
 
 
 import com.busanit501.teamboot.domain.Calendar;
-import com.busanit501.teamboot.domain.MatchingRoom;
 import com.busanit501.teamboot.domain.Member;
 import com.busanit501.teamboot.domain.ScheduleStatus;
 import com.busanit501.teamboot.dto.CalendarDTO;
@@ -28,7 +27,6 @@ public class CalendarServiceImpl implements CalendarService {
     private final CalendarRepository calendarRepository;
     private final MatchingRoomRepository matchingRoomRepository;
     private final MemberRepository memberRepository;
-
     @Override
     public List<CalendarDTO> getUserSchedules(String mid) {
         log.info("미드 값 확인: {}", mid);
@@ -37,6 +35,25 @@ public class CalendarServiceImpl implements CalendarService {
         return calendars.stream().map(this::entityToDto).collect(Collectors.toList());
     }
 
+//
+//    @Override
+//    public void saveMatchingAndCalendar(MatchingRoomDTO matchingRoomDTO) {
+//        MatchingRoom matchingRoom = matchinroomdtoEntity(matchingRoomDTO);
+//        matchingRoomRepository.save(matchingRoom);
+//
+//        Calendar calendar = Calendar.builder()
+//                .member(matchingRoom.getMember())
+//                .schedulename(matchingRoom.getTitle())
+//                .walkDate(matchingRoom.getMeetingDate())
+//                .walkTime(matchingRoom.getMeetingTime())
+//                .walkPlace(matchingRoom.getPlace())
+//                .matching(true)  // matching된 일정이라는 뜻
+//                .status(ScheduleStatus.SCHEDULED)
+//                .build();
+//
+//        calendarRepository.save(calendar);
+//        log.info("MatchingRoom과 Calendar 데이터 저장 완료");
+//    }
 
     @Override
     public Calendar addSchedule(CalendarDTO calendarDTO) {
@@ -50,6 +67,21 @@ public class CalendarServiceImpl implements CalendarService {
         }
 
         return calendar;
+    }
+
+    @Override
+    public void updateSchedule(Long id, CalendarDTO calendarDTO) {
+        // 기존 일정 찾기
+        Calendar existingCalendar = calendarRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("일정을 찾을 수 없습니다."));
+        Calendar updatedCalendar = dtoToEntity(calendarDTO);
+        existingCalendar = updatedCalendar;
+        calendarRepository.save(existingCalendar);
+    }
+
+    @Override
+    public void deleteSchedule(Long id) {
+        calendarRepository.deleteById(id);
     }
 
     @Override
@@ -72,38 +104,35 @@ public class CalendarServiceImpl implements CalendarService {
 
     @Override
     @Transactional
-    public void saveSchedule(Member loginmember, MatchingRoom room, List<Member> participants) {
+    public void saveSchedule(Member loginmember, com.busanit501.teamboot.domain.MatchingRoom room, List<Member> participants) {
         log.info("Saving schedule for roomId: {} with participants", room.getRoomId());
 
         try {
             // 매칭방 생성자(호스트) 저장
-            Calendar hostCalendar = Calendar.builder()
+            com.busanit501.teamboot.domain.Calendar hostCalendar = com.busanit501.teamboot.domain.Calendar.builder()
                     .member(loginmember)
                     .schedulename(room.getTitle())
                     .walkDate(room.getMeetingDate())
                     .walkTime(room.getMeetingTime())
                     .walkPlace(room.getPlace())
-                    .status(ScheduleStatus.SCHEDULED)
+                    .status(com.busanit501.teamboot.domain.ScheduleStatus.SCHEDULED)
                     .matching(true)
                     .build();
-            log.info("리무브전 중복확인"+hostCalendar);
-            removeDuplicateMembers(hostCalendar);
-            log.info("리무브 후 중복확인"+hostCalendar);
+            calendarRepository.save(hostCalendar);
 //            savecal.removeDuplicateMembers();
 
             // 참여자 모두 저장
             for (Member participant : participants) {
-                Calendar participantCalendar = Calendar.builder()
+                com.busanit501.teamboot.domain.Calendar participantCalendar = com.busanit501.teamboot.domain.Calendar.builder()
                         .member(participant)
                         .schedulename(room.getTitle())
                         .walkDate(room.getMeetingDate())
                         .walkTime(room.getMeetingTime())
                         .walkPlace(room.getPlace())
-                        .status(ScheduleStatus.SCHEDULED)
+                        .status(com.busanit501.teamboot.domain.ScheduleStatus.SCHEDULED)
                         .matching(true)
                         .build();
-
-                removeDuplicateMembers(participantCalendar);
+                calendarRepository.save(participantCalendar);
 //                removeDuplicateMembers();
 
                 log.info("Schedule saved for participant: {}", participant.getMid());
@@ -118,21 +147,28 @@ public class CalendarServiceImpl implements CalendarService {
         }
     }
 
-    public void removeDuplicateMembers(Calendar newCalendar) {
-// 해당 일정에서 이미 참여한 멤버인지 확인
-        List<Calendar> existingCalendars = calendarRepository.selectcalendar(
-                newCalendar.getSchedulename(),
-                newCalendar.getMember()
-        );
-        log.info("중복된 멤버인지 확인"+existingCalendars);
-
-// 이미 참여한 멤버가 없다면 새로 추가
-        if (existingCalendars.isEmpty()) {
-            calendarRepository.save(newCalendar);
-        } else {
-            log.info("Duplicate member not saved: {}", newCalendar.getMember().getMid());
-        }
-    }
+    /**
+     * 중복 데이터 삭제
+     */
+//    public void removeDuplicateMembers() {
+//        // 중복 데이터 조회
+//        List<String> duplicateMembers = calendarRepository.findDuplicateMembers();
+//
+//        for (String mid : duplicateMembers) {
+//            // 해당 mid의 모든 Calendar 데이터 조회
+//            List<Calendar> calendars = calendarRepository.findBymid(mid);
+//
+//            // 첫 번째 데이터만 남기고 나머지 삭제
+//            List<Long> idsToDelete = calendars.stream()
+//                    .skip(1) // 첫 번째 데이터는 유지
+//                    .map(Calendar::getId)
+//                    .collect(Collectors.toList());
+//
+//            if (!idsToDelete.isEmpty()) {
+//                calendarRepository.deleteMembersByIds(idsToDelete);
+//            }
+//        }
+//    }
 
 
 }
