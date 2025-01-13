@@ -8,15 +8,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface CalendarRepository extends JpaRepository<Calendar, Long> {
-    @Query("SELECT c FROM Calendar c WHERE c.schedulename = :schedulename AND c.member = :member")
-    List<Calendar> selectcalendar
-            (@Param("schedulename")String schedulename, @Param("member") Member member );
+    // 사용자와 일정 이름으로 일정 조회
+    Optional<Calendar> findByMemberAndSchedulename(Member member, String scheduleName);
 
 
     @Query("SELECT c FROM Calendar c WHERE c.member.mid = :mid")

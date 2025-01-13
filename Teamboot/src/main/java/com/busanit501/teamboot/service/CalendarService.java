@@ -20,9 +20,9 @@ public interface CalendarService {
 
     Calendar addSchedule(CalendarDTO calendarDTO);
 
-//    void updateSchedule(Long id, CalendarDTO calendarDTO);
+    void updateSchedule(Long id, CalendarDTO calendarDTO);
 
-//    void deleteSchedule(Long id);
+    void deleteSchedule(Long id);
 
 
     default CalendarDTO entityToDto(Calendar calendar) {
