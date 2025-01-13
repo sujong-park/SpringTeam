@@ -207,6 +207,88 @@
     overflow: auto;
 }
 
+.friend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    transition: background-color 0.2s ease;
+}
+
+.friend-item:hover {
+    background-color: #f0f0f0;
+}
+
+.friend-item input[type="checkbox"] {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+}
+
+.friend-item label {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.friend-item .user-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+/* 기본 스타일 */
+.friend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    transition: all 0.2s ease;
+}
+
+/* 선택된 항목 강조 */
+.friend-item.selected {
+    border-color: #007bff;
+    background-color: #e7f1ff;
+}
+
+/* 체크박스 스타일 */
+.friend-item input[type="checkbox"] {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* 라벨 및 유저 이름 스타일 */
+.friend-item label {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+.friend-item .user-name {
+    margin-left: 8px;
+}
+
+/* 호버 시 효과 */
+.friend-item:hover {
+    background-color: #f0f0f0;
+}
 
 
 

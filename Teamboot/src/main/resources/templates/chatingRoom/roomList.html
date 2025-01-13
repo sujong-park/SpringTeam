@@ -299,15 +299,18 @@
         }
 
         userList.forEach(user => {
-            //유저가 선택되었는지 확인
             const isChecked = selectedUsers.includes(user.mid);
             const userItem = document.createElement("div");
 
-            //친구 목록 스타일 적용
+            // 유저 항목 스타일 설정
             userItem.classList.add("friend-item");
+            if (isChecked) userItem.classList.add("selected");
+
             userItem.innerHTML = `
             <input type="checkbox" id="user-${user.mid}" value="${user.mid}" ${isChecked ? "checked" : ""}>
-            <label for="user-${user.mid}">${user.name}</label>
+            <label for="user-${user.mid}">
+                <span class="user-name">${user.name}</span>
+            </label>
         `;
             userListContainer.appendChild(userItem);
         });
@@ -316,20 +319,22 @@
         userListContainer.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
             checkbox.addEventListener("change", function () {
                 const userId = this.value;
+                const userItem = this.closest(".friend-item");
                 if (this.checked) {
-                    console.log("선택한 유저 정보 :" + userId);
+                    console.log("선택한 유저 정보 :", userId);
                     if (!selectedUsers.includes(userId)) {
-                        //선택된 유저 추가
                         selectedUsers.push(userId);
                     }
+                    userItem.classList.add("selected");
                 } else {
-                    console.log("선택 해제한 유저 정보 :" + userId);
-                    //선택 해제
+                    console.log("선택 해제한 유저 정보 :", userId);
                     selectedUsers = selectedUsers.filter(id => id !== userId);
+                    userItem.classList.remove("selected");
                 }
             });
         });
     }
+
     // +버튼 클릭 시 채팅방 생성 모달을 띄움
     document.querySelector('#addButton').addEventListener('click', function () {
         console.log("방 추가 클릭");
@@ -796,12 +801,14 @@
         }
 
         userList.forEach(user => {
-            const isChecked = selectedUsers2.includes(user.mid); // 선택 여부 확인
+            const isChecked = selectedUsers2.includes(user.mid);
             const userItem = document.createElement("div");
             userItem.classList.add("friend-item");
             userItem.innerHTML = `
             <input type="checkbox" id="friend-${user.mid}" value="${user.mid}" ${isChecked ? "checked" : ""}>
-            <label for="friend-${user.mid}">${user.name}</label>
+            <label for="friend-${user.mid}">
+                <span class="user-name">${user.name}</span>
+            </label>
         `;
             friendListContainer.appendChild(userItem);
         });
@@ -822,6 +829,7 @@
             });
         });
     }
+
 </script>
 <!-- javascript -->
 
