@@ -30,13 +30,7 @@ public class ScheduleController {
             List<CalendarDTO> schedules = calendarService.getUserSchedules(mid);
             log.info("읽어온데이터"+schedules);
 
-//            schedules.forEach(calendarDTO -> {
-//
-//                LocalDateTime localDateTime = calendarDTO.getWalkDate().atTime(calendarDTO.getWalkTime());
-//                String isoDate = localDateTime.toString();  // LocalDateTime은 자동으로 ISO 형식으로 변환
-//
-//                calendarDTO.setWalkDateIso(isoDate);
-//            });
+
 
             return ResponseEntity.ok(schedules);
         }catch (Exception e){
