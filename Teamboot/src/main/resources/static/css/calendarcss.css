@@ -14,6 +14,7 @@
     max-width: 70%;
     margin: auto;
 }
+.fc-direction-ltr .fc-daygrid-event .fc-event-time {display: none;}
 
 #eventDetails {
     width: 25%;

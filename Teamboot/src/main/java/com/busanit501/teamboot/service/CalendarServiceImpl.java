@@ -116,6 +116,7 @@ public class CalendarServiceImpl implements CalendarService {
                     .walkTime(room.getMeetingTime())
                     .walkPlace(room.getPlace())
                     .status(com.busanit501.teamboot.domain.ScheduleStatus.SCHEDULED)
+                    .matching(true)
                     .build();
             calendarRepository.save(hostCalendar);
 
@@ -128,10 +129,13 @@ public class CalendarServiceImpl implements CalendarService {
                         .walkTime(room.getMeetingTime())
                         .walkPlace(room.getPlace())
                         .status(com.busanit501.teamboot.domain.ScheduleStatus.SCHEDULED)
+                        .matching(true)
                         .build();
                 calendarRepository.save(participantCalendar);
                 log.info("Schedule saved for participant: {}", participant.getMid());
             }
+
+
 
             log.info("Schedule saved successfully for roomId: {}", room.getRoomId());
         } catch (Exception ex) {

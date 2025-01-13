@@ -12,6 +12,7 @@
         <!-- 캘린더 -------------------------------->
         <div id="calendar-container" class="container-fluid">
             <div id="calendar"></div>
+            <div ></div>
         </div>
 
         <div id="contextMenu">
@@ -110,7 +111,7 @@
                         const mid = getCurrentUserMid();
                         console.log(mid)
                         const schedules = await getUserSchedules(mid);
-                        console.log(schedules)
+                        console.log('schedules 위치는 html',schedules)
                         successCallback(schedules);
                     },
                     // 날짜 선택 시 선택된 날짜 저장

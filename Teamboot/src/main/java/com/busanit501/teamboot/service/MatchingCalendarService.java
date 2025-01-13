@@ -32,6 +32,7 @@ public class MatchingCalendarService {
                     .walkTime(room.getMeetingTime())
                     .walkPlace(room.getPlace())
                     .status(ScheduleStatus.SCHEDULED)
+                    .matching(true)
                     .build();
             calendarRepository.save(hostCalendar);
 
@@ -44,6 +45,7 @@ public class MatchingCalendarService {
                         .walkTime(room.getMeetingTime())
                         .walkPlace(room.getPlace())
                         .status(ScheduleStatus.SCHEDULED)
+                        .matching(true)
                         .build();
                 calendarRepository.save(participantCalendar);
                 log.info("Schedule saved for participant: {}", participant.getMid());

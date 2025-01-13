@@ -97,7 +97,7 @@
                     <li><a><img th:src="@{/images/bell_bold.svg}"></a></li>
                     <li class="headProfile">
                         <button class="headProfileBtn" onclick="headProfileClick()">
-                            <span>busanit501</span>님
+                            <span id="mid" th:text="${user.username}">busanit501</span>님
                             <span class="icon"><img th:src="@{/images/arrow_down_bold.svg}"></span>
                         </button>
                         <div class="profileOption" onmouseleave="headProfileOption()">

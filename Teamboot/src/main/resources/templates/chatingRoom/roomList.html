@@ -283,6 +283,8 @@
             //유저 목록조회
             const userList = await getUserListCreate(currentUser, keyword);
             //유저목록을 화면에 생성
+            console.log(Array.isArray(userList));  // 배열인지 확인
+            console.log(userList);  // userList의 내용 확인
             renderCreateRoomUserList(userList);
         } catch (error) {
             console.error("유저 검색 실패:", error);

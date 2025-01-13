@@ -10,7 +10,7 @@ import java.util.List;
 public interface CalendarService {
 
 
-    void saveSchedule(Member loginmember, MatchingRoom room, List<Member> participants);
+    void saveSchedule(Member loginmember, MatchingRoom room, List<Member> participants) ;
 //    void saveMatchingAndCalendar(MatchingRoomDTO matchingRoomDTO);
     List<CalendarDTO> getUserSchedules(String mid);
     void updateScheduleStatus();

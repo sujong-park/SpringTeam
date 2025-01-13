@@ -16,6 +16,8 @@ async function getUserSchedules(mid) {
     const matchingSchedules = schedules.filter(schedule => schedule.matching === true); // 매칭룸에서 넘어온 데이터
     const personalSchedules = schedules.filter(schedule => schedule.matching === false); // 직접 추가된 일정 데이터
 
+    console.log('js 작동확인', schedules);
+
     const matchingEvents = matchingSchedules.map(schedule => ({
         title: schedule.schedulename,
         start: new Date(schedule.walkDate),  // LocalDate를 JavaScript Date 객체로 변환
@@ -27,6 +29,7 @@ async function getUserSchedules(mid) {
             matching: schedule.matching
         }
     }));
+    console.log('matchingEvents', matchingEvents);
 
     const personalEvents = personalSchedules.map(schedule => ({
         title: schedule.schedulename,
