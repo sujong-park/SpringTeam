@@ -1,219 +1,133 @@
-<!doctype html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="www.thymeleaf.org"
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{layout/base.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>매칭방 목록</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Google Font (Poppins) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+    <!-- 외부 CSS 파일 링크 -->
+    <link rel="stylesheet" th:href="@{/css/list.css}">
+</head>
 <body>
-<!-- content -->
-<div layout:fragment="content">
-    <div class="matchingContent contentContainer">
+<div layout:fragment="content" class="contentContainer mt-5 communitiesListWrap">
+    <div class="container mt-5">
         <!-- 인기 키워드 섹션 -->
-        <div class="matchingKeyword">
-            <h1>AI추천 키워드</h1>
-            <ul class="keywordList">
-                <li th:each="keyword : ${keywords}">
-                    <a th:href="@{/matching/list(query=${keyword})}" th:text="${keyword}" class="keyword-tag">#Keyword</a>
-                </li>
-                <li><a>#강아지모임</a></li>
-                <li><a>#서울</a></li>
-                <li><a>#운동</a></li>
-                <li><a>압구정동</a></li>
-                <li><a>#비글</a></li>
-                <li><a>#한강공원</a></li>
-                <li><a>#부산</a></li>
-            </ul>
-
+        <div class="keywords mb-4">
+            <h2 class="popular-keywords-title">
+                인기 키워드
+            </h2>
+            <div class="keyword-list">
+                <!-- 각 키워드를 태그로 표시하고 클릭 시 해당 키워드로 검색 -->
+                <a th:each="keyword : ${keywords}"
+                   th:href="@{/matching/list(query=${keyword})}"
+                   class="badge badge-primary mr-2 mb-2 keyword-tag">
+                    <span th:text="${keyword}">#Keyword</span>
+                </a>
+            </div>
         </div>
 
-        <form class="matchingSearch" th:action="@{/matching/list}" method="get">
-            <input type="text" class="form-control search-input" name="query" placeholder="키워드를 입력하세요" th:value="${query}">
-            <button type="submit" id="matchingSearchBtn"><img th:src="@{/images/search_bold.svg}"></button>
-        </form>
-
-        <div class="ListWrap matchingListWrap">
-            <div class="ListTop">
-                <ul class="filter">
-                    <li class="on">전체</li>
-                    <li>나의메이트</li>
-                </ul>
-                <button class="btn-normal" onclick="location.href='/matching/create'">메이트 등록</button>
-            </div>
-
-            <div class="GalleryList">
-                <ul>
-                    <li>
-                        <a th:href="@{/matching/read}" class="thumb img">
-                            <img th:src="@{/images/test/gallery1.jpg}">
-                        </a>
-                        <div class="info">
-                            <div class="tag">
-                                <span class="info-data">시민공원</span>
-                                <span class="info-data">2/4명</span>
-                            </div>
-                            <a th:href="@{/matching/read}" class="title">평일 오후 시민공원 같이 산책하실분 4명 모임구해요.</a>
-                            <div class="host">Busanit501</div>
-                        </div>
-                    </li>
-                    <li>
-                        <a  th:href="@{/matching/read}"class="thumb img">
-                            <img th:src="@{/images/test/gallery2.jpg}">
-                        </a>
-                        <div class="info">
-                            <div class="tag">
-                                <span class="info-data">시민공원</span>
-                                <span class="info-data">2/4명</span>
-                            </div>
-                            <a  th:href="@{/matching/read}"class="title">평일 오후 시민공원 같이 산책하실분 4명 모임구해요.</a>
-                            <div class="host">Busanit501</div>
-                        </div>
-                    </li>
-                    <li>
-                        <a  th:href="@{/matching/read}"class="thumb img">
-                            <img th:src="@{/images/test/gallery3.jpg}">
-                        </a>
-                        <div class="info">
-                            <div class="tag">
-                                <span class="info-data">시민공원</span>
-                                <span class="info-data">2/4명</span>
-                            </div>
-                            <a  th:href="@{/matching/read}"class="title">평일 오후 시민공원 같이 산책하실분 4명 모임구해요.</a>
-                            <div class="host">Busanit501</div>
-                        </div>
-                    </li>
-                    <li>
-                        <a  th:href="@{/matching/read}"class="thumb img">
-                            <img th:src="@{/images/test/gallery4.jpg}">
-                        </a>
-                        <div class="info">
-                            <div class="tag">
-                                <span class="info-data">시민공원</span>
-                                <span class="info-data">2/4명</span>
-                            </div>
-                            <a  th:href="@{/matching/read}"class="title">평일 오후 시민공원 같이 산책하실분 4명 모임구해요.</a>
-                            <div class="host">Busanit501</div>
-                        </div>
-                    </li>
-                    <li>
-                        <a  th:href="@{/matching/read}"class="thumb img">
-                            <img th:src="@{/images/test/gallery5.jpg}">
-                        </a>
-                        <div class="info">
-                            <div class="tag">
-                                <span class="info-data">시민공원</span>
-                                <span class="info-data">2/4명</span>
-                            </div>
-                            <a  th:href="@{/matching/read}"class="title">평일 오후 시민공원 같이 산책하실분 4명 모임구해요.</a>
-                            <div class="host">Busanit501</div>
-                        </div>
-                    </li>
-                    <li>
-                        <a  th:href="@{/matching/read}"class="thumb img">
-                            <img th:src="@{/images/test/gallery6.jpg}">
-                        </a>
-                        <div class="info">
-                            <div class="tag">
-                                <span class="info-data">시민공원</span>
-                                <span class="info-data">2/4명</span>
-                            </div>
-                            <a  th:href="@{/matching/read}"class="title">평일 오후 시민공원 같이 산책하실분 4명 모임구해요.</a>
-                            <div class="host">Busanit501</div>
-                        </div>
-                    </li>
-                    <li>
-                        <a  th:href="@{/matching/read}"class="thumb img">
-                            <img th:src="@{/images/test/gallery7.jpg}">
-                        </a>
-                        <div class="info">
-                            <div class="tag">
-                                <span class="info-data">시민공원</span>
-                                <span class="info-data">2/4명</span>
-                            </div>
-                            <a  th:href="@{/matching/read}"class="title">평일 오후 시민공원 같이 산책하실분 4명 모임구해요.</a>
-                            <div class="host">Busanit501</div>
-                        </div>
-                    </li>
-                    <li>
-                        <a  th:href="@{/matching/read}"class="thumb img">
-                            <img th:src="@{/images/test/gallery8.jpg}">
-                        </a>
-                        <div class="info">
-                            <div class="tag">
-                                <span class="info-data">시민공원</span>
-                                <span class="info-data">2/4명</span>
-                            </div>
-                            <a  th:href="@{/matching/read}"class="title">평일 오후 시민공원 같이 산책하실분 4명 모임구해요.</a>
-                            <div class="host">Busanit501</div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-
-
-            <!-- 검색 결과가 있을 경우: 필터링된 매칭방만 표시 -->
-            <div class="GalleryList" th:if="${query != null and !#strings.isEmpty(query) and !#lists.isEmpty(filteredRooms)}">
-                <ul>
-                    <li th:each="room : ${filteredRooms}">
-                        <a class="thumb img" th:href="@{/matching/detail/{id}(id=${room.roomId})}">
-                            <img th:if="${room.profilePicture != null}" th:src="${room.profilePicture}" class="card-img-top room-image" alt="방 이미지">
-                            <img th:if="${room.profilePicture == null}" th:src="@{/img/thumbnail-default.svg}" class="card-img-top room-image" alt="기본 이미지">
-                        </a>
-                        <div class="info">
-                            <div class="tag">
-                                <span class="info-data" th:text="${room.place}" data-toggle="tooltip" data-placement="top" title="${room.place}">장소</span>
-                                <span class="info-data" th:text='|${room.currentParticipants}/${room.maxParticipants}|' data-toggle="tooltip" data-placement="top" title='|${room.currentParticipants}/${room.maxParticipants}|'>0/0명</span>
-                            </div>
-                            <a class="title" th:href="@{/matching/detail/{id}(id=${room.roomId})}" th:text="${room.title}">제목</a>
-                            <div class="host" th:text="${room.member.name}">호스트명</div>
-                            <p class="text" th:text="${room.petType}" title="${room.petType}">펫 종류</p>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- 검색 결과가 없을 경우: 검색어가 있을 때와 없을 때 다른 처리 -->
-            <div class="GalleryList" th:if="${query != null and !#strings.isEmpty(query) and #lists.isEmpty(filteredRooms)}">
-                <div class="empty">검색 결과가 없습니다.</div>
-            </div>
-
-            <!-- 검색어가 없을 경우: 모든 매칭방 표시 -->
-            <div class="GalleryList" th:if="${query == null or #strings.isEmpty(query)}">
-                <ul>
-                    <li th:each="room : ${allRooms}">
-                        <a class="thumb img" th:href="@{/matching/detail/{id}(id=${room.roomId})}">
-                            <img th:if="${room.profilePicture != null}" th:src="${room.profilePicture}" class="card-img-top room-image" alt="방 이미지">
-                            <img th:if="${room.profilePicture == null}" th:src="@{/img/thumbnail-default.svg}" class="card-img-top room-image" alt="기본 이미지">
-                        </a>
-                        <div class="info">
-                            <div class="tag">
-                                <span class="info-data" th:text="${room.place}" data-toggle="tooltip" data-placement="top" title="${room.place}">장소</span>
-                                <span class="info-data" th:text='|${room.currentParticipants}/${room.maxParticipants}|' data-toggle="tooltip" data-placement="top" title='|${room.currentParticipants}/${room.maxParticipants}|'>0/0명</span>
-                            </div>
-                            <a class="title" th:href="@{/matching/detail/{id}(id=${room.roomId})}" th:text="${room.title}">제목</a>
-                            <div class="host" th:text="${room.member.name}">호스트명</div>
-                            <p class="text" th:text="${room.petType}" title="${room.petType}">펫 종류</p>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-
+        <!-- 검색바와 메이트 등록 버튼 -->
+        <div class="search-bar-container">
+            <!-- 검색바 -->
+            <form class="form-inline search-form" th:action="@{/matching/list}" method="get">
+                <input type="text" class="form-control search-input" name="query" placeholder="키워드를 입력하세요" th:value="${query}">
+                <button type="submit" class="primary search-btn">검색</button>
+            </form>
+            <!-- 메이트 등록 버튼 -->
+            <button class="create-button" onclick="location.href='/matching/create'">메이트 등록</button>
         </div>
 
-        <div class="pagination">
-            <ul>
-                <li class="page-item active">
-                    <a class="page-link">1</a>
-                </li>
-            </ul>
+        <!-- 검색 결과가 있을 경우: 필터링된 매칭방만 표시 -->
+        <div th:if="${query != null and !#strings.isEmpty(query) and !#lists.isEmpty(filteredRooms)}" class="filtered-rooms mb-5">
+            <h5 th:text='|&quot;${query}&quot; 키워드로 필터링된 매칭방|'>필터링된 매칭방</h5>
+            <div class="card-grid">
+                <!-- 각 매칭방을 카드 형태로 표시 -->
+                <a class="card" th:each="room : ${filteredRooms}"
+                   th:href="@{/matching/detail/{id}(id=${room.roomId})}">
+                    <!-- 매칭방 이미지 표시 -->
+                    <img th:if="${room.profilePicture != null}" th:src="${room.profilePicture}" class="card-img-top room-image" alt="방 이미지">
+                    <img th:if="${room.profilePicture == null}" th:src="@{/img/log.svg}" class="card-img-top room-image" alt="기본 이미지">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${room.title}">제목</h5>
+                        <p class="card-text">
+                            <!-- 매칭방 상세 정보 표시 -->
+                        <div class="info-row">
+                            <strong class="info-label">모임 장소</strong>
+                            <span class="info-data" th:text="${room.place}" data-toggle="tooltip" data-placement="top" title="${room.place}">장소</span>
+                        </div>
+                        <div class="info-row">
+                            <strong class="info-label">참여 현황</strong>
+                            <span class="info-data" th:text='|${room.currentParticipants}/${room.maxParticipants}|'
+                                  data-toggle="tooltip" data-placement="top" title='|${room.currentParticipants}/${room.maxParticipants}|'>0/0명</span>
+                        </div>
+                        <div class="info-row">
+                            <strong class="info-label">호스트</strong>
+                            <!-- 수정: DTO의 member.name을 정확히 참조 -->
+                            <span class="info-data" th:text="${room.member.name}" data-toggle="tooltip" data-placement="top" title="${room.member.name}">호스트명</span>
+                        </div>
+                        <div class="info-row">
+                            <strong class="info-label">펫 타입</strong>
+                            <span class="info-data" th:text="${room.petType}" data-toggle="tooltip" data-placement="top" title="${room.petType}">펫 종류</span>
+                        </div>
+                        </p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- 검색 결과가 없을 경우 -->
+        <div th:if="${query != null and !#strings.isEmpty(query) and #lists.isEmpty(filteredRooms)}" class="no-results mb-5">
+            <p>검색 결과가 없습니다: "<span th:text="${query}">검색어</span>"</p>
+        </div>
+
+        <!-- 검색어가 없을 경우: 모든 매칭방 표시 -->
+        <div th:if="${query == null or #strings.isEmpty(query)}" class="all-rooms">
+            <!-- 모든 매칭방을 카드 형태로 표시 -->
+            <div class="card-grid">
+                <a class="card" th:each="room : ${allRooms}"
+                   th:href="@{/matching/detail/{id}(id=${room.roomId})}">
+                    <!-- 매칭방 이미지 표시 -->
+                    <img th:if="${room.profilePicture != null}" th:src="${room.profilePicture}" class="card-img-top room-image" alt="방 이미지">
+                    <img th:if="${room.profilePicture == null}" th:src="@{/img/thumbnail-default.svg}" class="card-img-top room-image" alt="기본 이미지">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${room.title}">제목</h5>
+                        <p class="card-text">
+                            <!-- 매칭방 상세 정보 표시 -->
+                        <div class="info-row">
+                            <strong class="info-label">모임 장소</strong>
+                            <span class="info-data" th:text="${room.place}" data-toggle="tooltip" data-placement="top" title="${room.place}">장소</span>
+                        </div>
+                        <div class="info-row">
+                            <strong class="info-label">참여 현황</strong>
+                            <span class="info-data" th:text='|${room.currentParticipants}/${room.maxParticipants}|'
+                                  data-toggle="tooltip" data-placement="top" title='|${room.currentParticipants}/${room.maxParticipants}|'>0/0명</span>
+                        </div>
+                        <div class="info-row">
+                            <strong class="info-label">호스트</strong>
+                            <!-- 수정: DTO의 member.name을 정확히 참조 -->
+                            <span class="info-data" th:text="${room.member.name}" data-toggle="tooltip" data-placement="top" title="${room.member.name}">호스트명</span>
+                        </div>
+                        <div class="info-row">
+                            <strong class="info-label">펫 타입</strong>
+                            <span class="info-data" th:text="${room.petType}" data-toggle="tooltip" data-placement="top" title="${room.petType}">펫 종류</span>
+                        </div>
+                        </p>
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
-
-    <!-- 외부 JS 파일 링크 -->
-    <script th:src="@{/js/list.js}"></script>
-    <!-- jQuery, Popper.js, Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </div>
-
-<!-- Initialize Bootstrap tooltips -->
+<!-- 외부 JS 파일 링크 -->
+<script th:src="@{/js/list.js}"></script>
+<!-- jQuery, Popper.js, Bootstrap JS 로드 -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Bootstrap 툴팁 초기화 -->
 <script>
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()

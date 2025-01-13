@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="www.thymeleaf.org"
       layout:decorate="~{layout/base.html}">
 <head>
-    <script th:src="@{/js/communities/js}"></script>
+    <script th:src="@{/js/communities.js}"></script>
 </head>
 <body>
 <!-- content -->
@@ -24,14 +24,14 @@
             <div class="GalleryList">
                 <ul>
                     <li th:each="community : ${communities}">
-                        <a class="thumb img" th:href="@{/communities/read{id}(id=${community.communityId})}">
+                        <a class="thumb img" th:href="@{/communities/{id}(id=${community.communityId})}">
                             <img th:src="${community.imageUrl != null ? community.imageUrl : '/img/default.png'}">
                         </a>
                         <div class="info">
                             <div class="tag">
                                 <span>00:00</span><span>24:00</span>
                             </div>
-                            <a class="title" th:href="@{/communities/read{id}(id=${community.communityId})}" th:text="${community.title}"></a>
+                            <a class="title" th:href="@{/communities/{id}(id=${community.communityId})}" th:text="${community.title}"></a>
                             <p class="text" th:text="${community.member != null && community.member.address != null ? community.member.address : '주소 미등록'}"></p>
                         </div>
                     </li>
