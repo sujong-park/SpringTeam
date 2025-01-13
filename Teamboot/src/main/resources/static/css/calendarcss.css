@@ -17,7 +17,9 @@ body {
 /*    margin-top: 5%;*/
 /*}*/
 
-
+.fc-event-time {
+    display: none;
+}
 #mainContent {
     width: 80%;
     margin: 3%;
