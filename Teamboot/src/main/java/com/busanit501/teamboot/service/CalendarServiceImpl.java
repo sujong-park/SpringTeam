@@ -119,6 +119,7 @@ public class CalendarServiceImpl implements CalendarService {
                     .matching(true)
                     .build();
             calendarRepository.save(hostCalendar);
+//            savecal.removeDuplicateMembers();
 
             // 참여자 모두 저장
             for (Member participant : participants) {
@@ -132,6 +133,8 @@ public class CalendarServiceImpl implements CalendarService {
                         .matching(true)
                         .build();
                 calendarRepository.save(participantCalendar);
+//                removeDuplicateMembers();
+
                 log.info("Schedule saved for participant: {}", participant.getMid());
             }
 
@@ -143,5 +146,29 @@ public class CalendarServiceImpl implements CalendarService {
             throw ex;
         }
     }
+
+    /**
+     * 중복 데이터 삭제
+     */
+//    public void removeDuplicateMembers() {
+//        // 중복 데이터 조회
+//        List<String> duplicateMembers = calendarRepository.findDuplicateMembers();
+//
+//        for (String mid : duplicateMembers) {
+//            // 해당 mid의 모든 Calendar 데이터 조회
+//            List<Calendar> calendars = calendarRepository.findBymid(mid);
+//
+//            // 첫 번째 데이터만 남기고 나머지 삭제
+//            List<Long> idsToDelete = calendars.stream()
+//                    .skip(1) // 첫 번째 데이터는 유지
+//                    .map(Calendar::getId)
+//                    .collect(Collectors.toList());
+//
+//            if (!idsToDelete.isEmpty()) {
+//                calendarRepository.deleteMembersByIds(idsToDelete);
+//            }
+//        }
+//    }
+
 
 }

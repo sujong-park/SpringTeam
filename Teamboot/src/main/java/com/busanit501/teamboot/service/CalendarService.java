@@ -6,19 +6,23 @@ import com.busanit501.teamboot.domain.Member;
 import com.busanit501.teamboot.dto.CalendarDTO;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public interface CalendarService {
 
 
-    void saveSchedule(Member loginmember, MatchingRoom room, List<Member> participants) ;
-//    void saveMatchingAndCalendar(MatchingRoomDTO matchingRoomDTO);
+    void saveSchedule(Member loginmember, MatchingRoom room, List<Member> participants);
+
+    //    void saveMatchingAndCalendar(MatchingRoomDTO matchingRoomDTO);
     List<CalendarDTO> getUserSchedules(String mid);
+
     void updateScheduleStatus();
 
     Calendar addSchedule(CalendarDTO calendarDTO);
-    void updateSchedule(Long id, CalendarDTO calendarDTO);
-    void deleteSchedule(Long id);
 
+    void updateSchedule(Long id, CalendarDTO calendarDTO);
+
+    void deleteSchedule(Long id);
 
 
     default CalendarDTO entityToDto(Calendar calendar) {
@@ -52,6 +56,7 @@ public interface CalendarService {
     }
 
 
+}
 //    default MatchingRoom matchinroomdtoEntity(MatchingRoomDTO dto) {
 //        return MatchingRoom.builder()
 //                .host(User.builder().userId(dto.getHostId()).build())
@@ -63,6 +68,6 @@ public interface CalendarService {
 //                .meetingTime(dto.getMeetingTime())
 //                .build();
 //    }
-}
+
 
 
