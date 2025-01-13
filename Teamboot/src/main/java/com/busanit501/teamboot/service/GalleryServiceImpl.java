@@ -6,7 +6,6 @@ import com.busanit501.teamboot.dto.GalleryListAllDTO;
 import com.busanit501.teamboot.dto.PageRequestDTO;
 import com.busanit501.teamboot.dto.PageResponseDTO;
 import com.busanit501.teamboot.repository.GalleryRepository;
-import com.busanit501.teamboot.repository.ReplyRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -28,9 +27,6 @@ public class GalleryServiceImpl implements GalleryService {
     //맵퍼에게 의존 해야함.
     // 디비 작업 도구,
     private final GalleryRepository galleryRepository;
-
-    // 지원 받기, 댓글의 디비 작업이 가능한,
-    private final ReplyRepository replyRepository;
 
     // DTO <-> Entity class
     private final ModelMapper modelMapper;
